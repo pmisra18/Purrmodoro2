@@ -1,8 +1,8 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Complete Application Engine & Cloud Sync
+   PURRMODORO - Complete Engine & Minecraft Biome Switcher
    ------------------------------------------------------------- */
 
-// Medical School Curriculum Architecture with Distinct Subjects
+// Distinct Medical School Subjects
 const MEDICAL_CURRICULUM = {
   "🦴 OPP (Osteopathic Principles & Practice)": {
     resources: [
@@ -89,7 +89,6 @@ const MEDICAL_CURRICULUM = {
   }
 };
 
-// Long-Term World Progression & Wings
 const WORLD_WINGS = [
   { id: 'w1', name: "Melog's Bedroom", icon: '🛏️', reqLevel: 1 },
   { id: 'w2', name: "Medical Library", icon: '📚', reqLevel: 5 },
@@ -101,7 +100,6 @@ const WORLD_WINGS = [
   { id: 'w8', name: "Melog Teaching Hospital", icon: '🏥', reqLevel: 100 }
 ];
 
-// Unlockable Catalog Gear
 const CATALOG_ITEMS = [
   { id: 'tea', name: 'Chamomile Study Tea', icon: '☕', cost: 20, purchased: false },
   { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 50, purchased: false },
@@ -112,7 +110,6 @@ const CATALOG_ITEMS = [
   { id: 'coat', name: "Melog's Mini White Coat", icon: '🥼', cost: 2500, purchased: false }
 ];
 
-// App Global State
 let state = {
   settings: {
     studyMin: 25,
@@ -122,6 +119,7 @@ let state = {
     dailyTarget: 8,
     soundEnabled: true,
     season: 'spring',
+    currentBiome: 'biome-sakura',
     supaUrl: '',
     supaKey: ''
   },
@@ -152,12 +150,12 @@ document.addEventListener('DOMContentLoaded', () => {
   checkDateRollover();
   initCurriculumSelectors();
   initNavigation();
+  initBiomeControls();
   initTimer();
   initPlanner();
   initWorldAndCatalog();
   initAmbientCanvas();
   initSettingsAndSync();
-  initTimeOfDayTheme();
   renderAll();
 });
 
@@ -166,7 +164,6 @@ function getTodayDateString() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-// --- LOCAL STORAGE ---
 function saveLocalState() {
   localStorage.setItem('purrmodoro_save', JSON.stringify(state));
   if (state.settings.supaUrl && state.settings.supaKey) {
@@ -202,6 +199,31 @@ function checkDateRollover() {
     state.game.lastActiveDate = today;
     saveLocalState();
   }
+}
+
+// --- BIOME SWITCHER ---
+function initBiomeControls() {
+  const buttons = document.querySelectorAll('.btn-biome');
+  const viewport = document.getElementById('room-viewport');
+
+  // Set saved biome
+  if (state.settings.currentBiome) {
+    viewport.className = `room-viewport ${state.settings.currentBiome}`;
+    buttons.forEach(b => {
+      b.classList.toggle('active', b.dataset.biome === state.settings.currentBiome);
+    });
+  }
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const biomeClass = btn.dataset.biome;
+      viewport.className = `room-viewport ${biomeClass}`;
+      state.settings.currentBiome = biomeClass;
+      saveLocalState();
+    });
+  });
 }
 
 // --- CURRICULUM CONTROLLER ---
@@ -261,23 +283,21 @@ function initNavigation() {
     });
   });
 
-  // Melog interactive click
   document.getElementById('melog-touch-target').addEventListener('click', () => {
     setMelogMood('purr', "Purrr! Melog loves studying medical school with you! 🐾");
     playChime(587.33, 0.3);
   });
 
   document.getElementById('prop-lamp').addEventListener('click', () => {
-    document.body.classList.toggle('theme-night');
-    setMelogSpeech("Toggled the cozy desk lighting! 💡");
+    setMelogSpeech("Toggled desk lamp! 💡");
   });
 
   document.getElementById('prop-plant').addEventListener('click', () => {
-    setMelogSpeech("The calming monstera leaves rustle peacefully. 🪴");
+    setMelogSpeech("Leaves rustle peacefully in the breeze. 🪴");
   });
 
   document.getElementById('prop-window').addEventListener('click', () => {
-    setMelogSpeech("Looking out at the quiet campus grounds. 🪟");
+    setMelogSpeech("Looking out across the blocky mountain horizon. 🏔️");
   });
 }
 
@@ -300,7 +320,7 @@ function startTimer() {
   document.getElementById('btn-timer-start').style.display = 'none';
   document.getElementById('btn-timer-pause').style.display = 'inline-block';
 
-  setMelogMood('studying', "Melog is seated attentively beside your notes. 📚");
+  setMelogMood('studying', "Melog is resting quietly beside your notes. 📚");
 
   state.timer.intervalId = setInterval(() => {
     if (state.timer.timeLeft > 0) {
@@ -379,7 +399,7 @@ function completeTimerBlock() {
 
     saveLocalState();
     playCompletionFanfare();
-    setMelogMood('celebrating', "🎉 Excellent focus session completed! +10 🐾 Paw Points earned!");
+    setMelogMood('celebrating', "🎉 Great study session completed! +10 🐾 Paw Points earned!");
 
     if (state.game.todayPomodoros % state.settings.longInterval === 0) {
       setTimeout(() => setTimerMode('longBreak'), 2500);
@@ -422,7 +442,6 @@ function setTimerMode(mode) {
   renderTimer();
 }
 
-// --- MELOG MOOD & SPEECH CONTROLLER ---
 function setMelogSpeech(msg) {
   document.getElementById('melog-speech').textContent = msg;
 }
@@ -502,7 +521,7 @@ function initPlanner() {
   });
 }
 
-// --- WORLD & CATALOG CONTROLLER ---
+// --- WORLD & CATALOG ---
 function initWorldAndCatalog() {
   renderWorld();
 }
@@ -552,7 +571,6 @@ function renderWorld() {
   });
 }
 
-// --- STATS & LOGS ---
 function renderStats() {
   document.getElementById('txt-stats-streak').textContent = `${state.game.streak} Day Study Streak`;
 
@@ -593,7 +611,6 @@ function renderStats() {
   }
 }
 
-// --- RENDER HELPERS ---
 function renderAll() {
   renderTimer();
   renderTopStats();
@@ -623,7 +640,6 @@ function renderProgressBar() {
   document.getElementById('bar-daily-progress').style.width = `${pct}%`;
 }
 
-// --- AUDIO SYNTHESIZER ---
 function playChime(freq, dur) {
   if (!state.settings.soundEnabled) return;
   try {
@@ -649,7 +665,6 @@ function playCompletionFanfare() {
   setTimeout(() => playChime(1046.50, 0.8), 300);
 }
 
-// --- LIVING AMBIENT PARTICLES ---
 function initAmbientCanvas() {
   const canvas = document.getElementById('ambient-canvas');
   const ctx = canvas.getContext('2d');
@@ -701,15 +716,6 @@ function initAmbientCanvas() {
   renderParticles();
 }
 
-// --- DAY / NIGHT THEME ENGINE ---
-function initTimeOfDayTheme() {
-  const hour = new Date().getHours();
-  if (hour >= 6 && hour < 17) document.body.className = 'theme-day';
-  else if (hour >= 17 && hour < 20) document.body.className = 'theme-sunset';
-  else document.body.className = 'theme-night';
-}
-
-// --- SETTINGS & SUPABASE CLOUD SYNC MODULE ---
 function initSettingsAndSync() {
   const form = document.getElementById('settings-form');
   const btnCloud = document.getElementById('btn-save-cloud');
@@ -764,7 +770,6 @@ function initSettingsAndSync() {
   });
 }
 
-// REST-based Supabase Sync
 async function syncWithSupabase() {
   const { supaUrl, supaKey } = state.settings;
   if (!supaUrl || !supaKey) {
@@ -823,7 +828,6 @@ function escapeHTML(str) {
   return str.replace(/[&<>'"]/g, t => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[t] || t));
 }
 
-// Register Progressive Web App Service Worker
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').catch(() => {});
