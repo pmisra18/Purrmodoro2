@@ -2,7 +2,7 @@
    PURRMODORO - Bulletproof Navigation, Timer & Real-time Canvas
    ------------------------------------------------------------- */
 
-// Medical Subjects / Textbooks list with dedicated Board Prep options
+// Medical Subjects list
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
   "🦴 OPP / OMM",
@@ -76,7 +76,7 @@ let state = {
 
 const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 140; // 879.64
 
-// --- INIT ---
+// --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
   loadLocalState();
   checkDateRollover();
@@ -154,7 +154,7 @@ function initNavigation() {
   const melogSprite = document.getElementById('melog-walker');
   if (melogSprite) {
     melogSprite.addEventListener('click', () => {
-      setMelogSpeech("Purrr! Melog is energized and studying boards with you! 🐾");
+      setMelogSpeech("Purrr! Melog is energized and studying with you! 🐾");
       playChime(587.33, 0.3);
     });
   }
@@ -631,7 +631,7 @@ function renderWorld() {
       <div class="catalog-icon">${item.icon}</div>
       <div class="catalog-title">${item.name}</div>
       <div class="catalog-price">${item.purchased ? 'Owned 🎀' : `${item.cost} 🐾`}</div>
-      ${!item.purchased ? `<button class="btn btn-primary btn-buy" style="font-size:0.75rem; padding:0.3rem 0.8rem; margin-top:0.3rem;">Adopt</button>` : ''}
+      ${!item.purchased ? `<button type="button" class="btn btn-primary btn-buy" style="font-size:0.75rem; padding:0.3rem 0.8rem; margin-top:0.3rem;">Adopt</button>` : ''}
     `;
 
     if (!item.purchased) {
