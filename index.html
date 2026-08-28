@@ -18,6 +18,7 @@
     <div class="app-shell">
         <main class="pomofox-glass-card">
             
+            <!-- ================= TAB 1: TIMER ================= -->
             <section id="tab-timer" class="view-panel active">
                 
                 <div class="top-controls-bar">
@@ -39,6 +40,7 @@
                     <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
                 </div>
 
+                <!-- Timer Circle Stage -->
                 <div class="timer-circle-stage">
                     <svg class="circle-svg" viewBox="0 0 300 300">
                         <circle cx="150" cy="150" r="133" class="circle-bg-ring" />
@@ -47,25 +49,23 @@
 
                     <div class="timer-digits-text" id="timer-readout">25:00</div>
 
+                    <!-- Orbit Arm with Cute Rounded-Ear Melog -->
                     <div class="orbit-arm" id="orbit-arm">
                         <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
                             
                             <svg viewBox="0 0 16 16" class="pixel-melog-svg">
                                 <g class="px-cat-master">
+                                    <!-- Tail -->
                                     <g class="px-balanced-tail">
                                         <rect x="2" y="6" width="2" height="2" fill="#2C1E16" />
                                         <rect x="1" y="5" width="2" height="2" fill="#F4C28D" />
                                         <rect x="0" y="3" width="2" height="2" fill="#D9965B" />
                                         <rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" />
                                     </g>
-                                    <g class="px-leg-bl">
-                                        <rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" />
-                                        <rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" />
-                                    </g>
-                                    <g class="px-leg-fl">
-                                        <rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" />
-                                        <rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" />
-                                    </g>
+                                    <!-- Legs -->
+                                    <g class="px-leg-bl"><rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                    <g class="px-leg-fl"><rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                    <!-- Torso -->
                                     <g class="px-torso">
                                         <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
                                         <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
@@ -75,29 +75,28 @@
                                         <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
                                         <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
                                     </g>
-                                    <g class="px-leg-br">
-                                        <rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" />
-                                        <rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" />
-                                    </g>
-                                    <g class="px-leg-fr">
-                                        <rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" />
-                                        <rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" />
-                                    </g>
+                                    <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                    <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                    
+                                    <!-- Head with Cute Rounded Cat Ears -->
                                     <g class="px-head">
-                                        <polygon points="7,4 4,0 8,3" fill="#2C1E16" />
-                                        <polygon points="7,3 5,1 7,3" fill="#F4C28D" />
-                                        <polygon points="7,3 6,2 7,3" fill="#FCAEBA" />
-                                        <polygon points="10,4 13,0 9,3" fill="#2C1E16" />
-                                        <polygon points="10,3 12,1 10,3" fill="#F4C28D" />
-                                        <polygon points="10,3 11,2 10,3" fill="#FCAEBA" />
+                                        <!-- Left Cute Rounded Ear -->
+                                        <rect x="7" y="2" width="2" height="2" fill="#F4C28D" rx="1" />
+                                        <rect x="8" y="2" width="1" height="1" fill="#FCAEBA" />
+                                        <!-- Right Cute Rounded Ear -->
+                                        <rect x="10" y="2" width="2" height="2" fill="#F4C28D" rx="1" />
+                                        <rect x="10" y="2" width="1" height="1" fill="#FCAEBA" />
+
                                         <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
                                         <rect x="6" y="4" width="1" height="4" fill="#2C1E16" />
                                         <rect x="13" y="5" width="1" height="3" fill="#2C1E16" />
                                         <rect x="8" y="3" width="4" height="1" fill="#2C1E16" />
                                         <rect x="7" y="8" width="5" height="1" fill="#2C1E16" />
+
                                         <rect x="9" y="4" width="1" height="1" fill="#D9965B" />
                                         <rect x="10" y="5" width="1" height="1" fill="#2C1E16" />
                                         <rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
+
                                         <rect x="11" y="6" width="2" height="2" fill="#FFFFFF" />
                                         <rect x="12" y="6" width="1" height="1" fill="#E88894" />
                                     </g>
@@ -118,8 +117,148 @@
                 </div>
             </section>
 
+            <!-- ================= TAB 2: PLANNER ================= -->
             <section id="tab-planner" class="view-panel">
                 <h2 class="section-heading">🩷 Study Planner</h2>
                 <div class="form-col">
                     <div class="form-item">
                         <label for="plan-date">Exam Date</label>
+                        <input type="date" id="plan-date" class="med-input" />
+                    </div>
+                    <div class="form-item">
+                        <label for="plan-buffer">Buffer Days (Review)</label>
+                        <input type="number" id="plan-buffer" class="med-input" value="2" min="0" />
+                    </div>
+                    
+                    <div class="grid-2">
+                        <div class="form-item">
+                            <label for="plan-pages-left">Total Pages Left</label>
+                            <input type="number" id="plan-pages-left" class="med-input" value="25" min="0" />
+                        </div>
+                        <div class="form-item">
+                            <label for="plan-anki-left">Total Anki Cards Left</label>
+                            <input type="number" id="plan-anki-left" class="med-input" value="300" min="0" />
+                        </div>
+                    </div>
+
+                    <div class="grid-2">
+                        <div class="form-item">
+                            <label for="plan-pace-pages">Pages Pace (per hr)</label>
+                            <input type="number" id="plan-pace-pages" class="med-input" value="5" min="1" />
+                        </div>
+                        <div class="form-item">
+                            <label for="plan-pace-anki">Anki Pace (per hr)</label>
+                            <input type="number" id="plan-pace-anki" class="med-input" value="100" min="1" />
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-action-wide" id="btn-calc-schedule" style="margin-top:0.35rem;">
+                        Generate Schedule 🩺
+                    </button>
+                </div>
+
+                <div class="pf-item-box" id="rx-card" style="display: none; width:100%; text-align:left;">
+                    <div style="font-weight: 800; border-bottom: 2px dashed rgba(0,0,0,0.15); padding-bottom: 0.35rem; display: flex; justify-content: space-between;">
+                        <span>Rx Prescription</span>
+                        <span id="rx-finish-date"></span>
+                    </div>
+                    <div id="rx-content" style="padding: 0.65rem 0; font-family: var(--font-ui); font-size: 0.85rem;"></div>
+                </div>
+            </section>
+
+            <!-- ================= TAB 3: SANCTUARY & STORE ================= -->
+            <section id="tab-world" class="view-panel">
+                <h2 class="section-heading">🏡 Sanctuary &amp; Gear</h2>
+                <div class="grid-2" id="world-map-grid"></div>
+
+                <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">🐾 Adopt Gear with Paw Points</h3>
+                <div class="grid-2" id="furniture-catalog-grid"></div>
+            </section>
+
+            <!-- ================= TAB 4: STATS ================= -->
+            <section id="tab-stats" class="view-panel">
+                <h2 class="section-heading">📊 Progress &amp; Streaks</h2>
+                <div class="pf-item-box" style="display:flex; align-items:center; gap:0.75rem; width:100%;">
+                    <span style="font-size: 2.2rem;">🔥</span>
+                    <div style="text-align:left;">
+                        <h3 id="txt-stats-streak">1 Day Streak</h3>
+                        <p style="font-size: 0.78rem; opacity: 0.8;">Melog is cheering you on!</p>
+                    </div>
+                </div>
+
+                <div class="week-row-dots" id="weekly-tracker-row"></div>
+
+                <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">Session History</h3>
+                <div class="log-scroll-area" id="session-log-list"></div>
+            </section>
+
+            <!-- ================= TAB 5: SETTINGS & SUPABASE CLOUD SYNC ================= -->
+            <section id="tab-settings" class="view-panel">
+                <h2 class="section-heading">⚙️ Preferences &amp; API Sync</h2>
+                
+                <div class="pf-item-box" style="width:100%; text-align:left; margin-bottom:0.5rem;">
+                    <div style="font-weight: 800; font-size: 0.85rem; margin-bottom: 0.35rem; display:flex; justify-content:space-between; align-items:center;">
+                        <span>☁️ Supabase Cloud Sync</span>
+                        <span id="sync-status-badge" style="font-size:0.65rem; background:var(--btn-orange); color:#fff; padding:0.15rem 0.4rem; border-radius:6px;">Local Mode</span>
+                    </div>
+                    <p style="font-size: 0.72rem; color:var(--pf-muted, #666); margin-bottom:0.5rem;">Enter your Supabase API credentials to sync your stats across devices.</p>
+                    <div class="form-col">
+                        <div class="form-item">
+                            <label for="cfg-supa-url">Project URL</label>
+                            <input type="text" id="cfg-supa-url" class="med-input" placeholder="https://xyz.supabase.co" />
+                        </div>
+                        <div class="form-item">
+                            <label for="cfg-supa-key">Anon API Key</label>
+                            <input type="password" id="cfg-supa-key" class="med-input" placeholder="eyJhbGciOi..." />
+                        </div>
+                        <button type="button" class="btn-action-wide" id="btn-save-cloud" style="padding:0.5rem; font-size:0.75rem; margin-top:0.25rem;">Connect &amp; Sync Now 🔄</button>
+                    </div>
+                </div>
+
+                <form id="settings-form" class="form-col">
+                    <div class="form-item">
+                        <label for="cfg-study-min">Focus Duration (Minutes)</label>
+                        <input type="number" id="cfg-study-min" class="med-input" value="25" min="1" max="90" />
+                    </div>
+                    <div class="form-item">
+                        <label for="cfg-short-min">Short Break</label>
+                        <input type="number" id="cfg-short-min" class="med-input" value="5" min="1" max="30" />
+                    </div>
+                    <div class="form-item">
+                        <label for="cfg-long-min">Long Break</label>
+                        <input type="number" id="cfg-long-min" class="med-input" value="20" min="5" max="60" />
+                    </div>
+                    <button type="submit" class="btn-action-wide" style="margin-top:0.4rem;">Save Settings</button>
+                </form>
+            </section>
+
+        </main>
+
+        <!-- Bottom Dock Navigation -->
+        <nav class="pf-bottom-dock">
+            <button type="button" class="pf-dock-btn active" data-tab="tab-timer">
+                <span class="dock-ico">⏱️</span>
+                <span>Timer</span>
+            </button>
+            <button type="button" class="pf-dock-btn" data-tab="tab-planner">
+                <span class="dock-ico">🩷</span>
+                <span>Planner</span>
+            </button>
+            <button type="button" class="pf-dock-btn" data-tab="tab-world">
+                <span class="dock-ico">🏡</span>
+                <span>Store</span>
+            </button>
+            <button type="button" class="pf-dock-btn" data-tab="tab-stats">
+                <span class="dock-ico">📊</span>
+                <span>Stats</span>
+            </button>
+            <button type="button" class="pf-dock-btn" data-tab="tab-settings">
+                <span class="dock-ico">⚙️</span>
+                <span>Settings</span>
+            </button>
+        </nav>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
