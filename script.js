@@ -1,8 +1,8 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Walking Wheel Timer Engine & Sync
+   PURRMODORO - Dark Mode & Real-Time Animated Canvas Engine
    ------------------------------------------------------------- */
 
-// Medical Curriculum with no textbook requirements for OPP/OMM & CE
+// Medical Curriculum
 const MEDICAL_CURRICULUM = {
   "🦴 OPP / OMM": {
     resources: [
@@ -118,8 +118,7 @@ let state = {
     longInterval: 4,
     dailyTarget: 8,
     soundEnabled: true,
-    season: 'spring',
-    currentBiome: 'biome-sakura',
+    currentBiome: 'sakura',
     supaUrl: '',
     supaKey: ''
   },
@@ -145,7 +144,7 @@ let state = {
   }
 };
 
-const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 130; // 816.81
+const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 130;
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -157,7 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initTimer();
   initPlanner();
   initWorldAndCatalog();
-  initAmbientCanvas();
+  initAnimatedBackground();
   initSettingsAndSync();
   renderAll();
 });
@@ -181,7 +180,7 @@ function loadLocalState() {
       const parsed = JSON.parse(raw);
       state = { ...state, ...parsed };
     } catch (e) {
-      console.warn('Error reading saved state, starting fresh.');
+      console.warn('Error reading state.');
     }
   }
   state.timer.timeLeft = state.settings.studyMin * 60;
@@ -208,28 +207,160 @@ function checkDateRollover() {
 // --- BIOME SWITCHER ---
 function initBiomeControls() {
   const buttons = document.querySelectorAll('.btn-biome');
-  const viewport = document.getElementById('room-viewport');
-
-  if (state.settings.currentBiome) {
-    viewport.className = `room-viewport ${state.settings.currentBiome}`;
-    buttons.forEach(b => {
-      b.classList.toggle('active', b.dataset.biome === state.settings.currentBiome);
-    });
-  }
 
   buttons.forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.biome === state.settings.currentBiome);
     btn.addEventListener('click', () => {
       buttons.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      const biomeClass = btn.dataset.biome;
-      viewport.className = `room-viewport ${biomeClass}`;
-      state.settings.currentBiome = biomeClass;
+      state.settings.currentBiome = btn.dataset.biome;
       saveLocalState();
     });
   });
 }
 
-// --- CURRICULUM CONTROLLER ---
+// --- PROCEDURAL ANIMATED CANVAS BACKGROUND ENGINE ---
+function initAnimatedBackground() {
+  const canvas = document.getElementById('animated-bg-canvas');
+  const ctx = canvas.getContext('2d');
+  let width, height;
+
+  const resize = () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  // Create ambient elements
+  let stars = [];
+  for (let i = 0; i < 45; i++) {
+    stars.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight * 0.7,
+      size: Math.random() * 2 + 1,
+      alpha: Math.random() * 0.8 + 0.2,
+      twinkle: Math.random() * 0.02 + 0.01
+    });
+  }
+
+  let particles = [];
+  for (let i = 0; i < 30; i++) {
+    particles.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 3 + 2,
+      vx: (Math.random() - 0.5) * 0.5,
+      vy: Math.random() * 0.5 + 0.2,
+      pulse: Math.random() * Math.PI
+    });
+  }
+
+  let auroraTime = 0;
+
+  function draw() {
+    ctx.clearRect(0, 0, width, height);
+    const biome = state.settings.currentBiome;
+
+    // 1. Sky Gradient Base
+    let grad = ctx.createLinearGradient(0, 0, 0, height);
+    if (biome === 'sakura') {
+      grad.addColorStop(0, '#191122');
+      grad.addColorStop(0.7, '#2D182E');
+      grad.addColorStop(1, '#4A2338');
+    } else if (biome === 'taiga') {
+      grad.addColorStop(0, '#0F1A1B');
+      grad.addColorStop(0.7, '#152E28');
+      grad.addColorStop(1, '#1E4233');
+    } else if (biome === 'aurora') {
+      grad.addColorStop(0, '#0C1322');
+      grad.addColorStop(0.6, '#142338');
+      grad.addColorStop(1, '#1A334A');
+    } else { // twilight
+      grad.addColorStop(0, '#1C1226');
+      grad.addColorStop(0.5, '#3B1F38');
+      grad.addColorStop(1, '#5C2D3A');
+    }
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, width, height);
+
+    // 2. Stars
+    stars.forEach(s => {
+      s.alpha += s.twinkle;
+      if (s.alpha > 1 || s.alpha < 0.2) s.twinkle *= -1;
+      ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
+      ctx.fillRect(s.x, s.y, s.size, s.size);
+    });
+
+    // 3. Aurora Wave (For Aurora Peaks Biome)
+    if (biome === 'aurora') {
+      auroraTime += 0.015;
+      ctx.save();
+      ctx.globalCompositeOperation = 'screen';
+      for (let j = 0; j < 3; j++) {
+        ctx.beginPath();
+        ctx.moveTo(0, height * 0.3);
+        for (let x = 0; x <= width; x += 30) {
+          let y = height * (0.28 + j * 0.05) + Math.sin(x * 0.005 + auroraTime + j) * 45 + Math.cos(x * 0.003 - auroraTime) * 30;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(width, 0);
+        ctx.lineTo(0, 0);
+        ctx.fillStyle = j === 0 ? 'rgba(78, 220, 160, 0.18)' : j === 1 ? 'rgba(140, 100, 240, 0.15)' : 'rgba(232, 106, 130, 0.12)';
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // 4. Distant Voxel Mountains Silhouette
+    ctx.fillStyle = biome === 'taiga' ? '#0C1E17' : biome === 'aurora' ? '#0B1624' : '#1F1222';
+    ctx.beginPath();
+    ctx.moveTo(0, height);
+    for (let x = 0; x <= width; x += 60) {
+      let mY = height * 0.65 - ((x % 180 === 0) ? 60 : (x % 120 === 0) ? 35 : 10);
+      ctx.lineTo(x, mY);
+      ctx.lineTo(x + 60, mY);
+    }
+    ctx.lineTo(width, height);
+    ctx.fill();
+
+    // 5. Dynamic Floating Particles (Petals / Fireflies / Snow / Embers)
+    particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.pulse += 0.04;
+
+      if (p.y > height) { p.y = -10; p.x = Math.random() * width; }
+      if (p.x > width) p.x = 0;
+      if (p.x < 0) p.x = width;
+
+      ctx.beginPath();
+      if (biome === 'sakura') {
+        // Floating Cherry Petals
+        ctx.fillStyle = `rgba(255, 175, 195, ${0.5 + Math.sin(p.pulse) * 0.3})`;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      } else if (biome === 'taiga') {
+        // Glowing Green Fireflies
+        ctx.fillStyle = `rgba(160, 245, 180, ${0.4 + Math.sin(p.pulse) * 0.4})`;
+        ctx.arc(p.x, p.y, p.size * 1.2, 0, Math.PI * 2);
+      } else if (biome === 'aurora') {
+        // Soft Snow Crystals
+        ctx.fillStyle = `rgba(230, 245, 255, ${0.6 + Math.sin(p.pulse) * 0.2})`;
+        ctx.fillRect(p.x, p.y, p.size, p.size);
+      } else {
+        // Twilight Embers
+        ctx.fillStyle = `rgba(255, 160, 120, ${0.5 + Math.sin(p.pulse) * 0.3})`;
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      }
+      ctx.fill();
+    });
+
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// --- CURRICULUM SELECTORS ---
 function initCurriculumSelectors() {
   const subSelect = document.getElementById('sel-subject');
   const resSelect = document.getElementById('sel-resource');
@@ -287,7 +418,7 @@ function initNavigation() {
   });
 
   document.getElementById('melog-walker-box').addEventListener('click', () => {
-    setMelogSpeech("Purrr! Melog loves walking this study circle with you! 🐾");
+    setMelogSpeech("Purrr! Melog loves studying in dark mode with you! 🐾");
     playChime(587.33, 0.3);
   });
 }
@@ -350,7 +481,7 @@ function resetTimer() {
   }
   state.timer.timeLeft = state.timer.totalDuration;
 
-  setMelogSpeech("Timer reset. Ready to start our loop whenever you are!");
+  setMelogSpeech("Timer reset. Ready whenever you are!");
   renderTimer();
 }
 
@@ -423,20 +554,20 @@ function setTimerMode(mode) {
   if (mode === 'study') {
     state.timer.totalDuration = state.settings.studyMin * 60;
     tag.textContent = 'STUDY BLOCK';
-    tag.style.background = 'var(--blush-200)';
-    tag.style.color = 'var(--blush-dark)';
+    tag.style.background = 'rgba(232, 106, 130, 0.2)';
+    tag.style.color = 'var(--blush-glow)';
     setMelogSpeech("Ready to walk another high-yield study block!");
   } else if (mode === 'shortBreak') {
     state.timer.totalDuration = state.settings.shortMin * 60;
     tag.textContent = 'SHORT BREAK';
-    tag.style.background = '#DCF2DB';
-    tag.style.color = '#2F612E';
+    tag.style.background = 'rgba(139, 212, 161, 0.2)';
+    tag.style.color = 'var(--sage-glow)';
     setMelogSpeech("Break time! Hydrate and relax with Melog. ☕");
   } else {
     state.timer.totalDuration = state.settings.longMin * 60;
     tag.textContent = 'LONG RECOVERY BREAK';
-    tag.style.background = '#EFE1F5';
-    tag.style.color = '#5C386E';
+    tag.style.background = 'rgba(180, 140, 240, 0.2)';
+    tag.style.color = '#D2B0FA';
     setMelogSpeech("Great rounds! Enjoy your well-earned recovery rest. 🌷");
   }
 
@@ -448,7 +579,7 @@ function setMelogSpeech(msg) {
   document.getElementById('melog-speech').textContent = msg;
 }
 
-// --- RENDER CLOCK & WHEEL ORBIT ---
+// --- RENDER CLOCK & WHEEL PROGRESS ---
 function renderTimer() {
   const m = Math.floor(state.timer.timeLeft / 60);
   const s = state.timer.timeLeft % 60;
@@ -456,15 +587,12 @@ function renderTimer() {
   document.getElementById('timer-readout').textContent = str;
   document.title = `${str} 🩺 Purrmodoro`;
 
-  // Calculate Fraction Complete (0 to 1)
   const elapsed = state.timer.totalDuration - state.timer.timeLeft;
   const progressFraction = state.timer.totalDuration > 0 ? (elapsed / state.timer.totalDuration) : 0;
 
-  // 1. Update SVG Wheel Progress Bar
   const offset = CIRCLE_CIRCUMFERENCE * (1 - progressFraction);
   document.getElementById('wheel-progress-bar').style.strokeDashoffset = offset;
 
-  // 2. Rotate Orbit Arm so Melog Walks Along the Ring (0deg to 360deg)
   const angleDeg = progressFraction * 360;
   document.getElementById('wheel-orbit-arm').style.transform = `rotate(${angleDeg}deg)`;
 }
@@ -659,56 +787,6 @@ function playCompletionFanfare() {
   setTimeout(() => playChime(1046.50, 0.8), 300);
 }
 
-function initAmbientCanvas() {
-  const canvas = document.getElementById('ambient-canvas');
-  const ctx = canvas.getContext('2d');
-  let particles = [];
-
-  const resize = () => {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  };
-  window.addEventListener('resize', resize);
-  resize();
-
-  for (let i = 0; i < 24; i++) {
-    particles.push({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      radius: Math.random() * 3.5 + 2,
-      speedX: Math.random() * 0.8 - 0.2,
-      speedY: Math.random() * 0.7 + 0.3,
-      angle: Math.random() * Math.PI * 2
-    });
-  }
-
-  function renderParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const season = state.settings.season;
-
-    if (season !== 'off') {
-      particles.forEach(p => {
-        p.x += p.speedX;
-        p.y += p.speedY;
-
-        if (p.y > canvas.height) p.y = -10;
-        if (p.x > canvas.width) p.x = 0;
-
-        ctx.beginPath();
-        if (season === 'spring') ctx.fillStyle = 'rgba(252, 182, 196, 0.5)';
-        else if (season === 'fall') ctx.fillStyle = 'rgba(235, 168, 122, 0.45)';
-        else ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
-
-        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
-        ctx.fill();
-      });
-    }
-
-    requestAnimationFrame(renderParticles);
-  }
-  renderParticles();
-}
-
 function initSettingsAndSync() {
   const form = document.getElementById('settings-form');
   const btnCloud = document.getElementById('btn-save-cloud');
@@ -718,7 +796,6 @@ function initSettingsAndSync() {
   document.getElementById('cfg-short-min').value = state.settings.shortMin;
   document.getElementById('cfg-long-min').value = state.settings.longMin;
   document.getElementById('cfg-interval').value = state.settings.longInterval;
-  document.getElementById('cfg-season').value = state.settings.season;
   document.getElementById('cfg-sound').value = String(state.settings.soundEnabled);
   document.getElementById('cfg-supa-url').value = state.settings.supaUrl || '';
   document.getElementById('cfg-supa-key').value = state.settings.supaKey || '';
@@ -734,7 +811,6 @@ function initSettingsAndSync() {
     state.settings.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10);
     state.settings.longMin = parseInt(document.getElementById('cfg-long-min').value, 10);
     state.settings.longInterval = parseInt(document.getElementById('cfg-interval').value, 10);
-    state.settings.season = document.getElementById('cfg-season').value;
     state.settings.soundEnabled = document.getElementById('cfg-sound').value === 'true';
 
     if (!state.timer.isRunning && state.timer.mode === 'study') {
