@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Dark Mode Velvet & Realistic Running Wheel
+   PURRMODORO - Dark Mode Velvet & High-End Productivity Style
    ------------------------------------------------------------- */
 :root {
   --bg-deep: #0F0B15;
@@ -46,6 +46,7 @@ body {
   overflow-x: hidden;
 }
 
+/* Fullscreen Dynamic Canvas */
 #animated-bg-canvas {
   position: fixed;
   top: 0;
@@ -66,7 +67,7 @@ body {
   z-index: 1;
 }
 
-/* Header */
+/* Header & Navigation */
 .app-header {
   display: flex;
   flex-wrap: wrap;
@@ -170,7 +171,7 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ================= WHEEL VIEWPORT ================= */
+/* ================= VIEWPORT & POMOFOX WHEEL ================= */
 .timer-viewport {
   position: relative;
   background: var(--bg-card);
@@ -320,7 +321,7 @@ body {
   text-overflow: ellipsis;
 }
 
-/* Orbit Carriage */
+/* Orbit Arm & Melog Sprite */
 .orbit-carriage {
   position: absolute;
   top: 0;
@@ -348,7 +349,7 @@ body {
   overflow: visible;
 }
 
-/* ================= 4-PAW RUNNING ANIMATIONS ================= */
+/* 4-Paw Running Trotting Motion */
 .timer-running .paw-fr {
   animation: runPawFrontRight 0.35s infinite alternate ease-in-out;
 }
@@ -396,9 +397,9 @@ body {
   100% { transform: rotate(16deg); }
 }
 
-/* Eye Blinking */
+/* Natural Eye Blinking */
 .melog-eyes {
-  transform-origin: 61px 44px;
+  transform-origin: 60px 48px;
   animation: eyeBlinkOnly 4.8s infinite;
 }
 
@@ -407,7 +408,7 @@ body {
   98% { transform: scaleY(0.08); }
 }
 
-/* Glass Card & Forms */
+/* Glass Card & Form Elements */
 .glass-card {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
