@@ -1,8 +1,7 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Bulletproof Navigation, Timer & Real-time Canvas
+   PURRMODORO - PomoFox Engine & Running Melog Logic
    ------------------------------------------------------------- */
 
-// Medical Subjects list
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
   "🦴 OPP / OMM",
@@ -48,12 +47,11 @@ let state = {
     longInterval: 4,
     dailyTarget: 8,
     soundEnabled: true,
-    currentBiome: 'sakura',
     supaUrl: '',
     supaKey: ''
   },
   timer: {
-    mode: 'study',
+    mode: 'study', // 'study', 'shortBreak', 'longBreak'
     timeLeft: 25 * 60,
     totalDuration: 25 * 60,
     isRunning: false,
@@ -74,19 +72,17 @@ let state = {
   }
 };
 
-const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 140; // 879.64
+const RING_CIRCUMFERENCE = 2 * Math.PI * 135; // 848.23
 
-// --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
   loadLocalState();
   checkDateRollover();
-  initNavigation();
-  initBiomeControls();
   initCurriculumSelectors();
-  initTimer();
+  initPomoFoxControls();
+  initModals();
   initPlanner();
   initWorldAndCatalog();
-  initAnimatedBackground();
+  initAmbientCanvas();
   initSettingsAndSync();
   renderAll();
 });
@@ -98,9 +94,7 @@ function getTodayDateString() {
 
 function saveLocalState() {
   localStorage.setItem('purrmodoro_save', JSON.stringify(state));
-  if (state.settings.supaUrl && state.settings.supaKey) {
-    syncWithSupabase();
-  }
+  if (state.settings.supaUrl && state.settings.supaKey) syncWithSupabase();
 }
 
 function loadLocalState() {
@@ -109,9 +103,7 @@ function loadLocalState() {
     try {
       const parsed = JSON.parse(raw);
       state = { ...state, ...parsed };
-    } catch (e) {
-      console.warn('Error reading saved state.');
-    }
+    } catch (e) {}
   }
   state.timer.timeLeft = state.settings.studyMin * 60;
   state.timer.totalDuration = state.settings.studyMin * 60;
@@ -124,9 +116,7 @@ function checkDateRollover() {
     yesterday.setDate(yesterday.getDate() - 1);
     const yStr = `${yesterday.getFullYear()}-${String(yesterday.getMonth() + 1).padStart(2, '0')}-${String(yesterday.getDate()).padStart(2, '0')}`;
 
-    if (!state.game.activeDays[yStr]) {
-      state.game.streak = 1;
-    }
+    if (!state.game.activeDays[yStr]) state.game.streak = 1;
     state.game.todayPomodoros = 0;
     state.game.todayMinutes = 0;
     state.game.lastActiveDate = today;
@@ -134,231 +124,56 @@ function checkDateRollover() {
   }
 }
 
-// --- NAVIGATION ---
-function initNavigation() {
-  const buttons = document.querySelectorAll('.tab-btn');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-
-      btn.classList.add('active');
-      const target = document.getElementById(btn.dataset.view);
-      if (target) target.classList.add('active');
-
-      if (btn.dataset.view === 'view-world') renderWorld();
-      if (btn.dataset.view === 'view-stats') renderStats();
-    });
-  });
-
-  const melogSprite = document.getElementById('melog-walker');
-  if (melogSprite) {
-    melogSprite.addEventListener('click', () => {
-      setMelogSpeech("Purrr! Melog is energized and studying with you! 🐾");
-      playChime(587.33, 0.3);
-    });
-  }
-}
-
-// --- BIOME SELECTOR ---
-function initBiomeControls() {
-  const buttons = document.querySelectorAll('.biome-btn');
-  buttons.forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.biome === state.settings.currentBiome);
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.settings.currentBiome = btn.dataset.biome;
-      saveLocalState();
-    });
-  });
-}
-
-// --- 60 FPS ANIMATED CANVAS ---
-function initAnimatedBackground() {
-  const canvas = document.getElementById('animated-bg-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let width, height;
-
-  const resize = () => {
-    width = canvas.width = window.innerWidth;
-    height = canvas.height = window.innerHeight;
-  };
-  window.addEventListener('resize', resize);
-  resize();
-
-  let stars = [];
-  for (let i = 0; i < 50; i++) {
-    stars.push({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight * 0.7,
-      size: Math.random() * 2 + 1,
-      alpha: Math.random() * 0.8 + 0.2,
-      twinkle: Math.random() * 0.02 + 0.01
-    });
-  }
-
-  let particles = [];
-  for (let i = 0; i < 35; i++) {
-    particles.push({
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
-      size: Math.random() * 3 + 2,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: Math.random() * 0.5 + 0.2,
-      pulse: Math.random() * Math.PI
-    });
-  }
-
-  let auroraTime = 0;
-
-  function renderLoop() {
-    ctx.clearRect(0, 0, width, height);
-    const biome = state.settings.currentBiome;
-
-    let sky = ctx.createLinearGradient(0, 0, 0, height);
-    if (biome === 'sakura') {
-      sky.addColorStop(0, '#150E1F');
-      sky.addColorStop(0.65, '#2A172B');
-      sky.addColorStop(1, '#4A2336');
-    } else if (biome === 'taiga') {
-      sky.addColorStop(0, '#0C1717');
-      sky.addColorStop(0.65, '#122621');
-      sky.addColorStop(1, '#1A3B2E');
-    } else if (biome === 'aurora') {
-      sky.addColorStop(0, '#0A111E');
-      sky.addColorStop(0.65, '#101E30');
-      sky.addColorStop(1, '#162C40');
-    } else {
-      sky.addColorStop(0, '#190F24');
-      sky.addColorStop(0.55, '#351B33');
-      sky.addColorStop(1, '#572736');
-    }
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, width, height);
-
-    stars.forEach(s => {
-      s.alpha += s.twinkle;
-      if (s.alpha > 1 || s.alpha < 0.2) s.twinkle *= -1;
-      ctx.fillStyle = `rgba(255, 255, 255, ${s.alpha})`;
-      ctx.fillRect(s.x, s.y, s.size, s.size);
-    });
-
-    if (biome === 'aurora') {
-      auroraTime += 0.015;
-      ctx.save();
-      ctx.globalCompositeOperation = 'screen';
-      for (let j = 0; j < 3; j++) {
-        ctx.beginPath();
-        ctx.moveTo(0, height * 0.35);
-        for (let x = 0; x <= width; x += 30) {
-          let y = height * (0.3 + j * 0.06) + Math.sin(x * 0.005 + auroraTime + j) * 45 + Math.cos(x * 0.003 - auroraTime) * 30;
-          ctx.lineTo(x, y);
-        }
-        ctx.lineTo(width, 0);
-        ctx.lineTo(0, 0);
-        ctx.fillStyle = j === 0 ? 'rgba(78, 220, 160, 0.2)' : j === 1 ? 'rgba(140, 100, 240, 0.16)' : 'rgba(232, 93, 117, 0.14)';
-        ctx.fill();
-      }
-      ctx.restore();
-    }
-
-    ctx.fillStyle = biome === 'taiga' ? '#091612' : biome === 'aurora' ? '#08111A' : '#140A18';
-    ctx.beginPath();
-    ctx.moveTo(0, height);
-    for (let x = 0; x <= width; x += 60) {
-      let mY = height * 0.65 - ((x % 180 === 0) ? 65 : (x % 120 === 0) ? 35 : 10);
-      ctx.lineTo(x, mY);
-      ctx.lineTo(x + 60, mY);
-    }
-    ctx.lineTo(width, height);
-    ctx.fill();
-
-    particles.forEach(p => {
-      p.x += p.vx;
-      p.y += p.vy;
-      p.pulse += 0.04;
-
-      if (p.y > height) { p.y = -10; p.x = Math.random() * width; }
-      if (p.x > width) p.x = 0;
-      if (p.x < 0) p.x = width;
-
-      ctx.beginPath();
-      if (biome === 'sakura') {
-        ctx.fillStyle = `rgba(255, 165, 185, ${0.55 + Math.sin(p.pulse) * 0.3})`;
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      } else if (biome === 'taiga') {
-        ctx.fillStyle = `rgba(160, 245, 180, ${0.45 + Math.sin(p.pulse) * 0.4})`;
-        ctx.arc(p.x, p.y, p.size * 1.3, 0, Math.PI * 2);
-      } else if (biome === 'aurora') {
-        ctx.fillStyle = `rgba(230, 245, 255, ${0.65 + Math.sin(p.pulse) * 0.25})`;
-        ctx.fillRect(p.x, p.y, p.size, p.size);
-      } else {
-        ctx.fillStyle = `rgba(255, 160, 120, ${0.55 + Math.sin(p.pulse) * 0.35})`;
-        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-      }
-      ctx.fill();
-    });
-
-    requestAnimationFrame(renderLoop);
-  }
-  renderLoop();
-}
-
-// --- CURRICULUM SELECTORS ---
-function initCurriculumSelectors() {
-  const subSelect = document.getElementById('sel-subject');
-  const taskInput = document.getElementById('ipt-chapter-task');
-  if (!subSelect) return;
-
-  subSelect.innerHTML = '';
-  MEDICAL_SUBJECTS.forEach(sub => {
-    const opt = document.createElement('option');
-    opt.value = sub;
-    opt.textContent = sub;
-    subSelect.appendChild(opt);
-  });
-
-  subSelect.addEventListener('change', updateTaskBanner);
-  if (taskInput) taskInput.addEventListener('input', updateTaskBanner);
-
-  updateTaskBanner();
-}
-
-function updateTaskBanner() {
-  const subSelect = document.getElementById('sel-subject');
-  const taskInput = document.getElementById('ipt-chapter-task');
-  const taskLabel = document.getElementById('task-active-label');
-  if (!subSelect || !taskLabel) return;
-  const sub = subSelect.value;
-  const task = (taskInput && taskInput.value) ? taskInput.value : 'Focus Session';
-  taskLabel.textContent = `${sub} • ${task}`;
-}
-
-// --- TIMER CONTROLS ---
-function initTimer() {
+// --- POMOFOX TIMER CONTROLLER ---
+function initPomoFoxControls() {
   const btnStart = document.getElementById('btn-timer-start');
   const btnPause = document.getElementById('btn-timer-pause');
-  const btnReset = document.getElementById('btn-timer-reset');
   const btnSkip = document.getElementById('btn-timer-skip');
+  const btnReset = document.getElementById('btn-timer-reset');
+  const btnSound = document.getElementById('btn-sound-toggle');
+
+  // Mode Pills
+  const modeButtons = document.querySelectorAll('.mode-btn');
+  modeButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      modeButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      setTimerMode(btn.dataset.mode);
+    });
+  });
 
   if (btnStart) btnStart.addEventListener('click', startTimer);
   if (btnPause) btnPause.addEventListener('click', pauseTimer);
-  if (btnReset) btnReset.addEventListener('click', resetTimer);
   if (btnSkip) btnSkip.addEventListener('click', skipTimer);
+  if (btnReset) btnReset.addEventListener('click', resetTimer);
+  if (btnSound) {
+    btnSound.addEventListener('click', () => {
+      state.settings.soundEnabled = !state.settings.soundEnabled;
+      btnSound.textContent = state.settings.soundEnabled ? '🔔' : '🔕';
+      saveLocalState();
+    });
+  }
+
+  // Melog interactive click
+  const melogStage = document.getElementById('running-cat-stage');
+  if (melogStage) {
+    melogStage.addEventListener('click', () => {
+      setMelogSpeech("Purrr! Melog is energized and ready to study! 🐾");
+      playChime(587.33, 0.3);
+    });
+  }
 }
 
 function startTimer() {
   if (state.timer.isRunning) return;
   state.timer.isRunning = true;
   document.getElementById('btn-timer-start').style.display = 'none';
-  document.getElementById('btn-timer-pause').style.display = 'inline-block';
+  document.getElementById('btn-timer-pause').style.display = 'inline-flex';
   
-  const sprite = document.getElementById('melog-walker');
-  if (sprite) sprite.classList.add('timer-running');
+  const spriteStage = document.getElementById('running-cat-stage');
+  if (spriteStage) spriteStage.classList.add('timer-running');
 
-  setMelogSpeech("Galloping on your study wheel! Let's focus! 🐾");
+  setMelogSpeech("Melog is running! Let's conquer this block! 🐾");
 
   state.timer.intervalId = setInterval(() => {
     if (state.timer.timeLeft > 0) {
@@ -374,22 +189,22 @@ function pauseTimer() {
   if (!state.timer.isRunning) return;
   state.timer.isRunning = false;
   clearInterval(state.timer.intervalId);
-  document.getElementById('btn-timer-start').style.display = 'inline-block';
+  document.getElementById('btn-timer-start').style.display = 'inline-flex';
   document.getElementById('btn-timer-pause').style.display = 'none';
 
-  const sprite = document.getElementById('melog-walker');
-  if (sprite) sprite.classList.remove('timer-running');
-  setMelogSpeech("Paused! Melog is taking a rest on the track. 🐾");
+  const spriteStage = document.getElementById('running-cat-stage');
+  if (spriteStage) spriteStage.classList.remove('timer-running');
+  setMelogSpeech("Paused! Melog is taking a rest with you. 🐾");
 }
 
 function resetTimer() {
   clearInterval(state.timer.intervalId);
   state.timer.isRunning = false;
-  document.getElementById('btn-timer-start').style.display = 'inline-block';
+  document.getElementById('btn-timer-start').style.display = 'inline-flex';
   document.getElementById('btn-timer-pause').style.display = 'none';
 
-  const sprite = document.getElementById('melog-walker');
-  if (sprite) sprite.classList.remove('timer-running');
+  const spriteStage = document.getElementById('running-cat-stage');
+  if (spriteStage) spriteStage.classList.remove('timer-running');
 
   if (state.timer.mode === 'study') {
     state.timer.totalDuration = state.settings.studyMin * 60;
@@ -399,7 +214,6 @@ function resetTimer() {
     state.timer.totalDuration = state.settings.longMin * 60;
   }
   state.timer.timeLeft = state.timer.totalDuration;
-
   setMelogSpeech("Timer reset. Ready whenever you are!");
   renderTimer();
 }
@@ -407,11 +221,11 @@ function resetTimer() {
 function skipTimer() {
   clearInterval(state.timer.intervalId);
   state.timer.isRunning = false;
-  document.getElementById('btn-timer-start').style.display = 'inline-block';
+  document.getElementById('btn-timer-start').style.display = 'inline-flex';
   document.getElementById('btn-timer-pause').style.display = 'none';
 
-  const sprite = document.getElementById('melog-walker');
-  if (sprite) sprite.classList.remove('timer-running');
+  const spriteStage = document.getElementById('running-cat-stage');
+  if (spriteStage) spriteStage.classList.remove('timer-running');
 
   if (state.timer.mode === 'study') setTimerMode('shortBreak');
   else setTimerMode('study');
@@ -420,11 +234,11 @@ function skipTimer() {
 function completeTimerBlock() {
   clearInterval(state.timer.intervalId);
   state.timer.isRunning = false;
-  document.getElementById('btn-timer-start').style.display = 'inline-block';
+  document.getElementById('btn-timer-start').style.display = 'inline-flex';
   document.getElementById('btn-timer-pause').style.display = 'none';
 
-  const sprite = document.getElementById('melog-walker');
-  if (sprite) sprite.classList.remove('timer-running');
+  const spriteStage = document.getElementById('running-cat-stage');
+  if (spriteStage) spriteStage.classList.remove('timer-running');
 
   if (state.timer.mode === 'study') {
     state.game.todayPomodoros++;
@@ -457,7 +271,7 @@ function completeTimerBlock() {
 
     saveLocalState();
     playCompletionFanfare();
-    setMelogSpeech("🎉 Loop finished! Great job studying! +10 🐾 Paw Points earned!");
+    setMelogSpeech("🎉 Completed! Great job! +10 🐾 Paw Points earned!");
 
     if (state.game.todayPomodoros % state.settings.longInterval === 0) {
       setTimeout(() => setTimerMode('longBreak'), 2500);
@@ -466,7 +280,7 @@ function completeTimerBlock() {
     }
   } else {
     playChime(880, 0.4);
-    setMelogSpeech("Break over! Ready to walk the next study circle? 🩺");
+    setMelogSpeech("Break over! Ready for another study round? 🩺");
     setTimerMode('study');
   }
 
@@ -475,32 +289,21 @@ function completeTimerBlock() {
 
 function setTimerMode(mode) {
   state.timer.mode = mode;
-  const tag = document.getElementById('timer-mode-tag');
+  
+  // Update Pills
+  document.querySelectorAll('.mode-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.mode === mode);
+  });
 
   if (mode === 'study') {
     state.timer.totalDuration = state.settings.studyMin * 60;
-    if (tag) {
-      tag.textContent = 'STUDY BLOCK';
-      tag.style.background = 'rgba(232, 93, 117, 0.18)';
-      tag.style.color = 'var(--blush-glow)';
-    }
-    setMelogSpeech("Ready to walk another high-yield study block!");
+    setMelogSpeech("Ready to study with Melog! 🐾");
   } else if (mode === 'shortBreak') {
     state.timer.totalDuration = state.settings.shortMin * 60;
-    if (tag) {
-      tag.textContent = 'SHORT BREAK';
-      tag.style.background = 'rgba(139, 212, 161, 0.2)';
-      tag.style.color = 'var(--sage-glow)';
-    }
-    setMelogSpeech("Break time! Hydrate and relax with Melog. ☕");
+    setMelogSpeech("Short break! Have a sip of water. ☕");
   } else {
     state.timer.totalDuration = state.settings.longMin * 60;
-    if (tag) {
-      tag.textContent = 'LONG RECOVERY BREAK';
-      tag.style.background = 'rgba(180, 140, 240, 0.2)';
-      tag.style.color = '#D2B0FA';
-    }
-    setMelogSpeech("Great rounds! Enjoy your well-earned recovery rest. 🌷");
+    setMelogSpeech("Long recovery break! Great studying! 🌷");
   }
 
   state.timer.timeLeft = state.timer.totalDuration;
@@ -512,7 +315,6 @@ function setMelogSpeech(msg) {
   if (el) el.textContent = msg;
 }
 
-// --- RENDER CLOCK & WHEEL PROGRESS ---
 function renderTimer() {
   const m = Math.floor(state.timer.timeLeft / 60);
   const s = state.timer.timeLeft % 60;
@@ -520,22 +322,58 @@ function renderTimer() {
   
   const readout = document.getElementById('timer-readout');
   if (readout) readout.textContent = str;
-  document.title = `${str} 🩺 Purrmodoro`;
+  document.title = `${str} 🐾 Purrmodoro`;
 
   const elapsed = state.timer.totalDuration - state.timer.timeLeft;
   const progressFraction = state.timer.totalDuration > 0 ? (elapsed / state.timer.totalDuration) : 0;
 
-  const bar = document.getElementById('wheel-progress-bar');
-  if (bar) {
-    const offset = CIRCLE_CIRCUMFERENCE * (1 - progressFraction);
-    bar.style.strokeDashoffset = offset;
+  const ringFill = document.getElementById('ring-fill');
+  if (ringFill) {
+    const offset = RING_CIRCUMFERENCE * (1 - progressFraction);
+    ringFill.style.strokeDashoffset = offset;
   }
+}
 
-  const carriage = document.getElementById('orbit-carriage');
-  if (carriage) {
-    const angleDeg = progressFraction * 360;
-    carriage.style.transform = `rotate(${angleDeg}deg)`;
-  }
+// --- CURRICULUM SELECTORS ---
+function initCurriculumSelectors() {
+  const subSelect = document.getElementById('sel-subject');
+  if (!subSelect) return;
+
+  subSelect.innerHTML = '';
+  MEDICAL_SUBJECTS.forEach(sub => {
+    const opt = document.createElement('option');
+    opt.value = sub;
+    opt.textContent = sub;
+    subSelect.appendChild(opt);
+  });
+}
+
+// --- MODALS & TOOLS DOCK ---
+function initModals() {
+  const dockBtns = document.querySelectorAll('.dock-btn');
+  dockBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const modal = document.getElementById(btn.dataset.modal);
+      if (modal) {
+        modal.classList.add('active');
+        if (btn.dataset.modal === 'modal-world') renderWorld();
+        if (btn.dataset.modal === 'modal-stats') renderStats();
+      }
+    });
+  });
+
+  const closeBtns = document.querySelectorAll('.modal-close');
+  closeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.fox-modal').forEach(m => m.classList.remove('active'));
+    });
+  });
+
+  window.addEventListener('click', (e) => {
+    if (e.target.classList.contains('fox-modal')) {
+      e.target.classList.remove('active');
+    }
+  });
 }
 
 // --- PLANNER ---
@@ -565,21 +403,19 @@ function initPlanner() {
 
       const diffDays = Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
       const studyDays = Math.max(diffDays - buffer, 1);
-
       const dailyUnits = Math.ceil(amount / studyDays);
       const dailyPomos = Math.ceil(dailyUnits / pace);
 
       const rxContent = document.getElementById('rx-content');
       if (rxContent) {
         rxContent.innerHTML = `
-          <p>📚 <strong>Remaining Material:</strong> ${amount} ${unit}</p>
-          <p>🗓️ <strong>Study Timeline:</strong> ${studyDays} active study days (${buffer} review/buffer days)</p>
-          <p>🎀 <strong>Prescribed Daily Quota:</strong> Approx. <strong>${dailyUnits} ${unit}/day</strong></p>
-          <p>🐱 <strong>Prescribed Focus Blocks:</strong> <strong>${dailyPomos} Pomodoros/day</strong> (at ${pace} ${unit}/session)</p>
+          <p>📚 <strong>Remaining:</strong> ${amount} ${unit}</p>
+          <p>🗓️ <strong>Study Days:</strong> ${studyDays} days (${buffer} buffer days)</p>
+          <p>🎀 <strong>Daily Target:</strong> <strong>${dailyUnits} ${unit}/day</strong></p>
+          <p>🐱 <strong>Focus Blocks:</strong> <strong>${dailyPomos} Pomodoros/day</strong></p>
         `;
       }
-
-      document.getElementById('rx-finish-date').textContent = `Target: ${studyDays} days`;
+      document.getElementById('rx-finish-date').textContent = `${studyDays} study days left`;
       document.getElementById('rx-card').style.display = 'block';
       if (btnApply) btnApply.dataset.targetPomos = dailyPomos;
     });
@@ -590,11 +426,10 @@ function initPlanner() {
       const target = parseInt(btnApply.dataset.targetPomos, 10);
       if (target) {
         state.settings.dailyTarget = target;
-        const cfgInterval = document.getElementById('cfg-interval');
-        if (cfgInterval) cfgInterval.value = target;
         saveLocalState();
         renderProgressBar();
         alert(`Daily goal updated to ${target} Pomodoros! Melog is ready. 🌸`);
+        document.getElementById('modal-planner').classList.remove('active');
       }
     });
   }
@@ -614,9 +449,9 @@ function renderWorld() {
     const cell = document.createElement('div');
     cell.className = `wing-card ${unlocked ? 'unlocked' : 'locked'}`;
     cell.innerHTML = `
-      <div class="wing-icon">${w.icon}</div>
-      <div class="wing-title">${w.name}</div>
-      <div class="wing-req">${unlocked ? '✨ Unlocked' : `Req. Level ${w.reqLevel}`}</div>
+      <div style="font-size:1.8rem;">${w.icon}</div>
+      <div style="font-weight:700; font-size:0.85rem;">${w.name}</div>
+      <div style="font-size:0.75rem; color:#8F725D;">${unlocked ? '✨ Unlocked' : `Req. Lvl ${w.reqLevel}`}</div>
     `;
     mapGrid.appendChild(cell);
   });
@@ -628,23 +463,23 @@ function renderWorld() {
     const cell = document.createElement('div');
     cell.className = `catalog-item-card ${item.purchased ? 'unlocked' : ''}`;
     cell.innerHTML = `
-      <div class="catalog-icon">${item.icon}</div>
-      <div class="catalog-title">${item.name}</div>
-      <div class="catalog-price">${item.purchased ? 'Owned 🎀' : `${item.cost} 🐾`}</div>
-      ${!item.purchased ? `<button type="button" class="btn btn-primary btn-buy" style="font-size:0.75rem; padding:0.3rem 0.8rem; margin-top:0.3rem;">Adopt</button>` : ''}
+      <div style="font-size:1.8rem;">${item.icon}</div>
+      <div style="font-weight:700; font-size:0.85rem;">${item.name}</div>
+      <div style="font-size:0.78rem; font-weight:800; color:#F28C63;">${item.purchased ? 'Owned 🎀' : `${item.cost} 🐾`}</div>
+      ${!item.purchased ? `<button type="button" class="fox-btn btn-main-start" style="font-size:0.75rem; padding:0.3rem 0.8rem; margin-top:0.4rem;">Adopt</button>` : ''}
     `;
 
     if (!item.purchased) {
-      cell.querySelector('.btn-buy').addEventListener('click', () => {
+      cell.querySelector('button').addEventListener('click', () => {
         if (state.game.pawPoints >= item.cost) {
           state.game.pawPoints -= item.cost;
           item.purchased = true;
           saveLocalState();
           renderWorld();
           renderTopStats();
-          setMelogSpeech(`Unlocked ${item.name}! Melog loves it! ✨`);
+          setMelogSpeech(`Adopted ${item.name}! Melog loves it! ✨`);
         } else {
-          alert(`Not enough Paw Points yet! Need ${item.cost - state.game.pawPoints} more 🐾`);
+          alert(`Need ${item.cost - state.game.pawPoints} more 🐾 Paw Points!`);
         }
       });
     }
@@ -654,12 +489,12 @@ function renderWorld() {
 
 function renderStats() {
   const streakHeader = document.getElementById('txt-stats-streak');
-  if (streakHeader) streakHeader.textContent = `${state.game.streak} Day Study Streak`;
+  if (streakHeader) streakHeader.textContent = `${state.game.streak} Day Streak`;
 
   const row = document.getElementById('weekly-tracker-row');
   if (row) {
     row.innerHTML = '';
-    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
     const today = new Date();
 
     for (let i = 6; i >= 0; i--) {
@@ -669,9 +504,12 @@ function renderStats() {
       const done = (state.game.activeDays[dStr] || 0) > 0;
 
       const cell = document.createElement('div');
-      cell.className = 'week-cell';
+      cell.style.display = 'flex';
+      cell.style.flexDirection = 'column';
+      cell.style.alignItems = 'center';
+      cell.style.gap = '0.3rem';
       cell.innerHTML = `
-        <span>${days[d.getDay()]}</span>
+        <span style="font-size:0.72rem; font-weight:800;">${days[d.getDay()]}</span>
         <div class="week-circle ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
       `;
       row.appendChild(cell);
@@ -682,14 +520,14 @@ function renderStats() {
   if (list) {
     list.innerHTML = '';
     if (state.game.sessionLogs.length === 0) {
-      list.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-secondary); font-size:0.85rem;">No study sessions logged today yet.</div>`;
+      list.innerHTML = `<div style="text-align:center; padding:1rem; color:#8F725D; font-size:0.85rem;">No study sessions logged today yet.</div>`;
     } else {
       state.game.sessionLogs.slice(0, 10).forEach(log => {
         const item = document.createElement('div');
         item.className = 'log-row';
         item.innerHTML = `
           <div><strong>${escapeHTML(log.subject)}</strong> &mdash; ${escapeHTML(log.task)}</div>
-          <div style="color:var(--text-secondary);">${log.time} (${log.minutes}m)</div>
+          <div style="color:#8F725D;">${log.time} (${log.minutes}m)</div>
         `;
         list.appendChild(item);
       });
@@ -705,14 +543,12 @@ function renderAll() {
 
 function renderTopStats() {
   const pawEl = document.getElementById('val-paw-points');
-  const xpEl = document.getElementById('val-xp-count');
   const streakEl = document.getElementById('val-streak-count');
-  const lvlEl = document.getElementById('user-level-badge');
+  const lvlEl = document.getElementById('level-badge');
 
   if (pawEl) pawEl.textContent = state.game.pawPoints;
-  if (xpEl) xpEl.textContent = `${state.game.xp} XP`;
-  if (streakEl) streakEl.textContent = `${state.game.streak} Day${state.game.streak > 1 ? 's' : ''}`;
-  if (lvlEl) lvlEl.textContent = `Lvl ${state.game.level} • Medical Scholar`;
+  if (streakEl) streakEl.textContent = state.game.streak;
+  if (lvlEl) lvlEl.textContent = `⭐ Lvl ${state.game.level}`;
 }
 
 function renderProgressBar() {
@@ -722,8 +558,49 @@ function renderProgressBar() {
 
   const txt = document.getElementById('txt-daily-progress');
   const bar = document.getElementById('bar-daily-progress');
-  if (txt) txt.textContent = `${count} / ${target} Pomodoros (${pct}%)`;
+  if (txt) txt.textContent = `${count} / ${target} Pomodoros`;
   if (bar) bar.style.width = `${pct}%`;
+}
+
+// --- AMBIENT CANVAS (Subtle Petals) ---
+function initAmbientCanvas() {
+  const canvas = document.getElementById('ambient-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let width, height;
+
+  const resize = () => {
+    width = canvas.width = window.innerWidth;
+    height = canvas.height = window.innerHeight;
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  let petals = [];
+  for (let i = 0; i < 20; i++) {
+    petals.push({
+      x: Math.random() * window.innerWidth,
+      y: Math.random() * window.innerHeight,
+      size: Math.random() * 4 + 2,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: Math.random() * 0.4 + 0.2
+    });
+  }
+
+  function loop() {
+    ctx.clearRect(0, 0, width, height);
+    petals.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.y > height) { p.y = -10; p.x = Math.random() * width; }
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(255, 169, 135, 0.25)';
+      ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+      ctx.fill();
+    });
+    requestAnimationFrame(loop);
+  }
+  loop();
 }
 
 function playChime(freq, dur) {
@@ -751,17 +628,16 @@ function playCompletionFanfare() {
   setTimeout(() => playChime(1046.50, 0.8), 300);
 }
 
+// --- SETTINGS & SYNC ---
 function initSettingsAndSync() {
   const form = document.getElementById('settings-form');
   const btnCloud = document.getElementById('btn-save-cloud');
   const btnSyncNow = document.getElementById('btn-force-sync');
-  const btnClear = document.getElementById('btn-clear-local');
 
   const setStudy = document.getElementById('cfg-study-min');
   const setShort = document.getElementById('cfg-short-min');
   const setLong = document.getElementById('cfg-long-min');
   const setIntervalEl = document.getElementById('cfg-interval');
-  const setSound = document.getElementById('cfg-sound');
   const setSupaUrl = document.getElementById('cfg-supa-url');
   const setSupaKey = document.getElementById('cfg-supa-key');
 
@@ -769,17 +645,8 @@ function initSettingsAndSync() {
   if (setShort) setShort.value = state.settings.shortMin;
   if (setLong) setLong.value = state.settings.longMin;
   if (setIntervalEl) setIntervalEl.value = state.settings.longInterval;
-  if (setSound) setSound.value = String(state.settings.soundEnabled);
   if (setSupaUrl) setSupaUrl.value = state.settings.supaUrl || '';
   if (setSupaKey) setSupaKey.value = state.settings.supaKey || '';
-
-  if (state.settings.supaUrl) {
-    const badge = document.getElementById('sync-status-badge');
-    if (badge) {
-      badge.textContent = 'Cloud Active';
-      badge.classList.add('connected');
-    }
-  }
 
   if (form) {
     form.addEventListener('submit', (e) => {
@@ -788,16 +655,15 @@ function initSettingsAndSync() {
       state.settings.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10);
       state.settings.longMin = parseInt(document.getElementById('cfg-long-min').value, 10);
       state.settings.longInterval = parseInt(document.getElementById('cfg-interval').value, 10);
-      state.settings.soundEnabled = document.getElementById('cfg-sound').value === 'true';
 
       if (!state.timer.isRunning && state.timer.mode === 'study') {
         state.timer.totalDuration = state.settings.studyMin * 60;
         state.timer.timeLeft = state.timer.totalDuration;
       }
-
       saveLocalState();
       renderAll();
       alert('Preferences saved! 🩺');
+      document.getElementById('modal-settings').classList.remove('active');
     });
   }
 
@@ -811,33 +677,15 @@ function initSettingsAndSync() {
   }
 
   if (btnSyncNow) btnSyncNow.addEventListener('click', syncWithSupabase);
-
-  if (btnClear) {
-    btnClear.addEventListener('click', () => {
-      if (confirm('Reset local study data and streak?')) {
-        localStorage.removeItem('purrmodoro_save');
-        location.reload();
-      }
-    });
-  }
 }
 
 async function syncWithSupabase() {
   const { supaUrl, supaKey } = state.settings;
-  if (!supaUrl || !supaKey) {
-    alert('Please enter your Supabase Project URL and Anon Key first.');
-    return;
-  }
-
-  const badge = document.getElementById('sync-status-badge');
-  if (badge) badge.textContent = 'Syncing...';
+  if (!supaUrl || !supaKey) return alert('Enter Supabase URL & Key first!');
 
   try {
     const res = await fetch(`${supaUrl}/rest/v1/purrmodoro_sync?id=eq.melog_user`, {
-      headers: {
-        'apikey': supaKey,
-        'Authorization': `Bearer ${supaKey}`
-      }
+      headers: { 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}` }
     });
 
     if (res.ok) {
@@ -864,26 +712,15 @@ async function syncWithSupabase() {
         })
       });
 
-      if (badge) {
-        badge.textContent = 'Cloud Active';
-        badge.classList.add('connected');
-      }
       saveLocalState();
       renderAll();
-    } else {
-      if (badge) badge.textContent = 'Auth Error';
+      alert('Synced with cloud! ☁️');
     }
   } catch (err) {
-    if (badge) badge.textContent = 'Offline';
+    alert('Cloud sync failed. Working offline.');
   }
 }
 
 function escapeHTML(str) {
   return str.replace(/[&<>'"]/g, t => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[t] || t));
-}
-
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('sw.js').catch(() => {});
-  });
 }
