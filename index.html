@@ -3,48 +3,41 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#FDF3E3" />
+  <meta name="theme-color" content="#A6CFE2" />
   <title>Purrmodoro 🐾 Study with Melog</title>
   
-  <!-- Pixel & UI Fonts -->
+  <!-- Pixel Digital Font -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --pf-bg: #FDF3E3;
-      --pf-border: #3A2416;
-      --pf-card-bg: #FFFFFF;
-      --pf-orange: #FFA785;
-      --pf-orange-dark: #F28963;
-      --pf-mint: #94D8A2;
-      --pf-cream: #FFF9F0;
-      --pf-text: #3A2416;
-      --pf-muted: #8E7361;
-      --pf-ring-bg: #F4E2D2;
+      --card-glass: rgba(255, 255, 255, 0.68);
+      --card-glass-border: rgba(255, 255, 255, 0.85);
+      --btn-orange: #CF6E3A;
+      --btn-orange-shadow: #A34E22;
+      --btn-dark: #4A4A4A;
+      --btn-dark-shadow: #2C2C2C;
+      --text-digits: #313131;
+      --ring-white: #FFFFFF;
+      --ring-shadow: rgba(0, 0, 0, 0.12);
       
-      --shadow-block: 4px 4px 0px var(--pf-border);
-      --shadow-block-lg: 6px 6px 0px var(--pf-border);
-      --shadow-press: 1px 1px 0px var(--pf-border);
-      
-      --font-pixel: 'Silkscreen', 'VT323', monospace;
-      --font-digits: 'VT323', monospace;
+      --font-digital: 'VT323', monospace;
+      --font-pixel: 'Silkscreen', monospace;
       --font-ui: 'Plus Jakarta Sans', system-ui, sans-serif;
     }
 
-    /* Dark Mode Theme */
     body.theme-dark {
-      --pf-bg: #1A130E;
-      --pf-border: #0A0604;
-      --pf-card-bg: #2B1E17;
-      --pf-orange: #FF8F66;
-      --pf-orange-dark: #E67245;
-      --pf-mint: #5EAA78;
-      --pf-cream: #38271E;
-      --pf-text: #FDF5ED;
-      --pf-muted: #BBA08E;
-      --pf-ring-bg: #3F2B20;
+      --card-glass: rgba(26, 22, 34, 0.72);
+      --card-glass-border: rgba(255, 255, 255, 0.15);
+      --btn-orange: #D96936;
+      --btn-orange-shadow: #8A3614;
+      --btn-dark: #2F2A38;
+      --btn-dark-shadow: #18151D;
+      --text-digits: #FFFFFF;
+      --ring-white: #2C2436;
+      --ring-shadow: rgba(0, 0, 0, 0.45);
     }
 
     * {
@@ -57,171 +50,121 @@
 
     body {
       font-family: var(--font-pixel);
-      background-color: var(--pf-bg);
-      color: var(--pf-text);
+      color: #313131;
       min-height: 100vh;
       display: flex;
+      align-items: center;
       justify-content: center;
       position: relative;
-      overflow-x: hidden;
-      transition: background-color 0.2s ease, color 0.2s ease;
+      overflow: hidden;
     }
 
-    /* Ambient Falling Pixel Canvas */
-    #ambient-canvas {
+    /* Procedural Pixel Landscape Background */
+    #pixel-bg-canvas {
       position: fixed;
       top: 0;
       left: 0;
       width: 100vw;
       height: 100vh;
-      pointer-events: none;
       z-index: 0;
     }
 
-    .pomofox-container {
-      width: 100%;
-      max-width: 480px;
-      display: flex;
-      flex-direction: column;
-      gap: 1.15rem;
-      padding: 1.25rem 1rem 6.5rem 1rem;
-      z-index: 1;
-    }
-
-    /* Top Pixel Header */
-    .pf-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .pf-logo {
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-      background: var(--pf-card-bg);
-      border: 3px solid var(--pf-border);
-      box-shadow: var(--shadow-block);
-      padding: 0.4rem 0.85rem;
-      border-radius: 12px;
-      font-size: 1.1rem;
-      font-weight: 700;
-    }
-
-    .pf-stat-badges {
-      display: flex;
-      gap: 0.4rem;
-    }
-
-    .pf-badge {
-      background: var(--pf-card-bg);
-      border: 3px solid var(--pf-border);
-      box-shadow: 2px 2px 0px var(--pf-border);
-      padding: 0.35rem 0.65rem;
-      border-radius: 10px;
-      font-size: 0.82rem;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 0.25rem;
-      cursor: pointer;
-    }
-
-    /* Main PomoFox Block Card */
-    .pf-main-card {
-      background: var(--pf-card-bg);
-      border: 3.5px solid var(--pf-border);
-      border-radius: 24px;
-      box-shadow: var(--shadow-block-lg);
-      padding: 1.5rem 1.25rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.2rem;
-    }
-
-    .tab-view {
-      display: none;
-      width: 100%;
-    }
-
-    .tab-view.active {
-      display: flex;
-      flex-direction: column;
-      gap: 1.2rem;
-    }
-
-    /* Top Mode Selector Buttons */
-    .pf-mode-bar {
-      display: flex;
-      gap: 0.4rem;
-      background: var(--pf-cream);
-      border: 3px solid var(--pf-border);
-      padding: 0.3rem;
-      border-radius: 14px;
-      width: 100%;
-    }
-
-    .pf-mode-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      font-family: var(--font-pixel);
-      font-weight: 700;
-      font-size: 0.76rem;
-      color: var(--pf-muted);
-      padding: 0.55rem 0.3rem;
-      border-radius: 10px;
-      cursor: pointer;
-      transition: all 0.1s ease;
-      text-transform: uppercase;
-    }
-
-    .pf-mode-btn.active {
-      background: var(--pf-orange);
-      color: var(--pf-border);
-      border: 2px solid var(--pf-border);
-      box-shadow: 2px 2px 0px var(--pf-border);
-    }
-
-    /* Medical Selectors */
-    .pf-input-group {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .pf-select, .pf-input {
-      width: 100%;
-      background: var(--pf-cream);
-      border: 3px solid var(--pf-border);
-      border-radius: 12px;
-      padding: 0.65rem 0.85rem;
-      font-family: var(--font-ui);
-      font-size: 0.88rem;
-      font-weight: 700;
-      color: var(--pf-text);
-      outline: none;
-      box-shadow: 2px 2px 0px var(--pf-border);
-    }
-
-    .pf-select:focus, .pf-input:focus {
-      border-color: var(--pf-orange-dark);
-    }
-
-    /* Central Wheel Timer */
-    .pf-wheel-container {
+    /* Main Center Floating Glass Card */
+    .pomofox-glass-card {
       position: relative;
-      width: 270px;
-      height: 270px;
+      z-index: 10;
+      width: 100%;
+      max-width: 380px;
+      background: var(--card-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 2px solid var(--card-glass-border);
+      border-radius: 36px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.16);
+      padding: 1.5rem 1.25rem 1.25rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+    }
+
+    /* Top Action Buttons (Exact Round-Corner 3D Buttons) */
+    .top-controls-bar {
+      display: flex;
+      gap: 0.65rem;
+      align-items: center;
+    }
+
+    .pf-btn-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      border: none;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0.25rem auto;
+      font-size: 1.2rem;
+      color: #FFFFFF;
+      transition: transform 0.1s ease, box-shadow 0.1s ease;
     }
 
-    .pf-wheel-svg {
+    .pf-btn-icon:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0px rgba(0,0,0,0.3) !important;
+    }
+
+    .btn-orange {
+      background: var(--btn-orange);
+      box-shadow: 0 4px 0px var(--btn-orange-shadow);
+    }
+
+    .btn-dark {
+      background: var(--btn-dark);
+      box-shadow: 0 4px 0px var(--btn-dark-shadow);
+    }
+
+    /* Clean Medical Curriculum Dropdown */
+    .medical-select-wrap {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+    }
+
+    .med-select {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.85);
+      border: 2px solid rgba(0, 0, 0, 0.08);
+      border-radius: 14px;
+      padding: 0.55rem 0.75rem;
+      font-family: var(--font-ui);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #313131;
+      outline: none;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    }
+
+    body.theme-dark .med-select {
+      background: rgba(20, 16, 26, 0.85);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Central Circle Wheel Stage */
+    .timer-circle-stage {
+      position: relative;
+      width: 260px;
+      height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0.25rem 0;
+    }
+
+    /* SVG White Circular Track */
+    .circle-svg {
       position: absolute;
       top: 0;
       left: 0;
@@ -230,610 +173,388 @@
       transform: rotate(-90deg);
     }
 
-    .pf-ring-bg {
+    .circle-bg-ring {
       fill: none;
-      stroke: var(--pf-ring-bg);
-      stroke-width: 18;
+      stroke: var(--ring-white);
+      stroke-width: 22;
+      filter: drop-shadow(0px 4px 10px var(--ring-shadow));
     }
 
-    .pf-ring-fill {
+    .circle-progress-ring {
       fill: none;
-      stroke: var(--pf-orange);
-      stroke-width: 18;
-      stroke-linecap: square;
-      stroke-dasharray: 785.39;
+      stroke: #EAA064;
+      stroke-width: 6;
+      stroke-linecap: round;
+      stroke-dasharray: 753.98; /* 2 * PI * 120 */
       stroke-dashoffset: 0;
       transition: stroke-dashoffset 0.5s ease;
     }
 
-    .pf-wheel-inner {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+    /* Digits in the Center */
+    .timer-digits-text {
+      font-family: var(--font-digital);
+      font-size: 6.2rem;
+      font-weight: 700;
+      color: var(--text-digits);
+      line-height: 1;
+      letter-spacing: -2px;
       z-index: 2;
+      user-select: none;
     }
 
-    /* Running Melog Stage */
-    .pf-melog-stage {
-      width: 115px;
-      height: 90px;
+    /* Orbit Arm Rotating Melog Around the Circle Track */
+    .orbit-arm {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 5;
+      transition: transform 0.5s ease;
+    }
+
+    /* 16-Bit Pixel Melog Sprite Positioned Exactly on Top Edge */
+    .melog-sprite-box {
+      position: absolute;
+      top: -14px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 36px;
+      height: 36px;
+      pointer-events: auto;
       cursor: pointer;
     }
 
-    .pf-melog-svg {
+    .pixel-melog-svg {
       width: 100%;
       height: 100%;
       overflow: visible;
     }
 
-    /* Exact PomoFox 4-Leg Running Gait Cycle */
-    .timer-running .paw-fr { animation: runPomoFoxA 0.28s infinite alternate ease-in-out; }
-    .timer-running .paw-bl { animation: runPomoFoxA 0.28s infinite alternate ease-in-out 0.05s; }
-    .timer-running .paw-fl { animation: runPomoFoxB 0.28s infinite alternate ease-in-out 0.14s; }
-    .timer-running .paw-br { animation: runPomoFoxB 0.28s infinite alternate ease-in-out 0.19s; }
-    .timer-running .melog-rig { animation: runPomoFoxBob 0.28s infinite alternate ease-in-out; }
-    .timer-running .melog-tail { animation: runPomoFoxTail 0.35s infinite alternate ease-in-out; }
+    /* Pixel Art 4-Leg Running Gait */
+    .timer-running .leg-f-r { animation: legRunA 0.25s infinite alternate ease-in-out; }
+    .timer-running .leg-b-l { animation: legRunA 0.25s infinite alternate ease-in-out 0.04s; }
+    .timer-running .leg-f-l { animation: legRunB 0.25s infinite alternate ease-in-out 0.12s; }
+    .timer-running .leg-b-r { animation: legRunB 0.25s infinite alternate ease-in-out 0.16s; }
+    .timer-running .melog-body { animation: bodyGallop 0.25s infinite alternate ease-in-out; }
+    .timer-running .melog-tail { animation: tailBob 0.3s infinite alternate ease-in-out; }
 
-    @keyframes runPomoFoxA {
-      0% { transform: translate(0, 0) rotate(0deg); }
-      100% { transform: translate(8px, -7px) rotate(24deg); }
+    @keyframes legRunA {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(3px, -3px); }
     }
-    @keyframes runPomoFoxB {
-      0% { transform: translate(8px, -7px) rotate(24deg); }
-      100% { transform: translate(-5px, 5px) rotate(-16deg); }
+    @keyframes legRunB {
+      0% { transform: translate(3px, -3px); }
+      100% { transform: translate(-2px, 2px); }
     }
-    @keyframes runPomoFoxBob {
+    @keyframes bodyGallop {
       0% { transform: translateY(0); }
-      100% { transform: translateY(-5px); }
+      100% { transform: translateY(-2px); }
     }
-    @keyframes runPomoFoxTail {
+    @keyframes tailBob {
       0% { transform: rotate(0deg); }
-      100% { transform: rotate(18deg); }
+      100% { transform: rotate(12deg); }
     }
 
-    .pf-timer-readout {
-      font-family: var(--font-digits);
-      font-size: 4.5rem;
-      font-weight: 700;
-      line-height: 0.9;
-      letter-spacing: -1px;
-      margin-top: 0.2rem;
-    }
-
-    .pf-speech-text {
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--pf-muted);
-      margin-top: 0.2rem;
-      max-width: 180px;
-    }
-
-    /* Pixel Action Controls */
-    .pf-action-row {
+    /* Bottom Pill Cycle Counter */
+    .bottom-cycle-pill {
+      background: rgba(255, 255, 255, 0.88);
+      border: 2px solid rgba(0, 0, 0, 0.06);
+      border-radius: var(--radius-pill, 999px);
+      padding: 0.45rem 1.25rem;
       display: flex;
+      align-items: center;
       gap: 0.65rem;
-      width: 100%;
-      justify-content: center;
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #4A4A4A;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    }
+
+    body.theme-dark .bottom-cycle-pill {
+      background: rgba(20, 16, 26, 0.88);
+      color: #E0E0E0;
+      border-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .tomatoes-row {
+      display: flex;
+      gap: 0.3rem;
       align-items: center;
     }
 
-    .pf-btn {
-      font-family: var(--font-pixel);
-      font-weight: 700;
-      border: 3px solid var(--pf-border);
-      border-radius: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.1s ease;
-      text-transform: uppercase;
-    }
-
-    .pf-btn:active {
-      transform: translate(2px, 2px);
-      box-shadow: var(--shadow-press) !important;
-    }
-
-    .btn-start-large {
-      background: var(--pf-orange);
-      color: var(--pf-border);
-      font-size: 1.25rem;
-      padding: 0.75rem 2.2rem;
-      box-shadow: var(--shadow-block);
-      letter-spacing: 1px;
-    }
-
-    .btn-pause-large {
-      background: var(--pf-mint);
-      color: var(--pf-border);
-      font-size: 1.25rem;
-      padding: 0.75rem 2.2rem;
-      box-shadow: var(--shadow-block);
-    }
-
-    .btn-tool-square {
-      background: var(--pf-cream);
-      color: var(--pf-text);
-      font-size: 1.15rem;
-      width: 48px;
-      height: 48px;
-      box-shadow: var(--shadow-block);
-    }
-
-    .full-btn { width: 100%; }
-
-    /* Goal Section */
-    .pf-goal-section {
-      width: 100%;
-      border-top: 3px dashed #E2CEBE;
-      padding-top: 0.9rem;
-    }
-
-    body.theme-dark .pf-goal-section {
-      border-color: #3F2B20;
-    }
-
-    .pf-goal-labels {
-      display: flex;
-      justify-content: space-between;
-      font-size: 0.72rem;
-      font-weight: 700;
-      color: var(--pf-muted);
-      margin-bottom: 0.35rem;
-      text-transform: uppercase;
-    }
-
-    .pf-goal-track {
-      width: 100%;
+    .tomato-dot {
+      width: 14px;
       height: 14px;
-      background: var(--pf-cream);
-      border: 2.5px solid var(--pf-border);
-      border-radius: 8px;
-      overflow: hidden;
+      border-radius: 50%;
+      background: #D1D1D1;
+      display: inline-block;
     }
 
-    .pf-goal-fill {
-      height: 100%;
-      background: var(--pf-orange);
-      transition: width 0.4s ease;
+    .tomato-dot.active {
+      background: #EAA064;
     }
 
-    /* Grids & Panels */
-    .pf-section-title {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      text-transform: uppercase;
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.65rem;
-    }
-
-    .pf-item-card {
-      background: var(--pf-cream);
-      border: 2.5px solid var(--pf-border);
-      box-shadow: 2px 2px 0px var(--pf-border);
-      border-radius: 14px;
-      padding: 0.85rem 0.65rem;
-      text-align: center;
-    }
-
-    .pf-item-card.locked {
-      opacity: 0.5;
-      border-style: dashed;
-    }
-
-    .pf-box-panel {
-      background: var(--pf-cream);
-      border: 2.5px solid var(--pf-border);
-      box-shadow: 2px 2px 0px var(--pf-border);
-      border-radius: 14px;
-      padding: 0.85rem;
-    }
-
-    .week-row-pills {
-      display: flex;
-      justify-content: space-between;
-      margin: 1rem 0;
-    }
-
-    .day-square {
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
-      background: var(--pf-cream);
-      border: 2.5px solid var(--pf-border);
-      display: flex;
+    /* Modal Styling for Planner & Settings */
+    .pf-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.45);
+      backdrop-filter: blur(6px);
+      z-index: 100;
       align-items: center;
       justify-content: center;
-      font-weight: 700;
-      font-size: 0.85rem;
+      padding: 1rem;
     }
 
-    .day-square.done {
-      background: var(--pf-orange);
-      color: var(--pf-border);
-      box-shadow: 2px 2px 0px var(--pf-border);
-    }
+    .pf-modal.active { display: flex; }
 
-    .log-scroll-box {
+    .pf-modal-box {
+      width: 100%;
+      max-width: 420px;
+      background: #FFFFFF;
+      border-radius: 28px;
+      padding: 1.5rem;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.25);
       display: flex;
       flex-direction: column;
-      gap: 0.45rem;
-      max-height: 210px;
-      overflow-y: auto;
+      gap: 1rem;
     }
 
-    .log-row-item {
-      background: var(--pf-cream);
-      border: 2px solid var(--pf-border);
-      border-radius: 10px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.78rem;
+    body.theme-dark .pf-modal-box {
+      background: #201A28;
+      color: #FFFFFF;
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-btn {
+      background: #F0F0F0;
+      border: none;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: 800;
+    }
+
+    body.theme-dark .close-btn {
+      background: #332B3E;
+      color: #FFFFFF;
+    }
+
+    .form-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .form-item {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .form-item label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      color: #7A7A7A;
+      text-transform: uppercase;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      border-radius: 12px;
+      border: 1.5px solid #E0E0E0;
       font-family: var(--font-ui);
       font-weight: 700;
-      display: flex;
-      justify-content: space-between;
+      outline: none;
     }
 
-    /* Fixed Bottom Dock */
-    .pf-bottom-dock {
-      position: fixed;
-      bottom: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 2rem);
-      max-width: 480px;
-      background: var(--pf-card-bg);
-      border: 3.5px solid var(--pf-border);
-      border-radius: 20px;
-      box-shadow: var(--shadow-block);
-      padding: 0.35rem;
-      display: flex;
-      justify-content: space-between;
-      z-index: 50;
+    body.theme-dark .form-input {
+      background: #17131D;
+      color: #FFFFFF;
+      border-color: #382F45;
     }
 
-    .pf-dock-btn {
-      flex: 1;
-      background: transparent;
+    .btn-submit {
+      background: #CF6E3A;
+      color: #FFFFFF;
       border: none;
+      padding: 0.75rem;
+      border-radius: 14px;
       font-family: var(--font-pixel);
       font-weight: 700;
-      font-size: 0.65rem;
-      color: var(--pf-muted);
-      padding: 0.55rem 0.2rem;
-      border-radius: 12px;
+      font-size: 0.9rem;
       cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.2rem;
-      text-transform: uppercase;
-      transition: all 0.1s ease;
+      box-shadow: 0 4px 0px #A34E22;
     }
 
-    .pf-dock-btn.active {
-      background: var(--pf-orange);
-      color: var(--pf-border);
-      border: 2px solid var(--pf-border);
-      box-shadow: 2px 2px 0px var(--pf-border);
+    .btn-submit:active {
+      transform: translateY(2px);
+      box-shadow: 0 1px 0px #A34E22;
     }
-
-    .dock-ico { font-size: 1.15rem; }
   </style>
 </head>
 <body>
-  <!-- Ambient Petal Canvas -->
-  <canvas id="ambient-canvas"></canvas>
+  <!-- 60 FPS Procedural Pixel Canvas Background -->
+  <canvas id="pixel-bg-canvas"></canvas>
 
-  <div class="pomofox-container">
+  <!-- PomoFox Centerpiece Glass Card -->
+  <main class="pomofox-glass-card">
     
-    <!-- Top Header -->
-    <header class="pf-header">
-      <div class="pf-logo">
-        <span>🩺</span>
-        <span>Purrmodoro</span>
-      </div>
-      <div class="pf-stat-badges">
-        <div class="pf-badge" id="btn-theme-toggle" title="Toggle Dark/Light Mode">🌙</div>
-        <div class="pf-badge" title="Paw Points">🐾 <strong id="val-paw-points">0</strong></div>
-        <div class="pf-badge" title="Daily Streak">🔥 <strong id="val-streak-count">1</strong></div>
-        <div class="pf-badge" id="level-badge">⭐ Lvl 1</div>
-      </div>
-    </header>
+    <!-- Top 4-Button Controls Row -->
+    <div class="top-controls-bar">
+      <button type="button" class="pf-btn-icon btn-orange" id="btn-timer-toggle" title="Start / Pause">▶</button>
+      <button type="button" class="pf-btn-icon btn-dark" id="btn-timer-reset" title="Reset Timer">🔄</button>
+      <button type="button" class="pf-btn-icon btn-orange" id="btn-sound-toggle" title="Mute / Unmute">🔊</button>
+      <button type="button" class="pf-btn-icon btn-dark" id="btn-settings-open" title="Settings &amp; Planner">⚙️</button>
+    </div>
 
-    <!-- Main Card Body -->
-    <main class="pf-main-card">
-      
-      <!-- VIEW 1: TIMER -->
-      <section id="tab-timer" class="tab-view active">
-        
-        <!-- Mode Pills -->
-        <div class="pf-mode-bar">
-          <button type="button" class="pf-mode-btn active" id="btn-mode-pomo" data-mode="study">Pomodoro</button>
-          <button type="button" class="pf-mode-btn" id="btn-mode-short" data-mode="shortBreak">Short Break</button>
-          <button type="button" class="pf-mode-btn" id="btn-mode-long" data-mode="longBreak">Long Break</button>
-        </div>
+    <!-- Medical Subject Selector -->
+    <div class="medical-select-wrap">
+      <select id="sel-subject" class="med-select"></select>
+    </div>
 
-        <!-- Task / Subject Bar -->
-        <div class="pf-input-group">
-          <select id="sel-subject" class="pf-select"></select>
-          <input type="text" id="ipt-chapter-task" class="pf-input" placeholder="What are you studying? (e.g. Robbins Ch. 4, Practical Prep)" />
-        </div>
+    <!-- Circular Wheel Timer Stage with Melog on the Outer Rim -->
+    <div class="timer-circle-stage">
+      <svg class="circle-svg" viewBox="0 0 260 260">
+        <circle cx="130" cy="130" r="120" class="circle-bg-ring" />
+        <circle cx="130" cy="130" r="120" class="circle-progress-ring" id="circle-progress-ring" />
+      </svg>
 
-        <!-- Wheel Timer Stage with Exact PomoFox Melog Rig -->
-        <div class="pf-wheel-container">
-          <svg class="pf-wheel-svg" viewBox="0 0 300 300">
-            <circle cx="150" cy="150" r="125" class="pf-ring-bg" />
-            <circle cx="150" cy="150" r="125" class="pf-ring-fill" id="ring-fill" />
+      <!-- Center Countdown Digits -->
+      <div class="timer-digits-text" id="timer-readout">25:00</div>
+
+      <!-- Orbit Arm with Exact Pixel Melog Running Sprite -->
+      <div class="orbit-arm" id="orbit-arm">
+        <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
+          <svg viewBox="0 0 40 40" class="pixel-melog-svg">
+            <g class="melog-rig">
+              
+              <!-- Tail (Peach ginger with white tip) -->
+              <g class="melog-tail">
+                <rect x="2" y="16" width="6" height="4" fill="#FFFFFF" stroke="#2C1F18" stroke-width="1"/>
+                <rect x="6" y="18" width="6" height="6" fill="#EAA064" stroke="#2C1F18" stroke-width="1"/>
+                <rect x="10" y="22" width="6" height="4" fill="#BD7739"/>
+              </g>
+
+              <!-- Back Left Leg -->
+              <rect class="leg-b-l" x="12" y="26" width="3" height="7" rx="1" fill="#BD7739" stroke="#2C1F18" stroke-width="1"/>
+              <!-- Front Left Leg -->
+              <rect class="leg-f-l" x="24" y="26" width="3" height="7" rx="1" fill="#BD7739" stroke="#2C1F18" stroke-width="1"/>
+
+              <!-- Main Cat Body -->
+              <g class="melog-body">
+                <rect x="10" y="18" width="18" height="10" rx="3" fill="#EAA064" stroke="#2C1F18" stroke-width="1"/>
+                <!-- White Chest / Bib -->
+                <polygon points="22,20 28,24 28,20" fill="#FFFFFF"/>
+                <!-- Tabby Flank Stripe -->
+                <rect x="15" y="19" width="2" height="6" fill="#BD7739"/>
+              </g>
+
+              <!-- Back Right Leg -->
+              <rect class="leg-b-r" x="15" y="27" width="3" height="7" rx="1" fill="#EAA064" stroke="#2C1F18" stroke-width="1"/>
+              <!-- Front Right Leg -->
+              <rect class="leg-f-r" x="27" y="27" width="3" height="7" rx="1" fill="#EAA064" stroke="#2C1F18" stroke-width="1"/>
+
+              <!-- Head -->
+              <g class="melog-head">
+                <!-- Ears -->
+                <polygon points="20,14 18,6 24,10" fill="#EAA064" stroke="#2C1F18" stroke-width="1"/>
+                <polygon points="19,12 18,8 22,10" fill="#FCAEBA"/>
+                
+                <polygon points="27,14 31,6 25,10" fill="#EAA064" stroke="#2C1F18" stroke-width="1"/>
+                <polygon points="28,12 30,8 26,10" fill="#FCAEBA"/>
+
+                <!-- Face -->
+                <rect x="20" y="12" width="11" height="9" rx="2" fill="#EAA064" stroke="#2C1F18" stroke-width="1"/>
+                <!-- Cheeks -->
+                <rect x="20" y="17" width="2" height="2" fill="#FFAEC0"/>
+                <!-- Hazel Pixel Eye -->
+                <rect x="26" y="14" width="2" height="2" fill="#2C1F18"/>
+                <rect x="26" y="14" width="1" height="1" fill="#A4C444"/>
+                
+                <!-- Snout & Whisker -->
+                <rect x="30" y="16" width="3" height="3" fill="#FFFFFF" stroke="#2C1F18" stroke-width="1"/>
+                <rect x="32" y="16" width="1" height="1" fill="#E88894"/>
+              </g>
+
+            </g>
           </svg>
-
-          <div class="pf-wheel-inner">
-            <!-- PomoFox Running Melog Rig -->
-            <div class="pf-melog-stage" id="running-cat-stage">
-              <svg viewBox="0 0 160 120" class="pf-melog-svg">
-                <defs>
-                  <linearGradient id="melogPeach" x1="0%" y1="0%" x2="0%" y2="100%">
-                    <stop offset="0%" stop-color="#FFDEB8" />
-                    <stop offset="55%" stop-color="#F7C694" />
-                    <stop offset="100%" stop-color="#E2A66E" />
-                  </linearGradient>
-                </defs>
-
-                <g class="melog-rig">
-                  <!-- PomoFox Style Fluffy Tail -->
-                  <g class="melog-tail">
-                    <path d="M118,62 C146,56 156,30 140,16 C128,6 114,20 122,34 C126,42 136,40 132,30" 
-                          fill="#F7C694" stroke="#3A2416" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-                    <!-- Ginger Tabby Tail Rings -->
-                    <path d="M132,28 Q140,34 142,42" fill="none" stroke="#BD7739" stroke-width="3" stroke-linecap="round"/>
-                  </g>
-
-                  <!-- Back Left Leg -->
-                  <g class="paw paw-bl">
-                    <path d="M98,64 Q106,94 96,102" stroke="#E2A66E" stroke-width="12" stroke-linecap="round" fill="none"/>
-                    <path d="M98,64 Q106,94 96,102" stroke="#3A2416" stroke-width="3" stroke-linecap="round" fill="none"/>
-                  </g>
-                  
-                  <!-- Front Left Leg -->
-                  <g class="paw paw-fl">
-                    <path d="M58,64 Q50,94 44,102" stroke="#E2A66E" stroke-width="12" stroke-linecap="round" fill="none"/>
-                    <path d="M58,64 Q50,94 44,102" stroke="#3A2416" stroke-width="3" stroke-linecap="round" fill="none"/>
-                  </g>
-
-                  <!-- PomoFox Rounded Body -->
-                  <ellipse cx="80" cy="58" rx="36" ry="24" fill="url(#melogPeach)" stroke="#3A2416" stroke-width="3.5"/>
-                  
-                  <!-- Tabby Flank Stripes -->
-                  <path d="M76,42 Q82,54 76,68" fill="none" stroke="#BD7739" stroke-width="3" stroke-linecap="round"/>
-                  <path d="M90,44 Q94,56 88,68" fill="none" stroke="#BD7739" stroke-width="3" stroke-linecap="round"/>
-
-                  <!-- Ivory Chest Bib -->
-                  <path d="M46,48 Q60,72 70,58 Q58,42 46,48 Z" fill="#FFFBF5"/>
-
-                  <!-- Back Right Leg -->
-                  <g class="paw paw-br">
-                    <path d="M88,64 Q96,94 104,102" stroke="#FFDEB8" stroke-width="12" stroke-linecap="round" fill="none"/>
-                    <path d="M88,64 Q96,94 104,102" stroke="#3A2416" stroke-width="3" stroke-linecap="round" fill="none"/>
-                  </g>
-
-                  <!-- Front Right Leg -->
-                  <g class="paw paw-fr">
-                    <path d="M46,64 Q48,94 56,102" stroke="#FFDEB8" stroke-width="12" stroke-linecap="round" fill="none"/>
-                    <path d="M46,64 Q48,94 56,102" stroke="#3A2416" stroke-width="3" stroke-linecap="round" fill="none"/>
-                  </g>
-
-                  <!-- PomoFox Head -->
-                  <g class="melog-head-unit">
-                    <!-- Feline Triangular Ears -->
-                    <polygon points="32,24 22,4 42,10" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
-                    <polygon points="30,20 25,8 38,12" fill="#FCAEBA"/>
-                    
-                    <polygon points="72,24 82,4 62,10" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
-                    <polygon points="74,20 79,8 66,12" fill="#FCAEBA"/>
-
-                    <!-- Rounded Head -->
-                    <circle cx="52" cy="34" r="25" fill="url(#melogPeach)" stroke="#3A2416" stroke-width="3.5"/>
-                    
-                    <!-- Forehead Mark -->
-                    <path d="M46,18 L49,23 L52,19 L55,23 L58,18" fill="none" stroke="#BD7739" stroke-width="2" stroke-linecap="round"/>
-
-                    <!-- Rosy Cheeks -->
-                    <ellipse cx="36" cy="42" rx="6" ry="3.5" fill="#FFAEC0"/>
-                    <ellipse cx="68" cy="42" rx="6" ry="3.5" fill="#FFAEC0"/>
-
-                    <!-- Big Cute Eyes (Natural Blink) -->
-                    <g class="melog-eyes">
-                      <g class="eyes-open">
-                        <!-- Left Eye -->
-                        <circle cx="42" cy="32" r="5.5" fill="#3A2416"/>
-                        <circle cx="42" cy="32" r="4.2" fill="#9CBD38"/>
-                        <circle cx="40" cy="30" r="1.6" fill="#FFFFFF"/>
-                        <!-- Right Eye -->
-                        <circle cx="62" cy="32" r="5.5" fill="#3A2416"/>
-                        <circle cx="62" cy="32" r="4.2" fill="#9CBD38"/>
-                        <circle cx="60" cy="30" r="1.6" fill="#FFFFFF"/>
-                      </g>
-                      <g class="eyes-closed" style="display:none;">
-                        <path d="M37,33 Q42,39 47,33" fill="none" stroke="#3A2416" stroke-width="3" stroke-linecap="round"/>
-                        <path d="M57,33 Q62,39 67,33" fill="none" stroke="#3A2416" stroke-width="3" stroke-linecap="round"/>
-                      </g>
-                    </g>
-
-                    <!-- Pink Nose & Smiling Mouth -->
-                    <polygon points="52,38 49,35 55,35" fill="#E88894"/>
-                    <path d="M46,40 Q49,44 52,40 Q55,44 58,40" fill="none" stroke="#3A2416" stroke-width="2.2" stroke-linecap="round"/>
-
-                    <!-- Whiskers -->
-                    <line x1="32" y1="38" x2="18" y2="36" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="32" y1="42" x2="18" y2="44" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="72" y1="38" x2="86" y2="36" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
-                    <line x1="72" y1="42" x2="86" y2="44" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
-                  </g>
-                </g>
-              </svg>
-            </div>
-
-            <!-- Digits -->
-            <div class="pf-timer-readout" id="timer-readout">25:00</div>
-            <div class="pf-speech-text" id="melog-speech">Ready to study with Melog! 🐾</div>
-          </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Controls Row -->
-        <div class="pf-action-row">
-          <button type="button" class="pf-btn btn-start-large" id="btn-timer-start">START</button>
-          <button type="button" class="pf-btn btn-pause-large" id="btn-timer-pause" style="display:none;">PAUSE</button>
-          <button type="button" class="pf-btn btn-tool-square" id="btn-timer-skip" title="Skip Session">⏭️</button>
-          <button type="button" class="pf-btn btn-tool-square" id="btn-timer-reset" title="Reset Timer">🔄</button>
-          <button type="button" class="pf-btn btn-tool-square" id="btn-sound-toggle" title="Toggle Sound">🔔</button>
+    <!-- Bottom Cycle Pill Tracker -->
+    <div class="bottom-cycle-pill">
+      <span>cycle: <strong id="val-cycle-count">1</strong></span>
+      <div class="tomatoes-row" id="tomatoes-row">
+        <span class="tomato-dot active"></span>
+        <span class="tomato-dot"></span>
+        <span class="tomato-dot"></span>
+        <span class="tomato-dot"></span>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Settings & Medical Planner Modal -->
+  <div class="pf-modal" id="settings-modal">
+    <div class="pf-modal-box">
+      <div class="modal-head">
+        <h2 style="font-size:1.15rem; font-family:var(--font-pixel);">⚙️ Settings &amp; Planner</h2>
+        <button type="button" class="close-btn" id="btn-modal-close">&times;</button>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-item">
+          <label for="cfg-theme">Theme Mode</label>
+          <select id="cfg-theme" class="form-input">
+            <option value="light">☀️ Light Pixel Alpine</option>
+            <option value="dark">🌙 Dark Midnight Ridge</option>
+          </select>
         </div>
-
-        <!-- Daily Target Bar -->
-        <div class="pf-goal-section">
-          <div class="pf-goal-labels">
-            <span>Today's Study Goal</span>
-            <span id="txt-daily-progress">0 / 8 Pomodoros</span>
-          </div>
-          <div class="pf-goal-track">
-            <div class="pf-goal-fill" id="bar-daily-progress" style="width: 0%;"></div>
-          </div>
+        <div class="form-item">
+          <label for="cfg-study-min">Focus Duration (Minutes)</label>
+          <input type="number" id="cfg-study-min" class="form-input" value="25" min="1" max="90" />
         </div>
-
-      </section>
-
-      <!-- VIEW 2: PLANNER -->
-      <section id="tab-planner" class="tab-view">
-        <h2 class="pf-section-title">🩷 Medical Study Planner</h2>
-        <div class="form-stack">
-          <div class="form-item">
-            <label for="plan-date">Exam Date</label>
-            <input type="date" id="plan-date" class="pf-input" />
-          </div>
-          <div class="form-item">
-            <label for="plan-buffer">Buffer Days (Review / Rest)</label>
-            <input type="number" id="plan-buffer" class="pf-input" value="2" min="0" />
-          </div>
-          <div class="form-item">
-            <label for="plan-amount">Material Remaining</label>
-            <input type="number" id="plan-amount" class="pf-input" value="240" min="1" />
-          </div>
-          <div class="form-item">
-            <label for="plan-unit">Material Unit</label>
-            <select id="plan-unit" class="pf-select">
-              <option value="pages">Pages</option>
-              <option value="Anki cards">Anki Cards</option>
-              <option value="lectures">Lectures</option>
-              <option value="board questions">Board / UWorld Qs</option>
-              <option value="chapters">Chapters</option>
-            </select>
-          </div>
-          <div class="form-item">
-            <label for="plan-pace">Pace (Units per 25m Pomodoro)</label>
-            <input type="number" id="plan-pace" class="pf-input" value="6" min="1" />
-          </div>
-          <button type="button" class="pf-btn btn-start-large full-btn" id="btn-calc-schedule" style="margin-top:0.5rem;">
-            Calculate Schedule 🩺
-          </button>
+        <div class="form-item">
+          <label for="cfg-short-min">Short Break (Minutes)</label>
+          <input type="number" id="cfg-short-min" class="form-input" value="5" min="1" max="30" />
         </div>
-
-        <div class="pf-box-panel" id="rx-card" style="display: none; margin-top: 1rem;">
-          <div style="font-weight: 800; border-bottom: 2px dashed #E2CEBE; padding-bottom: 0.4rem; display: flex; justify-content: space-between;">
-            <span>Rx Prescription</span>
-            <span id="rx-finish-date"></span>
-          </div>
-          <div id="rx-content" style="padding: 0.75rem 0; font-family: var(--font-ui); font-size: 0.88rem;"></div>
-          <button type="button" class="pf-btn btn-tool-square full-btn" id="btn-apply-plan-goal" style="height: auto; padding: 0.65rem;">Set as Daily Target</button>
+        <div class="form-item">
+          <label for="cfg-exam-date">Exam / Target Date</label>
+          <input type="date" id="cfg-exam-date" class="form-input" />
         </div>
-      </section>
-
-      <!-- VIEW 3: SANCTUARY WORLD -->
-      <section id="tab-world" class="tab-view">
-        <h2 class="pf-section-title">🏡 Melog's Sanctuary</h2>
-        <div class="grid-2" id="world-map-grid"></div>
-
-        <h3 style="margin: 1.25rem 0 0.5rem 0; font-size: 1rem; text-transform: uppercase;">🐾 Adopt Gear with Paw Points</h3>
-        <div class="grid-2" id="furniture-catalog-grid"></div>
-      </section>
-
-      <!-- VIEW 4: STATS -->
-      <section id="tab-stats" class="tab-view">
-        <h2 class="pf-section-title">📊 Study Consistency</h2>
-        <div class="pf-box-panel" style="display:flex; align-items:center; gap:0.75rem;">
-          <span style="font-size: 2.2rem;">🔥</span>
-          <div>
-            <h3 id="txt-stats-streak">1 Day Streak</h3>
-            <p style="font-size: 0.82rem; color: var(--pf-muted);">Melog is cheering you on!</p>
-          </div>
+        <div class="form-item">
+          <label for="cfg-pages-left">Material Remaining (Pages / Cards)</label>
+          <input type="number" id="cfg-pages-left" class="form-input" value="240" />
         </div>
+      </div>
 
-        <div class="week-row-pills" id="weekly-tracker-row"></div>
-
-        <h3 style="margin: 1.25rem 0 0.5rem 0; font-size: 1rem; text-transform: uppercase;">Session Logs</h3>
-        <div class="log-scroll-box" id="session-log-list"></div>
-      </section>
-
-      <!-- VIEW 5: SETTINGS -->
-      <section id="tab-settings" class="tab-view">
-        <h2 class="pf-section-title">⚙️ Preferences</h2>
-        <form id="settings-form">
-          <div class="form-stack">
-            <div class="form-item">
-              <label for="cfg-study-min">Focus Duration (Minutes)</label>
-              <input type="number" id="cfg-study-min" class="pf-input" value="25" min="1" max="90" />
-            </div>
-            <div class="form-item">
-              <label for="cfg-short-min">Short Break</label>
-              <input type="number" id="cfg-short-min" class="pf-input" value="5" min="1" max="30" />
-            </div>
-            <div class="form-item">
-              <label for="cfg-long-min">Long Break</label>
-              <input type="number" id="cfg-long-min" class="pf-input" value="20" min="5" max="60" />
-            </div>
-            <button type="submit" class="pf-btn btn-start-large full-btn" style="margin-top:0.5rem;">Save Settings</button>
-          </div>
-        </form>
-      </section>
-
-    </main>
-
-    <!-- Bottom Pixel Navigation Dock -->
-    <nav class="pf-bottom-dock">
-      <button type="button" class="pf-dock-btn active" data-tab="tab-timer">
-        <span class="dock-ico">⏱️</span>
-        <span>Timer</span>
-      </button>
-      <button type="button" class="pf-dock-btn" data-tab="tab-planner">
-        <span class="dock-ico">🩷</span>
-        <span>Planner</span>
-      </button>
-      <button type="button" class="pf-dock-btn" data-tab="tab-world">
-        <span class="dock-ico">🏡</span>
-        <span>World</span>
-      </button>
-      <button type="button" class="pf-dock-btn" data-tab="tab-stats">
-        <span class="dock-ico">📊</span>
-        <span>Stats</span>
-      </button>
-      <button type="button" class="pf-dock-btn" data-tab="tab-settings">
-        <span class="dock-ico">⚙️</span>
-        <span>Settings</span>
-      </button>
-    </nav>
-
+      <button type="button" class="btn-submit" id="btn-save-settings">Save &amp; Apply 🐾</button>
+    </div>
   </div>
 
   <script>
+    /* -------------------------------------------------------------
+       PURRMODORO - Exact PomoFox Logic & Pixel Engine
+       ------------------------------------------------------------- */
     const MEDICAL_SUBJECTS = [
       "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
-      "🦴 OPP / OMM",
-      "🩺 CE (Clinical Education)",
+      "🦴 OPP / OMM Practical & Written",
+      "🩺 CE (Clinical Education) OSCE & Notes",
       "👥 PBL (Problem-Based Learning)",
       "🫀 Robbins Pathology",
       "⚡ Guyton Physiology",
@@ -842,105 +563,61 @@
       "🧬 Abbas Immunology",
       "💀 Moore's Anatomy",
       "🧪 Marks' Biochemistry & Genetics",
-      "🧠 Anki / Spaced Repetition",
-      "✏️ Other Custom Subject"
-    ];
-
-    const WORLD_WINGS = [
-      { name: "Melog's Bedroom", icon: '🛏️', reqLevel: 1 },
-      { name: "Medical Library", icon: '📚', reqLevel: 5 },
-      { name: "Cozy Anatomy Café", icon: '☕', reqLevel: 10 },
-      { name: "Pharmacology Greenhouse", icon: '🌿', reqLevel: 20 },
-      { name: "The Whisker Clinic", icon: '🩺', reqLevel: 35 },
-      { name: "Simulation Suite", icon: '🫀', reqLevel: 50 },
-      { name: "Stargazer Lounge", icon: '🌙', reqLevel: 75 },
-      { name: "Teaching Hospital", icon: '🏥', reqLevel: 100 }
-    ];
-
-    const CATALOG_ITEMS = [
-      { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false },
-      { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 50, purchased: false },
-      { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 100, purchased: false },
-      { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false },
-      { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false },
-      { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1000, purchased: false }
+      "🧠 Anki Spaced Repetition",
+      "✏️ Custom Focus Session"
     ];
 
     let state = {
-      settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false },
-      timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
-      game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
+      studyMin: 25,
+      shortMin: 5,
+      longMin: 20,
+      mode: 'study', // 'study', 'break'
+      timeLeft: 25 * 60,
+      totalDuration: 25 * 60,
+      isRunning: false,
+      intervalId: null,
+      cycleCount: 1,
+      soundEnabled: true,
+      darkMode: false
     };
 
-    const RING_CIRCUMFERENCE = 2 * Math.PI * 125;
+    const RING_CIRCUMFERENCE = 2 * Math.PI * 120; // 753.98
 
     document.addEventListener('DOMContentLoaded', () => {
       loadState();
-      initTheme();
-      initTabs();
       initUI();
-      initTimer();
-      initPlanner();
       initCanvas();
-      renderAll();
+      renderTimer();
     });
 
-    function getTodayDateString() {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
     function saveState() {
-      localStorage.setItem('purrmodoro_save', JSON.stringify(state));
+      localStorage.setItem('purrmodoro_pf_save', JSON.stringify({
+        studyMin: state.studyMin,
+        shortMin: state.shortMin,
+        soundEnabled: state.soundEnabled,
+        darkMode: state.darkMode,
+        cycleCount: state.cycleCount
+      }));
     }
 
     function loadState() {
-      const raw = localStorage.getItem('purrmodoro_save');
+      const raw = localStorage.getItem('purrmodoro_pf_save');
       if (raw) {
-        try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
+        try {
+          const parsed = JSON.parse(raw);
+          state.studyMin = parsed.studyMin || 25;
+          state.shortMin = parsed.shortMin || 5;
+          state.soundEnabled = parsed.soundEnabled !== false;
+          state.darkMode = !!parsed.darkMode;
+          state.cycleCount = parsed.cycleCount || 1;
+        } catch (e) {}
       }
-      state.timer.timeLeft = state.settings.studyMin * 60;
-      state.timer.totalDuration = state.settings.studyMin * 60;
-    }
-
-    /* Dark Mode Toggle */
-    function initTheme() {
-      const themeBtn = document.getElementById('btn-theme-toggle');
-      if (state.settings.darkMode) {
-        document.body.classList.add('theme-dark');
-        if (themeBtn) themeBtn.textContent = '☀️';
-      }
-
-      if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-          state.settings.darkMode = !state.settings.darkMode;
-          document.body.classList.toggle('theme-dark', state.settings.darkMode);
-          themeBtn.textContent = state.settings.darkMode ? '☀️' : '🌙';
-          saveState();
-        });
-      }
-    }
-
-    /* Tab Dock */
-    function initTabs() {
-      const dockBtns = document.querySelectorAll('.pf-dock-btn');
-      dockBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          dockBtns.forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
-
-          btn.classList.add('active');
-          const target = document.getElementById(btn.dataset.tab);
-          if (target) {
-            target.classList.add('active');
-            if (btn.dataset.tab === 'tab-world') renderWorld();
-            if (btn.dataset.tab === 'tab-stats') renderStats();
-          }
-        });
-      });
+      state.timeLeft = state.studyMin * 60;
+      state.totalDuration = state.studyMin * 60;
     }
 
     function initUI() {
+      // Populate Subject Dropdown
       const subSelect = document.getElementById('sel-subject');
       if (subSelect) {
         subSelect.innerHTML = '';
@@ -952,71 +629,78 @@
         });
       }
 
-      document.querySelectorAll('.pf-mode-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.pf-mode-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          setMode(btn.dataset.mode);
-        });
-      });
+      // Play/Pause Button
+      const toggleBtn = document.getElementById('btn-timer-toggle');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleTimer);
+      }
 
+      // Reset Button
+      const resetBtn = document.getElementById('btn-timer-reset');
+      if (resetBtn) {
+        resetBtn.addEventListener('click', resetTimer);
+      }
+
+      // Sound Toggle
       const soundBtn = document.getElementById('btn-sound-toggle');
       if (soundBtn) {
         soundBtn.addEventListener('click', () => {
-          state.settings.soundEnabled = !state.settings.soundEnabled;
-          soundBtn.textContent = state.settings.soundEnabled ? '🔔' : '🔕';
+          state.soundEnabled = !state.soundEnabled;
+          soundBtn.textContent = state.soundEnabled ? '🔊' : '🔇';
           saveState();
         });
       }
 
-      const melogStage = document.getElementById('running-cat-stage');
-      if (melogStage) {
-        melogStage.addEventListener('click', () => {
-          setSpeech("Purrr! Melog is energized and ready to study! 🐾");
-          playTone(587.33, 0.3);
+      // Settings Modal
+      const modal = document.getElementById('settings-modal');
+      const openBtn = document.getElementById('btn-settings-open');
+      const closeBtn = document.getElementById('btn-modal-close');
+      const saveBtn = document.getElementById('btn-save-settings');
+
+      if (openBtn) openBtn.addEventListener('click', () => modal.classList.add('active'));
+      if (closeBtn) closeBtn.addEventListener('click', () => modal.classList.remove('active'));
+
+      if (saveBtn) {
+        saveBtn.addEventListener('click', () => {
+          state.studyMin = parseInt(document.getElementById('cfg-study-min').value, 10) || 25;
+          state.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10) || 5;
+          state.darkMode = document.getElementById('cfg-theme').value === 'dark';
+          
+          document.body.classList.toggle('theme-dark', state.darkMode);
+          if (!state.isRunning) {
+            state.totalDuration = state.studyMin * 60;
+            state.timeLeft = state.totalDuration;
+          }
+          saveState();
+          modal.classList.remove('active');
+          renderTimer();
         });
       }
 
-      const settingsForm = document.getElementById('settings-form');
-      if (settingsForm) {
-        settingsForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          state.settings.studyMin = parseInt(document.getElementById('cfg-study-min').value, 10);
-          state.settings.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10);
-          state.settings.longMin = parseInt(document.getElementById('cfg-long-min').value, 10);
-          saveState();
-          alert('Settings saved! 🩺');
-          document.querySelector('.pf-dock-btn[data-tab="tab-timer"]').click();
-        });
-      }
+      // Apply initial theme
+      document.body.classList.toggle('theme-dark', state.darkMode);
+      const themeSelect = document.getElementById('cfg-theme');
+      if (themeSelect) themeSelect.value = state.darkMode ? 'dark' : 'light';
     }
 
-    function initTimer() {
-      const startBtn = document.getElementById('btn-timer-start');
-      const pauseBtn = document.getElementById('btn-timer-pause');
-      const skipBtn = document.getElementById('btn-timer-skip');
-      const resetBtn = document.getElementById('btn-timer-reset');
-
-      if (startBtn) startBtn.addEventListener('click', startTimer);
-      if (pauseBtn) pauseBtn.addEventListener('click', pauseTimer);
-      if (skipBtn) skipBtn.addEventListener('click', skipTimer);
-      if (resetBtn) resetBtn.addEventListener('click', resetTimer);
+    function toggleTimer() {
+      if (state.isRunning) {
+        pauseTimer();
+      } else {
+        startTimer();
+      }
     }
 
     function startTimer() {
-      if (state.timer.isRunning) return;
-      state.timer.isRunning = true;
-      document.getElementById('btn-timer-start').style.display = 'none';
-      document.getElementById('btn-timer-pause').style.display = 'inline-flex';
+      state.isRunning = true;
+      document.getElementById('btn-timer-toggle').textContent = '⏸';
       
-      const sprite = document.getElementById('running-cat-stage');
+      const sprite = document.getElementById('melog-sprite');
       if (sprite) sprite.classList.add('timer-running');
 
-      setSpeech("Melog is running! Let's focus! 🐾");
-
-      state.timer.intervalId = setInterval(() => {
-        if (state.timer.timeLeft > 0) {
-          state.timer.timeLeft--;
+      state.intervalId = setInterval(() => {
+        if (state.timeLeft > 0) {
+          state.timeLeft--;
           renderTimer();
         } else {
           completeBlock();
@@ -1025,281 +709,174 @@
     }
 
     function pauseTimer() {
-      if (!state.timer.isRunning) return;
-      state.timer.isRunning = false;
-      clearInterval(state.timer.intervalId);
-      document.getElementById('btn-timer-start').style.display = 'inline-flex';
-      document.getElementById('btn-timer-pause').style.display = 'none';
-
-      const sprite = document.getElementById('running-cat-stage');
+      state.isRunning = false;
+      clearInterval(state.intervalId);
+      document.getElementById('btn-timer-toggle').textContent = '▶';
+      
+      const sprite = document.getElementById('melog-sprite');
       if (sprite) sprite.classList.remove('timer-running');
-      setSpeech("Paused! Melog is taking a rest with you. 🐾");
     }
 
     function resetTimer() {
-      clearInterval(state.timer.intervalId);
-      state.timer.isRunning = false;
-      document.getElementById('btn-timer-start').style.display = 'inline-flex';
-      document.getElementById('btn-timer-pause').style.display = 'none';
-
-      const sprite = document.getElementById('running-cat-stage');
+      clearInterval(state.intervalId);
+      state.isRunning = false;
+      document.getElementById('btn-timer-toggle').textContent = '▶';
+      
+      const sprite = document.getElementById('melog-sprite');
       if (sprite) sprite.classList.remove('timer-running');
 
-      if (state.timer.mode === 'study') state.timer.totalDuration = state.settings.studyMin * 60;
-      else if (state.timer.mode === 'shortBreak') state.timer.totalDuration = state.settings.shortMin * 60;
-      else state.timer.totalDuration = state.settings.longMin * 60;
-
-      state.timer.timeLeft = state.timer.totalDuration;
-      setSpeech("Timer reset. Ready whenever you are!");
+      state.totalDuration = (state.mode === 'study' ? state.studyMin : state.shortMin) * 60;
+      state.timeLeft = state.totalDuration;
       renderTimer();
-    }
-
-    function skipTimer() {
-      clearInterval(state.timer.intervalId);
-      state.timer.isRunning = false;
-      document.getElementById('btn-timer-start').style.display = 'inline-flex';
-      document.getElementById('btn-timer-pause').style.display = 'none';
-
-      const sprite = document.getElementById('running-cat-stage');
-      if (sprite) sprite.classList.remove('timer-running');
-
-      if (state.timer.mode === 'study') setMode('shortBreak');
-      else setMode('study');
     }
 
     function completeBlock() {
-      clearInterval(state.timer.intervalId);
-      state.timer.isRunning = false;
-      document.getElementById('btn-timer-start').style.display = 'inline-flex';
-      document.getElementById('btn-timer-pause').style.display = 'none';
+      clearInterval(state.intervalId);
+      state.isRunning = false;
+      document.getElementById('btn-timer-toggle').textContent = '▶';
 
-      const sprite = document.getElementById('running-cat-stage');
+      const sprite = document.getElementById('melog-sprite');
       if (sprite) sprite.classList.remove('timer-running');
 
-      if (state.timer.mode === 'study') {
-        state.game.todayPomodoros++;
-        state.game.totalPomodoros++;
-        state.game.todayMinutes += state.settings.studyMin;
-        state.game.pawPoints += 10;
-        state.game.xp += 25;
+      playChime();
 
-        const newLevel = Math.floor(state.game.xp / 100) + 1;
-        if (newLevel > state.game.level) {
-          state.game.level = newLevel;
-          setSpeech(`⭐ Level Up! You reached Level ${newLevel}!`);
-        }
-
-        const today = getTodayDateString();
-        state.game.activeDays[today] = (state.game.activeDays[today] || 0) + 1;
-
-        const sub = document.getElementById('sel-subject').value;
-        const task = document.getElementById('ipt-chapter-task').value || 'Focus Session';
-        state.game.sessionLogs.unshift({
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          subject: sub,
-          task: task,
-          minutes: state.settings.studyMin
-        });
-
-        saveState();
-        playFanfare();
-        setSpeech("🎉 Block complete! +10 🐾 Paw Points earned!");
-
-        setTimeout(() => setMode('shortBreak'), 2500);
+      if (state.mode === 'study') {
+        state.mode = 'break';
+        state.totalDuration = state.shortMin * 60;
+        state.timeLeft = state.totalDuration;
+        state.cycleCount++;
+        document.getElementById('val-cycle-count').textContent = state.cycleCount;
+        updateCycleDots();
       } else {
-        setSpeech("Break over! Ready for the next round? 🩺");
-        setMode('study');
+        state.mode = 'study';
+        state.totalDuration = state.studyMin * 60;
+        state.timeLeft = state.totalDuration;
       }
-      renderAll();
-    }
-
-    function setMode(mode) {
-      state.timer.mode = mode;
-      document.querySelectorAll('.pf-mode-btn').forEach(b => {
-        b.classList.toggle('active', b.dataset.mode === mode);
-      });
-
-      if (mode === 'study') state.timer.totalDuration = state.settings.studyMin * 60;
-      else if (mode === 'shortBreak') state.timer.totalDuration = state.settings.shortMin * 60;
-      else state.timer.totalDuration = state.settings.longMin * 60;
-
-      state.timer.timeLeft = state.timer.totalDuration;
+      saveState();
       renderTimer();
-    }
-
-    function setSpeech(msg) {
-      const el = document.getElementById('melog-speech');
-      if (el) el.textContent = msg;
     }
 
     function renderTimer() {
-      const m = Math.floor(state.timer.timeLeft / 60);
-      const s = state.timer.timeLeft % 60;
+      const m = Math.floor(state.timeLeft / 60);
+      const s = state.timeLeft % 60;
       const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
       
-      const readout = document.getElementById('timer-readout');
-      if (readout) readout.textContent = str;
+      document.getElementById('timer-readout').textContent = str;
       document.title = `${str} 🐾 Purrmodoro`;
 
-      const progress = (state.timer.totalDuration - state.timer.timeLeft) / state.timer.totalDuration;
-      const ringFill = document.getElementById('ring-fill');
-      if (ringFill) ringFill.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - progress);
-    }
+      const progress = (state.totalDuration - state.timeLeft) / state.totalDuration;
 
-    function renderAll() {
-      renderTimer();
-      document.getElementById('val-paw-points').textContent = state.game.pawPoints;
-      document.getElementById('val-streak-count').textContent = state.game.streak;
-      document.getElementById('level-badge').textContent = `⭐ Lvl ${state.game.level}`;
-
-      const target = state.settings.dailyTarget || 8;
-      const count = state.game.todayPomodoros;
-      document.getElementById('txt-daily-progress').textContent = `${count} / ${target} Pomodoros`;
-      document.getElementById('bar-daily-progress').style.width = `${Math.min((count / target) * 100, 100)}%`;
-    }
-
-    function renderWorld() {
-      const map = document.getElementById('world-map-grid');
-      if (map) {
-        map.innerHTML = '';
-        WORLD_WINGS.forEach(w => {
-          const unlocked = state.game.level >= w.reqLevel;
-          const div = document.createElement('div');
-          div.className = `pf-item-card ${unlocked ? '' : 'locked'}`;
-          div.innerHTML = `<div style="font-size:1.8rem;">${w.icon}</div><div style="font-weight:700; font-size:0.82rem; margin-top:0.2rem;">${w.name}</div><div style="font-size:0.7rem; color:var(--pf-muted);">${unlocked ? '✨ Unlocked' : `Req. Lvl ${w.reqLevel}`}</div>`;
-          map.appendChild(div);
-        });
+      // 1. Fill Circle SVG Ring
+      const ringFill = document.getElementById('circle-progress-ring');
+      if (ringFill) {
+        ringFill.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - progress);
       }
 
-      const cat = document.getElementById('furniture-catalog-grid');
-      if (cat) {
-        cat.innerHTML = '';
-        state.game.catalog.forEach(item => {
-          const div = document.createElement('div');
-          div.className = `pf-item-card ${item.purchased ? '' : 'locked'}`;
-          div.innerHTML = `<div style="font-size:1.8rem;">${item.icon}</div><div style="font-weight:700; font-size:0.82rem; margin-top:0.2rem;">${item.name}</div><div style="font-size:0.75rem; font-weight:800; color:var(--pf-orange-dark);">${item.purchased ? 'Owned 🎀' : `${item.cost} 🐾`}</div>${!item.purchased ? `<button type="button" class="pf-btn btn-start-large" style="font-size:0.75rem; padding:0.35rem 0.8rem; margin-top:0.4rem;">Adopt</button>` : ''}`;
-          if (!item.purchased) {
-            div.querySelector('button').addEventListener('click', () => {
-              if (state.game.pawPoints >= item.cost) {
-                state.game.pawPoints -= item.cost;
-                item.purchased = true;
-                saveState();
-                renderWorld();
-                renderAll();
-              } else alert(`Need ${item.cost - state.game.pawPoints} more 🐾 Paw Points!`);
-            });
-          }
-          cat.appendChild(div);
-        });
+      // 2. Rotate Melog Orbit Arm (0deg -> 360deg along the circle)
+      const orbitArm = document.getElementById('orbit-arm');
+      if (orbitArm) {
+        orbitArm.style.transform = `rotate(${progress * 360}deg)`;
       }
     }
 
-    function renderStats() {
-      const streakHeader = document.getElementById('txt-stats-streak');
-      if (streakHeader) streakHeader.textContent = `${state.game.streak} Day Streak`;
-
-      const row = document.getElementById('weekly-tracker-row');
-      if (row) {
-        row.innerHTML = '';
-        const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-        const today = new Date();
-        for (let i = 6; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(today.getDate() - i);
-          const dStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-          const done = (state.game.activeDays[dStr] || 0) > 0;
-          const div = document.createElement('div');
-          div.style.display = 'flex';
-          div.style.flexDirection = 'column';
-          div.style.alignItems = 'center';
-          div.style.gap = '0.3rem';
-          div.innerHTML = `<span style="font-size:0.72rem; font-weight:700;">${days[d.getDay()]}</span><div class="day-square ${done ? 'done' : ''}">${done ? '✓' : ''}</div>`;
-          row.appendChild(div);
-        }
-      }
+    function updateCycleDots() {
+      const dots = document.querySelectorAll('.tomato-dot');
+      const activeIdx = (state.cycleCount - 1) % 4;
+      dots.forEach((d, i) => {
+        d.classList.toggle('active', i <= activeIdx);
+      });
     }
 
-    function initPlanner() {
-      const calc = document.getElementById('btn-calc-schedule');
-      if (calc) {
-        calc.addEventListener('click', () => {
-          const dateVal = document.getElementById('plan-date').value;
-          const buffer = parseInt(document.getElementById('plan-buffer').value, 10) || 0;
-          const amount = parseFloat(document.getElementById('plan-amount').value) || 0;
-          const unit = document.getElementById('plan-unit').value;
-          const pace = parseFloat(document.getElementById('plan-pace').value) || 1;
-
-          if (!dateVal) return alert('Please enter an exam date.');
-
-          const diffDays = Math.ceil((new Date(dateVal) - new Date()) / (1000 * 60 * 60 * 24));
-          const studyDays = Math.max(diffDays - buffer, 1);
-          const dailyUnits = Math.ceil(amount / studyDays);
-          const dailyPomos = Math.ceil(dailyUnits / pace);
-
-          document.getElementById('rx-content').innerHTML = `<p>📚 <strong>Remaining:</strong> ${amount} ${unit}</p><p>🗓️ <strong>Study Days:</strong> ${studyDays} days</p><p>🎀 <strong>Daily Target:</strong> <strong>${dailyUnits} ${unit}/day</strong></p><p>🐱 <strong>Focus Blocks:</strong> <strong>${dailyPomos} Pomodoros/day</strong></p>`;
-          document.getElementById('rx-card').style.display = 'block';
-
-          const applyBtn = document.getElementById('btn-apply-plan-goal');
-          if (applyBtn) {
-            applyBtn.onclick = () => {
-              state.settings.dailyTarget = dailyPomos;
-              saveState();
-              renderProgressBar();
-              alert(`Daily goal updated to ${dailyPomos} Pomodoros! 🌸`);
-              document.querySelector('.pf-dock-btn[data-tab="tab-timer"]').click();
-            };
-          }
-        });
-      }
-    }
-
-    function initCanvas() {
-      const canvas = document.getElementById('ambient-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let w = canvas.width = window.innerWidth;
-      let h = canvas.height = window.innerHeight;
-      window.addEventListener('resize', () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
-
-      let petals = Array.from({ length: 18 }, () => ({
-        x: Math.random() * w, y: Math.random() * h, size: Math.random() * 4 + 2, vx: (Math.random() - 0.5) * 0.4, vy: Math.random() * 0.4 + 0.2
-      }));
-
-      function loop() {
-        ctx.clearRect(0, 0, w, h);
-        petals.forEach(p => {
-          p.x += p.vx; p.y += p.vy;
-          if (p.y > h) { p.y = -10; p.x = Math.random() * w; }
-          ctx.beginPath();
-          ctx.fillStyle = state.settings.darkMode ? 'rgba(255, 143, 102, 0.15)' : 'rgba(255, 167, 133, 0.25)';
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-          ctx.fill();
-        });
-        requestAnimationFrame(loop);
-      }
-      loop();
-    }
-
-    function playTone(freq, dur) {
-      if (!state.settings.soundEnabled) return;
+    function playChime() {
+      if (!state.soundEnabled) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(); osc.stop(ctx.currentTime + dur);
+        [587.33, 880, 1174.66].forEach((freq, i) => {
+          setTimeout(() => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            osc.frequency.setValueAtTime(freq, ctx.currentTime);
+            gain.gain.setValueAtTime(0.18, ctx.currentTime);
+            gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.35);
+            osc.connect(gain); gain.connect(ctx.destination);
+            osc.start(); osc.stop(ctx.currentTime + 0.35);
+          }, i * 120);
+        });
       } catch (e) {}
     }
 
-    function playFanfare() {
-      if (!state.settings.soundEnabled) return;
-      [659.25, 783.99, 1046.50].forEach((freq, i) => {
-        setTimeout(() => playTone(freq, 0.35), i * 140);
-      });
+    /* -------------------------------------------------------------
+       Pixel Alpine Background Canvas Renderer (Exact PomoFox Scenery)
+       ------------------------------------------------------------- */
+    function initCanvas() {
+      const canvas = document.getElementById('pixel-bg-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w, h;
+
+      const resize = () => {
+        w = canvas.width = window.innerWidth;
+        h = canvas.height = window.innerHeight;
+      };
+      window.addEventListener('resize', resize);
+      resize();
+
+      function drawPixelTree(x, y, scale, dark) {
+        ctx.fillStyle = dark ? '#18382B' : '#2D5E43';
+        ctx.fillRect(x, y, 6 * scale, 30 * scale); // Trunk
+        ctx.fillStyle = dark ? '#0F291E' : '#1C4A32';
+        
+        // Pine Needles (Stepped Pixels)
+        for (let i = 0; i < 4; i++) {
+          let tierW = (24 - i * 4) * scale;
+          let tierH = 8 * scale;
+          ctx.fillRect(x - tierW / 2 + 3 * scale, y - i * 7 * scale - 4 * scale, tierW, tierH);
+        }
+      }
+
+      function renderScenery() {
+        ctx.clearRect(0, 0, w, h);
+        const dark = state.darkMode;
+
+        // 1. Sky Gradient
+        let sky = ctx.createLinearGradient(0, 0, 0, h);
+        if (dark) {
+          sky.addColorStop(0, '#0C111D');
+          sky.addColorStop(0.7, '#182438');
+          sky.addColorStop(1, '#253B56');
+        } else {
+          sky.addColorStop(0, '#7AB8D6');
+          sky.addColorStop(0.55, '#A6D5E2');
+          sky.addColorStop(1, '#D8EBF2');
+        }
+        ctx.fillStyle = sky;
+        ctx.fillRect(0, 0, w, h);
+
+        // 2. Distant Pixel Mountains
+        ctx.fillStyle = dark ? '#101B2B' : '#7298B3';
+        ctx.beginPath();
+        ctx.moveTo(0, h * 0.45);
+        for (let x = 0; x <= w; x += 40) {
+          let my = h * 0.45 - ((x % 160 === 0) ? 90 : (x % 80 === 0) ? 50 : 20);
+          ctx.lineTo(x, my);
+          ctx.lineTo(x + 40, my);
+        }
+        ctx.lineTo(w, h);
+        ctx.lineTo(0, h);
+        ctx.fill();
+
+        // 3. Dense Pine Forest Backdrop (Left & Right)
+        for (let x = 0; x < w * 0.35; x += 28) {
+          drawPixelTree(x, h * 0.65 + (x % 3) * 12, 1.4, dark);
+        }
+        for (let x = w * 0.65; x < w; x += 28) {
+          drawPixelTree(x, h * 0.65 + (x % 3) * 12, 1.4, dark);
+        }
+
+        requestAnimationFrame(renderScenery);
+      }
+      renderScenery();
     }
   </script>
 </body>
