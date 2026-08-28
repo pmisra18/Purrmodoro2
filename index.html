@@ -118,7 +118,7 @@
                   </defs>
 
                   <g class="melog-cat-group">
-                    <!-- Realistic Curled Striped Tail -->
+                    <!-- Curled Tail -->
                     <g class="melog-tail-joint">
                       <path d="M122,76 C145,72 155,50 144,35 C136,25 124,36 130,48 C134,54 142,52 138,44" 
                             fill="none" stroke="#F4BF87" stroke-width="11" stroke-linecap="round"/>
@@ -134,7 +134,7 @@
                     <path class="paw paw-fl" d="M68,78 Q62,106 56,112" stroke="#E09F60" stroke-width="9" stroke-linecap="round" fill="none"/>
                     <path class="paw paw-fl" d="M68,78 Q62,106 56,112" stroke="#3A2218" stroke-width="2.5" stroke-linecap="round" fill="none"/>
 
-                    <!-- Organic Torso & Ivory Bib -->
+                    <!-- Torso -->
                     <path d="M54,62 C48,74 52,94 68,96 C86,96 112,94 120,84 C124,76 118,60 102,58 C88,56 65,55 54,62 Z" 
                           fill="url(#furMelog)" stroke="#3A2218" stroke-width="3"/>
                     
@@ -153,30 +153,25 @@
                     <path class="paw paw-fr" d="M56,78 Q58,106 66,112" stroke="#FCD5A9" stroke-width="9" stroke-linecap="round" fill="none"/>
                     <path class="paw paw-fr" d="M56,78 Q58,106 66,112" stroke="#3A2218" stroke-width="2.5" stroke-linecap="round" fill="none"/>
 
-                    <!-- Head & Real Cat Features -->
+                    <!-- Head -->
                     <g class="melog-head">
-                      <!-- Ears with Inner Tufts -->
                       <polygon points="40,32 30,12 48,18" fill="#F4BF87" stroke="#3A2218" stroke-width="2.5"/>
                       <polygon points="38,28 32,15 45,20" fill="#FCAEBA"/>
                       <polygon points="82,32 92,12 74,18" fill="#F4BF87" stroke="#3A2218" stroke-width="2.5"/>
                       <polygon points="84,28 90,15 77,20" fill="#FCAEBA"/>
 
-                      <!-- Rounded Skull -->
                       <ellipse cx="61" cy="46" rx="26" ry="22" fill="url(#furMelog)" stroke="#3A2218" stroke-width="3"/>
                       
-                      <!-- Forehead Tabby 'M' -->
                       <path d="M55,30 L58,35 L61,31 L64,35 L67,30" fill="none" stroke="#BD7739" stroke-width="1.8" stroke-linecap="round"/>
 
-                      <!-- Almond Eyes (Blink only) -->
+                      <!-- Eyes (Blink only) -->
                       <g class="melog-eyes">
                         <g class="eyes-open">
-                          <!-- Left Eye -->
                           <ellipse cx="50" cy="44" rx="5.5" ry="6" fill="#FFFBF5" stroke="#3A2218" stroke-width="1.5"/>
                           <ellipse cx="50" cy="44" rx="4" ry="4.8" fill="url(#irisMelog)"/>
                           <ellipse cx="50" cy="44" rx="1.8" ry="3.8" fill="#1A1215"/>
                           <circle cx="49" cy="42" r="1.2" fill="#FFFFFF"/>
 
-                          <!-- Right Eye -->
                           <ellipse cx="72" cy="44" rx="5.5" ry="6" fill="#FFFBF5" stroke="#3A2218" stroke-width="1.5"/>
                           <ellipse cx="72" cy="44" rx="4" ry="4.8" fill="url(#irisMelog)"/>
                           <ellipse cx="72" cy="44" rx="1.8" ry="3.8" fill="#1A1215"/>
@@ -188,7 +183,7 @@
                         </g>
                       </g>
 
-                      <!-- Pink Nose & Whiskers -->
+                      <!-- Nose & Whiskers -->
                       <polygon points="61,51 58,48 64,48" fill="#E88894"/>
                       <path d="M61,51 L61,54 M57,54 Q61,57 65,54" fill="none" stroke="#6E3A2D" stroke-width="1.4" stroke-linecap="round"/>
                       <path d="M46,51 L32,49 M46,54 L32,56" stroke="#FFFFFF" stroke-width="1.4" stroke-linecap="round"/>
@@ -202,20 +197,16 @@
           </div>
         </div>
 
-        <!-- Task & Timer Controls -->
+        <!-- Task & Timer Controls (Streamlined Single Dropdown) -->
         <div class="glass-card">
           <div class="form-row-grid">
             <div class="form-field flex-1">
-              <label>Course / Subject</label>
+              <label>Subject / Coursework</label>
               <select id="sel-subject" class="styled-select"></select>
             </div>
-            <div class="form-field flex-1">
-              <label>Resource / Mode</label>
-              <select id="sel-resource" class="styled-select"></select>
-            </div>
             <div class="form-field flex-2">
-              <label>Specific Chapter / Topic</label>
-              <input type="text" id="ipt-chapter-task" class="styled-input" placeholder="e.g. Sacral Diagnosis & Treatment Practical Review" />
+              <label>Specific Chapter / Target</label>
+              <input type="text" id="ipt-chapter-task" class="styled-input" placeholder="e.g. Chapter 4, Practical Prep, or Robbins pp. 45-60" />
             </div>
           </div>
 
