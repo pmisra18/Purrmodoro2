@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - HD Minecraft Scenery & Sweet Aesthetic
+   PURRMODORO - Pomofox-Inspired Circular Wheel Timer
    ------------------------------------------------------------- */
 :root {
   --bg-cream: #FDF7F4;
@@ -165,22 +165,22 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ================= MINECRAFT HD BIOME VIEWPORT ================= */
+/* ================= POMOFOX CIRCULAR WHEEL VIEWPORT ================= */
 .room-viewport {
   position: relative;
   border: 2px solid var(--border-soft);
   border-radius: var(--radius-lg);
-  padding: 3.2rem 1rem 0.5rem 1rem;
+  padding: 3rem 1rem 1.5rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   box-shadow: var(--shadow-md);
   margin-bottom: 1.25rem;
   overflow: hidden;
-  min-height: 310px;
+  min-height: 440px;
 }
 
-/* Biome Selector Toolbar */
 .biome-bar {
   position: absolute;
   top: 0.75rem;
@@ -194,7 +194,7 @@ body {
   border-radius: var(--radius-pill);
   border: 1.5px solid var(--border-soft);
   box-shadow: var(--shadow-sm);
-  z-index: 4;
+  z-index: 10;
 }
 
 .biome-label {
@@ -221,7 +221,7 @@ body {
   box-shadow: 0 2px 6px rgba(232, 155, 170, 0.4);
 }
 
-/* Minecraft High-Resolution Visual Backdrops */
+/* Scenery Backdrops */
 .scenery-backdrop {
   position: absolute;
   top: 0;
@@ -229,83 +229,149 @@ body {
   width: 100%;
   height: 100%;
   background-size: cover;
-  background-position: center bottom;
-  transition: background-image 0.5s ease-in-out;
+  background-position: center;
   z-index: 0;
 }
 
-/* High-Quality Minecraft Shader Screenshots for each Biome */
 .biome-sakura .scenery-backdrop {
-  background-image: linear-gradient(180deg, rgba(253, 230, 236, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%), 
+  background-image: linear-gradient(180deg, rgba(253, 230, 236, 0.4) 0%, rgba(255, 255, 255, 0.25) 100%), 
                     url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1200&q=80');
 }
-
 .biome-forest .scenery-backdrop {
-  background-image: linear-gradient(180deg, rgba(212, 232, 218, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%), 
+  background-image: linear-gradient(180deg, rgba(212, 232, 218, 0.4) 0%, rgba(255, 255, 255, 0.25) 100%), 
                     url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80');
 }
-
 .biome-mountain .scenery-backdrop {
-  background-image: linear-gradient(180deg, rgba(211, 223, 238, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%), 
+  background-image: linear-gradient(180deg, rgba(211, 223, 238, 0.4) 0%, rgba(255, 255, 255, 0.25) 100%), 
                     url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80');
 }
-
 .biome-meadow .scenery-backdrop {
-  background-image: linear-gradient(180deg, rgba(252, 217, 196, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%), 
+  background-image: linear-gradient(180deg, rgba(252, 217, 196, 0.4) 0%, rgba(255, 255, 255, 0.25) 100%), 
                     url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80');
 }
 
-/* Frosted Glass Horizon Overlay */
 .scenery-glass-floor {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 52px;
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 243, 246, 0.95) 100%);
-  border-top: 1.5px solid rgba(255, 255, 255, 0.8);
+  height: 60px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.4) 0%, rgba(255, 243, 246, 0.95) 100%);
   backdrop-filter: blur(8px);
   z-index: 1;
 }
 
-/* Living Interactive Center Stage */
-.melog-center-stage {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+/* ================= WHEEL ORBIT STAGE ================= */
+.wheel-stage-container {
   position: relative;
+  width: 320px;
+  height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   z-index: 2;
 }
 
-.speech-bubble {
-  background: #FFFFFF;
-  color: var(--text-dark);
-  font-size: 0.88rem;
-  font-weight: 700;
-  padding: 0.45rem 1.1rem;
-  border-radius: 14px;
-  border: 1.5px solid var(--border-soft);
-  box-shadow: 0 4px 14px rgba(184, 133, 145, 0.12);
-  text-align: center;
-  max-width: 90%;
-  margin-bottom: 0.2rem;
-  position: relative;
+.wheel-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  transform: rotate(-90deg); /* Start at top */
 }
 
-.speech-bubble::after {
-  content: '';
+.wheel-bg-track {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.65);
+  stroke-width: 14;
+}
+
+.wheel-progress-bar {
+  fill: none;
+  stroke: url(#wheelGrad);
+  stroke-width: 14;
+  stroke-linecap: round;
+  stroke-dasharray: 816.81; /* 2 * PI * 130 */
+  stroke-dashoffset: 0;
+  transition: stroke-dashoffset 0.5s ease;
+}
+
+.wheel-center-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  width: 220px;
+  height: 220px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border-soft);
+  box-shadow: 0 8px 24px rgba(184, 133, 145, 0.15);
+  padding: 1rem;
+}
+
+.speech-bubble {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  margin-bottom: 0.2rem;
+  line-height: 1.2;
+}
+
+.mode-tag {
+  display: inline-block;
+  background: var(--blush-200);
+  color: var(--blush-dark);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.65rem;
+  border-radius: var(--radius-pill);
+  letter-spacing: 0.5px;
+  margin-bottom: 0.2rem;
+}
+
+.clock-display {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+.task-active-label {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  margin-top: 0.2rem;
+  max-width: 170px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ================= ROTATING ORBIT ARM ================= */
+.wheel-orbit-arm {
   position: absolute;
-  bottom: -6px;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transition: transform 0.5s ease;
+}
+
+/* Melog position pinned to the top of the rotating wheel */
+.melog-walker-box {
+  position: absolute;
+  top: -16px;
   left: 50%;
   transform: translateX(-50%);
-  border-left: 6px solid transparent;
-  border-right: 6px solid transparent;
-  border-top: 6px solid #FFFFFF;
-}
-
-.cat-svg-wrapper {
-  width: 290px;
-  height: 235px;
+  width: 72px;
+  height: 63px;
+  pointer-events: auto;
   cursor: pointer;
 }
 
@@ -314,41 +380,48 @@ body {
   height: 100%;
 }
 
-/* ================= CLEAN ANIMATIONS (NO BOUNCING EYES) ================= */
-.melog-figure {
-  transform-origin: 160px 220px;
-  animation: melogBreathe 4.5s ease-in-out infinite;
+/* Paw Walking Animation (Active when timer is running) */
+.timer-running .paw-front-right,
+.timer-running .paw-back-left {
+  animation: pawWalkA 0.4s infinite alternate ease-in-out;
 }
 
-/* Tail Swish */
-.melog-tail-group {
-  transform-origin: 190px 175px;
-  animation: melogTailWag 4.2s ease-in-out infinite;
+.timer-running .paw-front-left,
+.timer-running .paw-back-right {
+  animation: pawWalkB 0.4s infinite alternate ease-in-out;
 }
 
-/* Eyes: Natural Blink Only */
-.melog-eyes-layer {
-  transform-origin: 160px 102px;
-  animation: naturalEyeBlink 4.8s infinite;
+.timer-running .walker-tail {
+  animation: walkerTail 0.6s infinite alternate ease-in-out;
 }
 
-@keyframes melogBreathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.012, 0.99); }
+@keyframes pawWalkA {
+  0% { transform: translateY(0) rotate(0deg); }
+  100% { transform: translateY(-4px) rotate(12deg); }
 }
 
-@keyframes melogTailWag {
-  0%, 100% { transform: rotate(0deg); }
-  40% { transform: rotate(-5deg); }
-  80% { transform: rotate(4deg); }
+@keyframes pawWalkB {
+  0% { transform: translateY(-4px) rotate(-12deg); }
+  100% { transform: translateY(0) rotate(0deg); }
 }
 
-@keyframes naturalEyeBlink {
+@keyframes walkerTail {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(15deg); }
+}
+
+/* Eye Blinking */
+.walker-eyes {
+  transform-origin: 78px 54px;
+  animation: eyeBlinkOnly 4.8s infinite;
+}
+
+@keyframes eyeBlinkOnly {
   0%, 96%, 100% { transform: scaleY(1); }
   98% { transform: scaleY(0.08); }
 }
 
-/* Dashboard Cards & Layout */
+/* Dashboard Controls */
 .study-control-card, .card-panel {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
@@ -357,21 +430,9 @@ body {
   box-shadow: var(--shadow-md);
 }
 
-.panel-header {
-  margin-bottom: 1.5rem;
-}
-
-.panel-header h2 {
-  font-family: var(--font-display);
-  font-size: 1.45rem;
-  font-weight: 700;
-}
-
-.panel-header p, .helper-text {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  margin-top: 0.2rem;
-}
+.panel-header { margin-bottom: 1.5rem; }
+.panel-header h2 { font-family: var(--font-display); font-size: 1.45rem; font-weight: 700; }
+.panel-header p, .helper-text { font-size: 0.88rem; color: var(--text-muted); margin-top: 0.2rem; }
 
 .curriculum-selector-bar, .planner-grid {
   display: flex;
@@ -413,43 +474,12 @@ label {
   border-color: var(--border-focus);
 }
 
-.timer-center {
-  text-align: center;
-  margin: 1.5rem 0 1.25rem 0;
-}
-
-.mode-tag {
-  display: inline-block;
-  background: var(--blush-200);
-  color: var(--blush-dark);
-  font-size: 0.8rem;
-  font-weight: 700;
-  padding: 0.3rem 0.85rem;
-  border-radius: var(--radius-pill);
-  letter-spacing: 1px;
-  margin-bottom: 0.4rem;
-}
-
-.clock-display {
-  font-family: var(--font-display);
-  font-size: 4.6rem;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -1px;
-}
-
-.task-active-label {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  margin-top: 0.4rem;
-}
-
 .timer-btn-row {
   display: flex;
   justify-content: center;
   gap: 0.75rem;
   flex-wrap: wrap;
-  margin-bottom: 1.5rem;
+  margin: 1.5rem 0;
 }
 
 .btn {
@@ -676,7 +706,7 @@ label {
 }
 
 @media (max-width: 600px) {
-  .clock-display { font-size: 3.6rem; }
+  .wheel-stage-container { transform: scale(0.9); }
   .study-control-card, .card-panel { padding: 1.2rem; }
   .top-stats-pill { width: 100%; justify-content: space-around; }
 }
