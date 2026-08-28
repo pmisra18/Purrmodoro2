@@ -6,23 +6,24 @@
   <meta name="theme-color" content="#A6CFE2" />
   <title>Purrmodoro 🐾 Study with Melog</title>
   
+  <!-- Pixel & UI Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --card-glass: rgba(255, 255, 255, 0.72);
-      --card-glass-border: rgba(255, 255, 255, 0.9);
+      --card-glass: rgba(255, 255, 255, 0.76);
+      --card-glass-border: rgba(255, 255, 255, 0.95);
       --btn-orange: #D9733E;
       --btn-orange-shadow: #A84E20;
       --btn-dark: #4A4A4A;
       --btn-dark-shadow: #2C2C2C;
-      --text-digits: #313131;
+      --text-digits: #2B1E16;
       --ring-white: #FFFFFF;
-      --ring-shadow: rgba(0, 0, 0, 0.12);
-      --dock-bg: rgba(255, 255, 255, 0.88);
-      --dock-border: rgba(0, 0, 0, 0.1);
+      --ring-shadow: rgba(0, 0, 0, 0.14);
+      --dock-bg: rgba(255, 255, 255, 0.92);
+      --dock-border: rgba(0, 0, 0, 0.12);
       
       --font-digital: 'VT323', monospace;
       --font-pixel: 'Silkscreen', monospace;
@@ -30,17 +31,17 @@
     }
 
     body.theme-dark {
-      --card-glass: rgba(26, 20, 34, 0.75);
-      --card-glass-border: rgba(255, 255, 255, 0.14);
+      --card-glass: rgba(26, 20, 34, 0.78);
+      --card-glass-border: rgba(255, 255, 255, 0.15);
       --btn-orange: #E06F38;
       --btn-orange-shadow: #8A3714;
       --btn-dark: #32283D;
       --btn-dark-shadow: #1A1422;
       --text-digits: #FFFFFF;
       --ring-white: #2C2238;
-      --ring-shadow: rgba(0, 0, 0, 0.5);
-      --dock-bg: rgba(26, 20, 34, 0.9);
-      --dock-border: rgba(255, 255, 255, 0.12);
+      --ring-shadow: rgba(0, 0, 0, 0.55);
+      --dock-bg: rgba(26, 20, 34, 0.92);
+      --dock-border: rgba(255, 255, 255, 0.14);
     }
 
     * {
@@ -53,7 +54,7 @@
 
     body {
       font-family: var(--font-pixel);
-      color: #313131;
+      color: #2B1E16;
       min-height: 100vh;
       display: flex;
       align-items: center;
@@ -62,7 +63,7 @@
       overflow: hidden;
     }
 
-    /* 60 FPS Procedural Pixel Canvas Background */
+    /* 60 FPS Procedural Pixel Canvas */
     #pixel-bg-canvas {
       position: fixed;
       top: 0;
@@ -80,24 +81,24 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
-      padding: 1rem 1rem 5.5rem 1rem;
+      gap: 0.85rem;
+      padding: 0.75rem 1rem 5.5rem 1rem;
     }
 
-    /* Center Glass Card */
+    /* Floating Glass Card */
     .pomofox-glass-card {
       width: 100%;
       background: var(--card-glass);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border: 2.5px solid var(--card-glass-border);
       border-radius: 36px;
       box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
-      padding: 1.4rem 1.25rem 1.1rem 1.25rem;
+      padding: 1.25rem 1.25rem 1rem 1.25rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.15rem;
+      gap: 0.9rem;
     }
 
     .view-panel {
@@ -109,7 +110,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.1rem;
+      gap: 0.85rem;
     }
 
     /* Top Controls Row */
@@ -148,26 +149,26 @@
       box-shadow: 0 4px 0px var(--btn-dark-shadow);
     }
 
-    /* Medical Subject Dropdown */
+    /* Compact Medical Subject Selector */
     .medical-select-wrap {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 0.45rem;
+      gap: 0.35rem;
     }
 
     .med-select, .med-input {
       width: 100%;
       background: rgba(255, 255, 255, 0.88);
       border: 2px solid rgba(0, 0, 0, 0.08);
-      border-radius: 14px;
-      padding: 0.55rem 0.8rem;
+      border-radius: 12px;
+      padding: 0.45rem 0.75rem;
       font-family: var(--font-ui);
       font-size: 0.82rem;
       font-weight: 700;
       color: #313131;
       outline: none;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     }
 
     body.theme-dark .med-select,
@@ -183,7 +184,7 @@
       gap: 0.35rem;
       background: rgba(255, 255, 255, 0.6);
       border-radius: 999px;
-      padding: 0.25rem 0.5rem;
+      padding: 0.2rem 0.45rem;
       border: 1.5px solid rgba(0, 0, 0, 0.05);
     }
 
@@ -196,8 +197,8 @@
       background: transparent;
       border: none;
       font-family: var(--font-pixel);
-      font-size: 0.68rem;
-      padding: 0.25rem 0.55rem;
+      font-size: 0.65rem;
+      padding: 0.2rem 0.5rem;
       border-radius: 999px;
       cursor: pointer;
       color: #555;
@@ -210,15 +211,15 @@
       color: #FFFFFF;
     }
 
-    /* Central Wheel Timer */
+    /* Enlarged Central Circle Wheel */
     .timer-circle-stage {
       position: relative;
-      width: 250px;
-      height: 250px;
+      width: 300px;
+      height: 300px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0.2rem 0;
+      margin: 0.1rem 0;
     }
 
     .circle-svg {
@@ -233,23 +234,23 @@
     .circle-bg-ring {
       fill: none;
       stroke: var(--ring-white);
-      stroke-width: 24;
-      filter: drop-shadow(0px 4px 10px var(--ring-shadow));
+      stroke-width: 26;
+      filter: drop-shadow(0px 6px 12px var(--ring-shadow));
     }
 
     .circle-progress-ring {
       fill: none;
       stroke: #EAA064;
-      stroke-width: 24;
-      stroke-linecap: square;
-      stroke-dasharray: 722.56; /* 2 * PI * 115 */
+      stroke-width: 8;
+      stroke-linecap: round;
+      stroke-dasharray: 867.08; /* 2 * PI * 138 */
       stroke-dashoffset: 0;
       transition: stroke-dashoffset 0.5s ease;
     }
 
     .timer-digits-text {
       font-family: var(--font-digital);
-      font-size: 6.2rem;
+      font-size: 7.4rem;
       font-weight: 700;
       color: var(--text-digits);
       line-height: 1;
@@ -258,7 +259,7 @@
       user-select: none;
     }
 
-    /* Rotating Orbit Arm (Carries Melog) */
+    /* Orbit Arm */
     .orbit-arm {
       position: absolute;
       top: 0;
@@ -270,14 +271,14 @@
       transition: transform 0.5s ease;
     }
 
-    /* Pixel Melog Sprite Box */
+    /* Scaled-Up Melog Sprite for High Visibility */
     .melog-sprite-box {
       position: absolute;
-      top: -16px;
+      top: -24px;
       left: 50%;
       transform: translateX(-50%);
-      width: 32px;
-      height: 32px;
+      width: 48px;
+      height: 48px;
       pointer-events: auto;
       cursor: pointer;
     }
@@ -289,29 +290,41 @@
       shape-rendering: crispEdges;
     }
 
-    /* 100% Strict Pixel Grid Leg Motion */
-    .timer-running .px-leg-fr { animation: pxRunA 0.22s infinite alternate ease-in-out; }
-    .timer-running .px-leg-bl { animation: pxRunA 0.22s infinite alternate ease-in-out 0.04s; }
-    .timer-running .px-leg-fl { animation: pxRunB 0.22s infinite alternate ease-in-out 0.11s; }
-    .timer-running .px-leg-br { animation: pxRunB 0.22s infinite alternate ease-in-out 0.15s; }
-    .timer-running .px-body-group { animation: pxBob 0.22s infinite alternate ease-in-out; }
-    .timer-running .px-tail-group { animation: pxTailBob 0.28s infinite alternate ease-in-out; }
+    /* Fluid, Slow Relaxed Walking Trot Animation */
+    .timer-running .px-leg-fr { animation: slowTrotA 0.48s infinite alternate ease-in-out; }
+    .timer-running .px-leg-bl { animation: slowTrotA 0.48s infinite alternate ease-in-out 0.08s; }
+    .timer-running .px-leg-fl { animation: slowTrotB 0.48s infinite alternate ease-in-out 0.24s; }
+    .timer-running .px-leg-br { animation: slowTrotB 0.48s infinite alternate ease-in-out 0.32s; }
+    .timer-running .px-body-group { animation: slowBob 0.48s infinite alternate ease-in-out; }
+    .timer-running .px-tail-group { animation: slowTail 0.56s infinite alternate ease-in-out; }
 
-    @keyframes pxRunA { 0% { transform: translate(0, 0); } 100% { transform: translate(2px, -2px); } }
-    @keyframes pxRunB { 0% { transform: translate(2px, -2px); } 100% { transform: translate(-2px, 2px); } }
-    @keyframes pxBob { 0% { transform: translateY(0); } 100% { transform: translateY(-1.5px); } }
-    @keyframes pxTailBob { 0% { transform: rotate(0deg); } 100% { transform: rotate(15deg); } }
+    @keyframes slowTrotA { 
+      0% { transform: translate(0, 0); } 
+      100% { transform: translate(2px, -2px); } 
+    }
+    @keyframes slowTrotB { 
+      0% { transform: translate(2px, -2px); } 
+      100% { transform: translate(-1.5px, 1.5px); } 
+    }
+    @keyframes slowBob { 
+      0% { transform: translateY(0); } 
+      100% { transform: translateY(-1.2px); } 
+    }
+    @keyframes slowTail { 
+      0% { transform: rotate(0deg); } 
+      100% { transform: rotate(10deg); } 
+    }
 
     /* Bottom Cycle Pill */
     .bottom-cycle-pill {
       background: rgba(255, 255, 255, 0.88);
       border: 2px solid rgba(0, 0, 0, 0.06);
       border-radius: 999px;
-      padding: 0.45rem 1.25rem;
+      padding: 0.35rem 1.15rem;
       display: flex;
       align-items: center;
       gap: 0.65rem;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 700;
       color: #4A4A4A;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
@@ -339,7 +352,7 @@
 
     .tomato-dot.active { background: #EAA064; }
 
-    /* Other Panels */
+    /* Other Views */
     .section-heading {
       font-size: 1.15rem;
       margin-bottom: 0.4rem;
@@ -535,7 +548,7 @@
   </style>
 </head>
 <body>
-  <!-- 60 FPS Procedural Background Canvas -->
+  <!-- 60 FPS Procedural Pixel Canvas Background -->
   <canvas id="pixel-bg-canvas"></canvas>
 
   <div class="app-shell">
@@ -568,11 +581,11 @@
           <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
         </div>
 
-        <!-- Wheel Timer Stage with Melog Tangent to the Track -->
+        <!-- Enlarged Wheel Timer Stage with Melog on Track -->
         <div class="timer-circle-stage">
-          <svg class="circle-svg" viewBox="0 0 250 250">
-            <circle cx="125" cy="125" r="115" class="circle-bg-ring" />
-            <circle cx="125" cy="125" r="115" class="circle-progress-ring" id="circle-progress-ring" />
+          <svg class="circle-svg" viewBox="0 0 300 300">
+            <circle cx="150" cy="150" r="138" class="circle-bg-ring" />
+            <circle cx="150" cy="150" r="138" class="circle-progress-ring" id="circle-progress-ring" />
           </svg>
 
           <!-- Countdown Digits -->
@@ -582,11 +595,11 @@
           <div class="orbit-arm" id="orbit-arm">
             <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
               
-              <!-- 100% PURE 16x16 PIXEL GRID (ZERO CURVES / DRAWN SHAPES) -->
+              <!-- PURE 16x16 PIXEL GRID MELOG MODEL -->
               <svg viewBox="0 0 16 16" class="pixel-melog-svg">
                 <g class="px-rig">
                   
-                  <!-- Tail Group (Peach Fur + White Tip) -->
+                  <!-- Tail Group -->
                   <g class="px-tail-group">
                     <rect x="0" y="3" width="2" height="2" fill="#FFFFFF" />
                     <rect x="1" y="4" width="2" height="2" fill="#F4C28D" />
@@ -606,19 +619,16 @@
                     <rect x="7" y="11" width="2" height="1" fill="#2C1E16" />
                   </g>
 
-                  <!-- Main Body Pixel Grid (Peach Coat + White Bib) -->
+                  <!-- Main Body Pixel Grid -->
                   <g class="px-body-group">
-                    <!-- Black Outlines -->
                     <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
                     <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
                     <rect x="10" y="7" width="1" height="3" fill="#2C1E16" />
                     <rect x="3" y="10" width="7" height="1" fill="#2C1E16" />
                     
-                    <!-- Peach Fill -->
                     <rect x="3" y="7" width="5" height="3" fill="#F4C28D" />
                     <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
                     
-                    <!-- White Chest / Bib Pixels -->
                     <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
                   </g>
 
@@ -634,33 +644,26 @@
                     <rect x="8" y="12" width="2" height="1" fill="#2C1E16" />
                   </g>
 
-                  <!-- Head & Feline Ears Pixel Cluster -->
+                  <!-- Head & Feline Ears -->
                   <g class="px-head-group">
-                    <!-- Left Ear -->
                     <rect x="7" y="1" width="2" height="1" fill="#2C1E16" />
                     <rect x="7" y="2" width="2" height="2" fill="#F4C28D" />
                     <rect x="8" y="2" width="1" height="1" fill="#FCAEBA" />
 
-                    <!-- Right Ear -->
                     <rect x="10" y="1" width="2" height="1" fill="#2C1E16" />
                     <rect x="10" y="2" width="2" height="2" fill="#F4C28D" />
                     <rect x="10" y="2" width="1" height="1" fill="#FCAEBA" />
 
-                    <!-- Head Outline & Peach Fur -->
                     <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
                     <rect x="6" y="4" width="1" height="4" fill="#2C1E16" />
                     <rect x="13" y="5" width="1" height="3" fill="#2C1E16" />
                     <rect x="8" y="3" width="4" height="1" fill="#2C1E16" />
                     <rect x="7" y="8" width="5" height="1" fill="#2C1E16" />
 
-                    <!-- Forehead Ginger Pixel -->
                     <rect x="9" y="4" width="1" height="1" fill="#D9965B" />
-
-                    <!-- Hazel Eye Pixel -->
                     <rect x="10" y="5" width="1" height="1" fill="#2C1E16" />
                     <rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
 
-                    <!-- White Snout & Pink Nose Pixel -->
                     <rect x="11" y="6" width="2" height="2" fill="#FFFFFF" />
                     <rect x="12" y="6" width="1" height="1" fill="#E88894" />
                   </g>
@@ -806,7 +809,7 @@
 
   <script>
     /* -------------------------------------------------------------
-       PURRMODORO - Pure Pixel Grid Model & PomoFox Engine
+       PURRMODORO - Fluid Stride & 16-Bit Pixel Landscape Engine
        ------------------------------------------------------------- */
     const MEDICAL_SUBJECTS = [
       "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -850,7 +853,7 @@
       game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, cycleCount: 1, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
     };
 
-    const RING_CIRCUMFERENCE = 2 * Math.PI * 115; // 722.56
+    const RING_CIRCUMFERENCE = 2 * Math.PI * 138; // 867.08
 
     document.addEventListener('DOMContentLoaded', () => {
       loadState();
@@ -869,11 +872,11 @@
     }
 
     function saveState() {
-      localStorage.setItem('purrmodoro_pf_exact_px', JSON.stringify(state));
+      localStorage.setItem('purrmodoro_pf_fluid_px', JSON.stringify(state));
     }
 
     function loadState() {
-      const raw = localStorage.getItem('purrmodoro_pf_exact_px');
+      const raw = localStorage.getItem('purrmodoro_pf_fluid_px');
       if (raw) {
         try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
       }
@@ -1082,7 +1085,7 @@
         ringFill.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - progress);
       }
 
-      // Rotate Orbit Arm so Melog physically traverses along the circle progress
+      // Smoothly rotate Melog along the circle ring perimeter
       const orbitArm = document.getElementById('orbit-arm');
       if (orbitArm) {
         orbitArm.style.transform = `rotate(${progress * 360}deg)`;
@@ -1208,7 +1211,9 @@
       }
     }
 
-    /* 60 FPS Procedural Biome Canvas */
+    /* -------------------------------------------------------------
+       High-Detail 16-Bit Pixel Landscape Canvas Engine
+       ------------------------------------------------------------- */
     function initCanvas() {
       const canvas = document.getElementById('pixel-bg-canvas');
       if (!canvas) return;
@@ -1222,64 +1227,103 @@
       window.addEventListener('resize', resize);
       resize();
 
-      let particles = Array.from({ length: 30 }, () => ({
+      let particles = Array.from({ length: 32 }, () => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
         size: Math.random() * 3 + 2,
-        vx: (Math.random() - 0.5) * 0.5,
-        vy: Math.random() * 0.5 + 0.2
+        vx: (Math.random() - 0.5) * 0.4,
+        vy: Math.random() * 0.4 + 0.2
       }));
+
+      function drawPixelPineTree(x, y, scale, dark) {
+        // Pixel Trunk
+        ctx.fillStyle = dark ? '#15241C' : '#3E271E';
+        ctx.fillRect(x, y, 6 * scale, 32 * scale);
+
+        // Layered Pixel Pine Canopies
+        const pineDark = dark ? '#0E291C' : '#1C4A32';
+        const pineLight = dark ? '#1A4230' : '#2D6B48';
+
+        for (let i = 0; i < 4; i++) {
+          let tierW = (28 - i * 5) * scale;
+          let tierH = 9 * scale;
+          let tierY = y - i * 8 * scale - 4 * scale;
+          ctx.fillStyle = pineDark;
+          ctx.fillRect(x - tierW / 2 + 3 * scale, tierY, tierW, tierH);
+          ctx.fillStyle = pineLight;
+          ctx.fillRect(x - tierW / 2 + 5 * scale, tierY, tierW - 4 * scale, 3 * scale);
+        }
+      }
+
+      function drawPixelCloud(x, y, width, height, alpha) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
+        ctx.fillRect(x, y, width, height);
+        ctx.fillRect(x + 12, y - 8, width - 24, 8);
+        ctx.fillRect(x + 24, y - 14, width - 48, 6);
+      }
 
       function renderScenery() {
         ctx.clearRect(0, 0, w, h);
         const dark = state.settings.darkMode;
         const biome = state.settings.currentBiome;
 
-        // Sky Gradient
+        // 1. Sky Gradient
         let sky = ctx.createLinearGradient(0, 0, 0, h);
         if (dark) {
-          sky.addColorStop(0, '#0C111D');
-          sky.addColorStop(0.7, '#182438');
-          sky.addColorStop(1, '#253B56');
+          sky.addColorStop(0, '#0B101B');
+          sky.addColorStop(0.65, '#172236');
+          sky.addColorStop(1, '#233852');
         } else if (biome === 'sakura') {
-          sky.addColorStop(0, '#FEE3EC');
-          sky.addColorStop(0.6, '#FAD2E1');
-          sky.addColorStop(1, '#E2ECE9');
+          sky.addColorStop(0, '#FEE5ED');
+          sky.addColorStop(0.6, '#F8CAD9');
+          sky.addColorStop(1, '#D8EAE4');
         } else if (biome === 'taiga') {
-          sky.addColorStop(0, '#A6D5E2');
-          sky.addColorStop(0.6, '#C2E2EC');
-          sky.addColorStop(1, '#D8EBF2');
+          sky.addColorStop(0, '#98C9DC');
+          sky.addColorStop(0.6, '#BCE0EC');
+          sky.addColorStop(1, '#DCEEF4');
         } else if (biome === 'aurora') {
-          sky.addColorStop(0, '#0F1A2C');
-          sky.addColorStop(0.6, '#1C3B5E');
-          sky.addColorStop(1, '#2D5D7B');
+          sky.addColorStop(0, '#0C182A');
+          sky.addColorStop(0.6, '#183656');
+          sky.addColorStop(1, '#285573');
         } else {
-          sky.addColorStop(0, '#FBC4AB');
-          sky.addColorStop(0.5, '#F8AD9D');
-          sky.addColorStop(1, '#F4978E');
+          sky.addColorStop(0, '#FBC3A8');
+          sky.addColorStop(0.55, '#F8A897');
+          sky.addColorStop(1, '#F39288');
         }
         ctx.fillStyle = sky;
         ctx.fillRect(0, 0, w, h);
 
-        // Pixel Mountains Ridge
-        ctx.fillStyle = dark ? '#101B2B' : biome === 'sakura' ? '#D6A2B8' : '#7298B3';
+        // 2. Pixel Clouds
+        drawPixelCloud(w * 0.08, h * 0.12, 110, 24, dark ? 0.2 : 0.65);
+        drawPixelCloud(w * 0.68, h * 0.08, 140, 28, dark ? 0.2 : 0.75);
+
+        // 3. Multi-Tiered Mountain Peaks
+        ctx.fillStyle = dark ? '#0E1724' : biome === 'sakura' ? '#D49CB3' : '#6A92AF';
         ctx.beginPath();
-        ctx.moveTo(0, h * 0.5);
-        for (let x = 0; x <= w; x += 40) {
-          let my = h * 0.5 - ((x % 160 === 0) ? 80 : (x % 80 === 0) ? 45 : 15);
+        ctx.moveTo(0, h * 0.48);
+        for (let x = 0; x <= w; x += 36) {
+          let my = h * 0.48 - ((x % 144 === 0) ? 90 : (x % 72 === 0) ? 50 : 20);
           ctx.lineTo(x, my);
-          ctx.lineTo(x + 40, my);
+          ctx.lineTo(x + 36, my);
         }
         ctx.lineTo(w, h);
         ctx.lineTo(0, h);
         ctx.fill();
 
-        // Particles
+        // 4. Foreground Pine Forests (Left & Right Flanks)
+        for (let x = -10; x < w * 0.32; x += 28) {
+          drawPixelPineTree(x, h * 0.64 + (Math.abs(x) % 3) * 10, 1.35, dark);
+        }
+        for (let x = w * 0.68; x < w + 20; x += 28) {
+          drawPixelPineTree(x, h * 0.64 + (Math.abs(x) % 3) * 10, 1.35, dark);
+        }
+
+        // 5. Floating Ambient Particles (Petals / Embers / Fireflies)
         particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
           if (p.y > h) { p.y = -10; p.x = Math.random() * w; }
-          ctx.fillStyle = dark ? 'rgba(255,255,255,0.4)' : biome === 'sakura' ? 'rgba(255,165,185,0.4)' : 'rgba(255,255,255,0.6)';
+          ctx.fillStyle = dark ? 'rgba(255,255,255,0.45)' : biome === 'sakura' ? 'rgba(255,160,180,0.5)' : 'rgba(255,255,255,0.65)';
           ctx.fillRect(p.x, p.y, p.size, p.size);
         });
 
