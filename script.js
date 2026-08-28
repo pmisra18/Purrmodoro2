@@ -1,8 +1,8 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Complete Engine (Updated Subjects & Biomes)
+   PURRMODORO - Walking Wheel Timer Engine & Sync
    ------------------------------------------------------------- */
 
-// Medical School Curriculum Architecture (No textbook restrictions on OPP/OMM & CE)
+// Medical Curriculum with no textbook requirements for OPP/OMM & CE
 const MEDICAL_CURRICULUM = {
   "🦴 OPP / OMM": {
     resources: [
@@ -126,6 +126,7 @@ let state = {
   timer: {
     mode: 'study',
     timeLeft: 25 * 60,
+    totalDuration: 25 * 60,
     isRunning: false,
     intervalId: null
   },
@@ -143,6 +144,8 @@ let state = {
     catalog: [...CATALOG_ITEMS]
   }
 };
+
+const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 130; // 816.81
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -182,6 +185,7 @@ function loadLocalState() {
     }
   }
   state.timer.timeLeft = state.settings.studyMin * 60;
+  state.timer.totalDuration = state.settings.studyMin * 60;
 }
 
 function checkDateRollover() {
@@ -282,8 +286,8 @@ function initNavigation() {
     });
   });
 
-  document.getElementById('melog-touch-target').addEventListener('click', () => {
-    setMelogMood('purr', "Purrr! Melog loves studying medical school with you! 🐾");
+  document.getElementById('melog-walker-box').addEventListener('click', () => {
+    setMelogSpeech("Purrr! Melog loves walking this study circle with you! 🐾");
     playChime(587.33, 0.3);
   });
 }
@@ -306,8 +310,9 @@ function startTimer() {
   state.timer.isRunning = true;
   document.getElementById('btn-timer-start').style.display = 'none';
   document.getElementById('btn-timer-pause').style.display = 'inline-block';
+  document.getElementById('melog-walker-box').classList.add('timer-running');
 
-  setMelogMood('studying', "Melog is studying peacefully with you. 📚");
+  setMelogSpeech("Trotting along your study wheel! Let's focus! 🐾");
 
   state.timer.intervalId = setInterval(() => {
     if (state.timer.timeLeft > 0) {
@@ -325,7 +330,8 @@ function pauseTimer() {
   clearInterval(state.timer.intervalId);
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
-  setMelogMood('paused', "Taking a quick breath. Melog is waiting! 🐾");
+  document.getElementById('melog-walker-box').classList.remove('timer-running');
+  setMelogSpeech("Paused! Melog is taking a rest on the track. 🐾");
 }
 
 function resetTimer() {
@@ -333,12 +339,18 @@ function resetTimer() {
   state.timer.isRunning = false;
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
+  document.getElementById('melog-walker-box').classList.remove('timer-running');
 
-  if (state.timer.mode === 'study') state.timer.timeLeft = state.settings.studyMin * 60;
-  else if (state.timer.mode === 'shortBreak') state.timer.timeLeft = state.settings.shortMin * 60;
-  else state.timer.timeLeft = state.settings.longMin * 60;
+  if (state.timer.mode === 'study') {
+    state.timer.totalDuration = state.settings.studyMin * 60;
+  } else if (state.timer.mode === 'shortBreak') {
+    state.timer.totalDuration = state.settings.shortMin * 60;
+  } else {
+    state.timer.totalDuration = state.settings.longMin * 60;
+  }
+  state.timer.timeLeft = state.timer.totalDuration;
 
-  setMelogMood('ready', "Timer reset. Ready whenever you are!");
+  setMelogSpeech("Timer reset. Ready to start our loop whenever you are!");
   renderTimer();
 }
 
@@ -347,6 +359,7 @@ function skipTimer() {
   state.timer.isRunning = false;
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
+  document.getElementById('melog-walker-box').classList.remove('timer-running');
 
   if (state.timer.mode === 'study') setTimerMode('shortBreak');
   else setTimerMode('study');
@@ -357,6 +370,7 @@ function completeTimerBlock() {
   state.timer.isRunning = false;
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
+  document.getElementById('melog-walker-box').classList.remove('timer-running');
 
   if (state.timer.mode === 'study') {
     state.game.todayPomodoros++;
@@ -368,7 +382,7 @@ function completeTimerBlock() {
     const newLevel = Math.floor(state.game.xp / 100) + 1;
     if (newLevel > state.game.level) {
       state.game.level = newLevel;
-      setMelogSpeech(`⭐ Level Up! You are now Level ${newLevel}!`);
+      setMelogSpeech(`⭐ Level Up! You reached Level ${newLevel}!`);
     }
 
     const today = getTodayDateString();
@@ -386,7 +400,7 @@ function completeTimerBlock() {
 
     saveLocalState();
     playCompletionFanfare();
-    setMelogMood('celebrating', "🎉 Great study session completed! +10 🐾 Paw Points earned!");
+    setMelogSpeech("🎉 Loop finished! Great job studying! +10 🐾 Paw Points earned!");
 
     if (state.game.todayPomodoros % state.settings.longInterval === 0) {
       setTimeout(() => setTimerMode('longBreak'), 2500);
@@ -395,7 +409,7 @@ function completeTimerBlock() {
     }
   } else {
     playChime(880, 0.4);
-    setMelogMood('ready', "Break time is up. Ready for the next rounds? 🩺");
+    setMelogSpeech("Break over! Ready to walk the next study circle? 🩺");
     setTimerMode('study');
   }
 
@@ -407,25 +421,26 @@ function setTimerMode(mode) {
   const tag = document.getElementById('timer-mode-tag');
 
   if (mode === 'study') {
-    state.timer.timeLeft = state.settings.studyMin * 60;
+    state.timer.totalDuration = state.settings.studyMin * 60;
     tag.textContent = 'STUDY BLOCK';
     tag.style.background = 'var(--blush-200)';
     tag.style.color = 'var(--blush-dark)';
-    setMelogMood('ready', "Ready to conquer another high-yield study block!");
+    setMelogSpeech("Ready to walk another high-yield study block!");
   } else if (mode === 'shortBreak') {
-    state.timer.timeLeft = state.settings.shortMin * 60;
+    state.timer.totalDuration = state.settings.shortMin * 60;
     tag.textContent = 'SHORT BREAK';
     tag.style.background = '#DCF2DB';
     tag.style.color = '#2F612E';
-    setMelogMood('break', "Time to hydrate and relax with Melog. ☕");
+    setMelogSpeech("Break time! Hydrate and relax with Melog. ☕");
   } else {
-    state.timer.timeLeft = state.settings.longMin * 60;
+    state.timer.totalDuration = state.settings.longMin * 60;
     tag.textContent = 'LONG RECOVERY BREAK';
     tag.style.background = '#EFE1F5';
     tag.style.color = '#5C386E';
-    setMelogMood('break', "Great clinical rounds! Enjoy your well-earned long break. 🌷");
+    setMelogSpeech("Great rounds! Enjoy your well-earned recovery rest. 🌷");
   }
 
+  state.timer.timeLeft = state.timer.totalDuration;
   renderTimer();
 }
 
@@ -433,22 +448,25 @@ function setMelogSpeech(msg) {
   document.getElementById('melog-speech').textContent = msg;
 }
 
-function setMelogMood(mood, speech) {
-  if (speech) setMelogSpeech(speech);
-  const eyesOpen = document.querySelector('.eyes-open');
-  const eyesClosed = document.querySelector('.eyes-closed');
-  const mouthCelebrate = document.getElementById('mouth-celebrate');
+// --- RENDER CLOCK & WHEEL ORBIT ---
+function renderTimer() {
+  const m = Math.floor(state.timer.timeLeft / 60);
+  const s = state.timer.timeLeft % 60;
+  const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  document.getElementById('timer-readout').textContent = str;
+  document.title = `${str} 🩺 Purrmodoro`;
 
-  eyesOpen.style.display = 'block';
-  eyesClosed.style.display = 'none';
-  mouthCelebrate.style.display = 'none';
+  // Calculate Fraction Complete (0 to 1)
+  const elapsed = state.timer.totalDuration - state.timer.timeLeft;
+  const progressFraction = state.timer.totalDuration > 0 ? (elapsed / state.timer.totalDuration) : 0;
 
-  if (mood === 'break') {
-    eyesOpen.style.display = 'none';
-    eyesClosed.style.display = 'block';
-  } else if (mood === 'celebrating') {
-    mouthCelebrate.style.display = 'block';
-  }
+  // 1. Update SVG Wheel Progress Bar
+  const offset = CIRCLE_CIRCUMFERENCE * (1 - progressFraction);
+  document.getElementById('wheel-progress-bar').style.strokeDashoffset = offset;
+
+  // 2. Rotate Orbit Arm so Melog Walks Along the Ring (0deg to 360deg)
+  const angleDeg = progressFraction * 360;
+  document.getElementById('wheel-orbit-arm').style.transform = `rotate(${angleDeg}deg)`;
 }
 
 // --- PLANNER ENGINE ---
@@ -601,14 +619,6 @@ function renderAll() {
   renderProgressBar();
 }
 
-function renderTimer() {
-  const m = Math.floor(state.timer.timeLeft / 60);
-  const s = state.timer.timeLeft % 60;
-  const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  document.getElementById('timer-readout').textContent = str;
-  document.title = `${str} 🩺 Purrmodoro`;
-}
-
 function renderTopStats() {
   document.getElementById('val-paw-points').textContent = state.game.pawPoints;
   document.getElementById('val-xp-count').textContent = `${state.game.xp} XP`;
@@ -728,7 +738,8 @@ function initSettingsAndSync() {
     state.settings.soundEnabled = document.getElementById('cfg-sound').value === 'true';
 
     if (!state.timer.isRunning && state.timer.mode === 'study') {
-      state.timer.timeLeft = state.settings.studyMin * 60;
+      state.timer.totalDuration = state.settings.studyMin * 60;
+      state.timer.timeLeft = state.timer.totalDuration;
     }
 
     saveLocalState();
