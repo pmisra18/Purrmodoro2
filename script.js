@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Complete Engine with Dual Pages & Anki Calculation
+   PURRMODORO - Complete Engine & Supabase Sync
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -62,14 +62,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_dual_v9', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_final_v8', JSON.stringify(state));
   if (state.settings.supaUrl && state.settings.supaKey) {
     syncWithSupabase();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_dual_v9');
+  const raw = localStorage.getItem('purrmodoro_pf_final_v8');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
