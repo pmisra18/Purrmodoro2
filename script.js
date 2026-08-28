@@ -1,89 +1,23 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Complete Engine & 60 FPS Procedural Biomes
+   PURRMODORO - Bulletproof Navigation, Timer & Real-time Canvas
    ------------------------------------------------------------- */
 
-// Medical Curriculum with zero textbook requirements on OPP/OMM & CE
-const MEDICAL_CURRICULUM = {
-  "🦴 OPP / OMM": {
-    resources: [
-      "OMM Lab & Practical Review",
-      "General OPP Review"
-    ]
-  },
-  "🩺 CE (Clinical Education)": {
-    resources: [
-      "Written Content Review",
-      "Standardized Patient Practice"
-    ]
-  },
-  "👥 PBL (Problem-Based Learning)": {
-    resources: [
-      "SOAP Note,
-      "Other Textbook",
-      "Exam Review"
-    ]
-  },
-  "🫀 Pathology": {
-    resources: [
-      "Robbins & Cotran Pathologic Basis of Disease",
-      "Pathoma Video & Text",
-      "BRS Pathology"
-    ]
-  },
-  "⚡ Physiology": {
-    resources: [
-      "Guyton and Hall Textbook of Medical Physiology",
-      "Costanzo Physiology",
-      "BRS Physiology"
-    ]
-  },
-  "💊 Pharmacology": {
-    resources: [
-      "Basic & Clinical Pharmacology — Katzung",
-      "Sketchy Pharm",
-      "Lippincott Illustrated Reviews: Pharmacology"
-    ]
-  },
-  "🔬 Microbiology": {
-    resources: [
-      "Medical Microbiology — Murray",
-      "Sketchy Micro",
-      "Clinical Microbiology Made Ridiculously Simple"
-    ]
-  },
-  "🧬 Immunology": {
-    resources: [
-      "Basic Immunology — Abbas",
-      "Cellular and Molecular Immunology"
-    ]
-  },
-  "💀 Anatomy": {
-    resources: [
-      "Moore's Clinically Oriented Anatomy",
-      "Netter's Atlas of Human Anatomy",
-      "Rohen Color Atlas of Anatomy"
-    ]
-  },
-  "🧪 Biochemistry & Genetics": {
-    resources: [
-      "Marks' Basic Medical Biochemistry",
-      "Medical Genetics — Jorde"
-    ]
-  },
-  "🧠 Anki / Spaced Repetition": {
-    resources: [
-      "AnKing Step 1 Comprehensive Deck",
-      "Custom Subject Sub-Decks"
-    ]
-  },
-  "📖 Board Preparation": {
-    resources: [
-      "First Aid for the USMLE / COMLEX Step 1",
-      "COMBANK / TrueLearn Questions",
-      "UWorld Question Bank"
-    ]
-  }
-};
+// Medical Subjects / Textbooks list with dedicated Board Prep options
+const MEDICAL_SUBJECTS = [
+  "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
+  "🦴 OPP / OMM",
+  "🩺 CE (Clinical Education)",
+  "👥 PBL (Problem-Based Learning)",
+  "🫀 Robbins Pathology",
+  "⚡ Guyton Physiology",
+  "💊 Katzung Pharmacology",
+  "🔬 Murray Microbiology",
+  "🧬 Abbas Immunology",
+  "💀 Moore's Anatomy",
+  "🧪 Marks' Biochemistry & Genetics",
+  "🧠 Anki / Spaced Repetition",
+  "✏️ Other Custom Subject"
+];
 
 const WORLD_WINGS = [
   { id: 'w1', name: "Melog's Bedroom", icon: '🛏️', reqLevel: 1 },
@@ -142,13 +76,13 @@ let state = {
 
 const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 140; // 879.64
 
-// --- INITIALIZATION ---
+// --- INIT ---
 document.addEventListener('DOMContentLoaded', () => {
   loadLocalState();
   checkDateRollover();
-  initCurriculumSelectors();
   initNavigation();
   initBiomeControls();
+  initCurriculumSelectors();
   initTimer();
   initPlanner();
   initWorldAndCatalog();
@@ -200,10 +134,35 @@ function checkDateRollover() {
   }
 }
 
-// --- BIOME SWITCHER ---
+// --- NAVIGATION ---
+function initNavigation() {
+  const buttons = document.querySelectorAll('.tab-btn');
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      buttons.forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
+
+      btn.classList.add('active');
+      const target = document.getElementById(btn.dataset.view);
+      if (target) target.classList.add('active');
+
+      if (btn.dataset.view === 'view-world') renderWorld();
+      if (btn.dataset.view === 'view-stats') renderStats();
+    });
+  });
+
+  const melogSprite = document.getElementById('melog-walker');
+  if (melogSprite) {
+    melogSprite.addEventListener('click', () => {
+      setMelogSpeech("Purrr! Melog is energized and studying boards with you! 🐾");
+      playChime(587.33, 0.3);
+    });
+  }
+}
+
+// --- BIOME SELECTOR ---
 function initBiomeControls() {
   const buttons = document.querySelectorAll('.biome-btn');
-
   buttons.forEach(btn => {
     btn.classList.toggle('active', btn.dataset.biome === state.settings.currentBiome);
     btn.addEventListener('click', () => {
@@ -215,9 +174,10 @@ function initBiomeControls() {
   });
 }
 
-// --- PROCEDURAL ANIMATED CANVAS ENGINE (60 FPS) ---
+// --- 60 FPS ANIMATED CANVAS ---
 function initAnimatedBackground() {
   const canvas = document.getElementById('animated-bg-canvas');
+  if (!canvas) return;
   const ctx = canvas.getContext('2d');
   let width, height;
 
@@ -257,7 +217,6 @@ function initAnimatedBackground() {
     ctx.clearRect(0, 0, width, height);
     const biome = state.settings.currentBiome;
 
-    // 1. Base Sky Gradient
     let sky = ctx.createLinearGradient(0, 0, 0, height);
     if (biome === 'sakura') {
       sky.addColorStop(0, '#150E1F');
@@ -271,7 +230,7 @@ function initAnimatedBackground() {
       sky.addColorStop(0, '#0A111E');
       sky.addColorStop(0.65, '#101E30');
       sky.addColorStop(1, '#162C40');
-    } else { // twilight
+    } else {
       sky.addColorStop(0, '#190F24');
       sky.addColorStop(0.55, '#351B33');
       sky.addColorStop(1, '#572736');
@@ -279,7 +238,6 @@ function initAnimatedBackground() {
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, width, height);
 
-    // 2. Stars
     stars.forEach(s => {
       s.alpha += s.twinkle;
       if (s.alpha > 1 || s.alpha < 0.2) s.twinkle *= -1;
@@ -287,7 +245,6 @@ function initAnimatedBackground() {
       ctx.fillRect(s.x, s.y, s.size, s.size);
     });
 
-    // 3. Aurora Wave (For Aurora Peaks Biome)
     if (biome === 'aurora') {
       auroraTime += 0.015;
       ctx.save();
@@ -307,7 +264,6 @@ function initAnimatedBackground() {
       ctx.restore();
     }
 
-    // 4. Distant Voxel Mountain Ridge Silhouette
     ctx.fillStyle = biome === 'taiga' ? '#091612' : biome === 'aurora' ? '#08111A' : '#140A18';
     ctx.beginPath();
     ctx.moveTo(0, height);
@@ -319,7 +275,6 @@ function initAnimatedBackground() {
     ctx.lineTo(width, height);
     ctx.fill();
 
-    // 5. Dynamic Floating Particles (Petals / Fireflies / Snow / Embers)
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
@@ -354,77 +309,44 @@ function initAnimatedBackground() {
 // --- CURRICULUM SELECTORS ---
 function initCurriculumSelectors() {
   const subSelect = document.getElementById('sel-subject');
-  const resSelect = document.getElementById('sel-resource');
+  const taskInput = document.getElementById('ipt-chapter-task');
+  if (!subSelect) return;
 
   subSelect.innerHTML = '';
-  Object.keys(MEDICAL_CURRICULUM).forEach(sub => {
+  MEDICAL_SUBJECTS.forEach(sub => {
     const opt = document.createElement('option');
     opt.value = sub;
     opt.textContent = sub;
     subSelect.appendChild(opt);
   });
 
-  const updateResources = () => {
-    const selectedSub = subSelect.value;
-    resSelect.innerHTML = '';
-    if (MEDICAL_CURRICULUM[selectedSub]) {
-      MEDICAL_CURRICULUM[selectedSub].resources.forEach(res => {
-        const opt = document.createElement('option');
-        opt.value = res;
-        opt.textContent = res;
-        resSelect.appendChild(opt);
-      });
-    }
-    updateTaskBanner();
-  };
+  subSelect.addEventListener('change', updateTaskBanner);
+  if (taskInput) taskInput.addEventListener('input', updateTaskBanner);
 
-  subSelect.addEventListener('change', updateResources);
-  resSelect.addEventListener('change', updateTaskBanner);
-  document.getElementById('ipt-chapter-task').addEventListener('input', updateTaskBanner);
-
-  updateResources();
+  updateTaskBanner();
 }
 
 function updateTaskBanner() {
-  const sub = document.getElementById('sel-subject').value;
-  const task = document.getElementById('ipt-chapter-task').value || 'Focus Session';
-  document.getElementById('task-active-label').textContent = `${sub} • ${task}`;
+  const subSelect = document.getElementById('sel-subject');
+  const taskInput = document.getElementById('ipt-chapter-task');
+  const taskLabel = document.getElementById('task-active-label');
+  if (!subSelect || !taskLabel) return;
+  const sub = subSelect.value;
+  const task = (taskInput && taskInput.value) ? taskInput.value : 'Focus Session';
+  taskLabel.textContent = `${sub} • ${task}`;
 }
 
-// --- NAVIGATION ---
-function initNavigation() {
-  const buttons = document.querySelectorAll('.tab-btn');
-  buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      buttons.forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
-
-      btn.classList.add('active');
-      const target = document.getElementById(btn.dataset.view);
-      if (target) target.classList.add('active');
-
-      if (btn.dataset.view === 'view-world') renderWorld();
-      if (btn.dataset.view === 'view-stats') renderStats();
-    });
-  });
-
-  document.getElementById('melog-walker').addEventListener('click', () => {
-    setMelogSpeech("Purrr! Melog loves studying with you! 🐾");
-    playChime(587.33, 0.3);
-  });
-}
-
-// --- TIMER ENGINE ---
+// --- TIMER CONTROLS ---
 function initTimer() {
   const btnStart = document.getElementById('btn-timer-start');
   const btnPause = document.getElementById('btn-timer-pause');
   const btnReset = document.getElementById('btn-timer-reset');
   const btnSkip = document.getElementById('btn-timer-skip');
 
-  btnStart.addEventListener('click', startTimer);
-  btnPause.addEventListener('click', pauseTimer);
-  btnReset.addEventListener('click', resetTimer);
-  btnSkip.addEventListener('click', skipTimer);
+  if (btnStart) btnStart.addEventListener('click', startTimer);
+  if (btnPause) btnPause.addEventListener('click', pauseTimer);
+  if (btnReset) btnReset.addEventListener('click', resetTimer);
+  if (btnSkip) btnSkip.addEventListener('click', skipTimer);
 }
 
 function startTimer() {
@@ -432,9 +354,11 @@ function startTimer() {
   state.timer.isRunning = true;
   document.getElementById('btn-timer-start').style.display = 'none';
   document.getElementById('btn-timer-pause').style.display = 'inline-block';
-  document.getElementById('melog-walker').classList.add('timer-running');
+  
+  const sprite = document.getElementById('melog-walker');
+  if (sprite) sprite.classList.add('timer-running');
 
-  setMelogSpeech("Trotting along your study wheel! Let's focus! 🐾");
+  setMelogSpeech("Galloping on your study wheel! Let's focus! 🐾");
 
   state.timer.intervalId = setInterval(() => {
     if (state.timer.timeLeft > 0) {
@@ -452,7 +376,9 @@ function pauseTimer() {
   clearInterval(state.timer.intervalId);
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
-  document.getElementById('melog-walker').classList.remove('timer-running');
+
+  const sprite = document.getElementById('melog-walker');
+  if (sprite) sprite.classList.remove('timer-running');
   setMelogSpeech("Paused! Melog is taking a rest on the track. 🐾");
 }
 
@@ -461,7 +387,9 @@ function resetTimer() {
   state.timer.isRunning = false;
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
-  document.getElementById('melog-walker').classList.remove('timer-running');
+
+  const sprite = document.getElementById('melog-walker');
+  if (sprite) sprite.classList.remove('timer-running');
 
   if (state.timer.mode === 'study') {
     state.timer.totalDuration = state.settings.studyMin * 60;
@@ -481,7 +409,9 @@ function skipTimer() {
   state.timer.isRunning = false;
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
-  document.getElementById('melog-walker').classList.remove('timer-running');
+
+  const sprite = document.getElementById('melog-walker');
+  if (sprite) sprite.classList.remove('timer-running');
 
   if (state.timer.mode === 'study') setTimerMode('shortBreak');
   else setTimerMode('study');
@@ -492,7 +422,9 @@ function completeTimerBlock() {
   state.timer.isRunning = false;
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
-  document.getElementById('melog-walker').classList.remove('timer-running');
+
+  const sprite = document.getElementById('melog-walker');
+  if (sprite) sprite.classList.remove('timer-running');
 
   if (state.timer.mode === 'study') {
     state.game.todayPomodoros++;
@@ -511,8 +443,11 @@ function completeTimerBlock() {
     state.game.activeDays[today] = (state.game.activeDays[today] || 0) + 1;
     if (state.game.activeDays[today] === 1) state.game.streak++;
 
-    const sub = document.getElementById('sel-subject').value;
-    const task = document.getElementById('ipt-chapter-task').value || 'Board Prep Focus';
+    const subSelect = document.getElementById('sel-subject');
+    const taskInput = document.getElementById('ipt-chapter-task');
+    const sub = subSelect ? subSelect.value : 'Study';
+    const task = (taskInput && taskInput.value) ? taskInput.value : 'Focus Session';
+
     state.game.sessionLogs.unshift({
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       subject: sub,
@@ -544,21 +479,27 @@ function setTimerMode(mode) {
 
   if (mode === 'study') {
     state.timer.totalDuration = state.settings.studyMin * 60;
-    tag.textContent = 'STUDY BLOCK';
-    tag.style.background = 'rgba(232, 93, 117, 0.18)';
-    tag.style.color = 'var(--blush-glow)';
+    if (tag) {
+      tag.textContent = 'STUDY BLOCK';
+      tag.style.background = 'rgba(232, 93, 117, 0.18)';
+      tag.style.color = 'var(--blush-glow)';
+    }
     setMelogSpeech("Ready to walk another high-yield study block!");
   } else if (mode === 'shortBreak') {
     state.timer.totalDuration = state.settings.shortMin * 60;
-    tag.textContent = 'SHORT BREAK';
-    tag.style.background = 'rgba(139, 212, 161, 0.2)';
-    tag.style.color = 'var(--sage-glow)';
+    if (tag) {
+      tag.textContent = 'SHORT BREAK';
+      tag.style.background = 'rgba(139, 212, 161, 0.2)';
+      tag.style.color = 'var(--sage-glow)';
+    }
     setMelogSpeech("Break time! Hydrate and relax with Melog. ☕");
   } else {
     state.timer.totalDuration = state.settings.longMin * 60;
-    tag.textContent = 'LONG RECOVERY BREAK';
-    tag.style.background = 'rgba(180, 140, 240, 0.2)';
-    tag.style.color = '#D2B0FA';
+    if (tag) {
+      tag.textContent = 'LONG RECOVERY BREAK';
+      tag.style.background = 'rgba(180, 140, 240, 0.2)';
+      tag.style.color = '#D2B0FA';
+    }
     setMelogSpeech("Great rounds! Enjoy your well-earned recovery rest. 🌷");
   }
 
@@ -567,7 +508,8 @@ function setTimerMode(mode) {
 }
 
 function setMelogSpeech(msg) {
-  document.getElementById('melog-speech').textContent = msg;
+  const el = document.getElementById('melog-speech');
+  if (el) el.textContent = msg;
 }
 
 // --- RENDER CLOCK & WHEEL PROGRESS ---
@@ -575,71 +517,87 @@ function renderTimer() {
   const m = Math.floor(state.timer.timeLeft / 60);
   const s = state.timer.timeLeft % 60;
   const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-  document.getElementById('timer-readout').textContent = str;
+  
+  const readout = document.getElementById('timer-readout');
+  if (readout) readout.textContent = str;
   document.title = `${str} 🩺 Purrmodoro`;
 
   const elapsed = state.timer.totalDuration - state.timer.timeLeft;
   const progressFraction = state.timer.totalDuration > 0 ? (elapsed / state.timer.totalDuration) : 0;
 
-  const offset = CIRCLE_CIRCUMFERENCE * (1 - progressFraction);
-  document.getElementById('wheel-progress-bar').style.strokeDashoffset = offset;
+  const bar = document.getElementById('wheel-progress-bar');
+  if (bar) {
+    const offset = CIRCLE_CIRCUMFERENCE * (1 - progressFraction);
+    bar.style.strokeDashoffset = offset;
+  }
 
-  const angleDeg = progressFraction * 360;
-  document.getElementById('orbit-carriage').style.transform = `rotate(${angleDeg}deg)`;
+  const carriage = document.getElementById('orbit-carriage');
+  if (carriage) {
+    const angleDeg = progressFraction * 360;
+    carriage.style.transform = `rotate(${angleDeg}deg)`;
+  }
 }
 
-// --- PLANNER ENGINE ---
+// --- PLANNER ---
 function initPlanner() {
   const btnCalc = document.getElementById('btn-calc-schedule');
   const btnApply = document.getElementById('btn-apply-plan-goal');
   
   const defDate = new Date();
   defDate.setDate(defDate.getDate() + 10);
-  document.getElementById('plan-date').value = defDate.toISOString().split('T')[0];
+  const dateInput = document.getElementById('plan-date');
+  if (dateInput) dateInput.value = defDate.toISOString().split('T')[0];
 
-  btnCalc.addEventListener('click', () => {
-    const dateVal = document.getElementById('plan-date').value;
-    const buffer = parseInt(document.getElementById('plan-buffer').value, 10) || 0;
-    const amount = parseFloat(document.getElementById('plan-amount').value) || 0;
-    const unit = document.getElementById('plan-unit').value;
-    const pace = parseFloat(document.getElementById('plan-pace').value) || 1;
+  if (btnCalc) {
+    btnCalc.addEventListener('click', () => {
+      const dateVal = document.getElementById('plan-date').value;
+      const buffer = parseInt(document.getElementById('plan-buffer').value, 10) || 0;
+      const amount = parseFloat(document.getElementById('plan-amount').value) || 0;
+      const unit = document.getElementById('plan-unit').value;
+      const pace = parseFloat(document.getElementById('plan-pace').value) || 1;
 
-    if (!dateVal) return alert('Please enter an exam date.');
+      if (!dateVal) return alert('Please enter an exam date.');
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    const exam = new Date(dateVal);
-    exam.setHours(0, 0, 0, 0);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const exam = new Date(dateVal);
+      exam.setHours(0, 0, 0, 0);
 
-    const diffDays = Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
-    const studyDays = Math.max(diffDays - buffer, 1);
+      const diffDays = Math.ceil((exam - today) / (1000 * 60 * 60 * 24));
+      const studyDays = Math.max(diffDays - buffer, 1);
 
-    const dailyUnits = Math.ceil(amount / studyDays);
-    const dailyPomos = Math.ceil(dailyUnits / pace);
+      const dailyUnits = Math.ceil(amount / studyDays);
+      const dailyPomos = Math.ceil(dailyUnits / pace);
 
-    const rxContent = document.getElementById('rx-content');
-    rxContent.innerHTML = `
-      <p>📚 <strong>Remaining Material:</strong> ${amount} ${unit}</p>
-      <p>🗓️ <strong>Study Timeline:</strong> ${studyDays} active study days (${buffer} review/buffer days)</p>
-      <p>🎀 <strong>Prescribed Daily Quota:</strong> Approx. <strong>${dailyUnits} ${unit}/day</strong></p>
-      <p>🐱 <strong>Prescribed Focus Blocks:</strong> <strong>${dailyPomos} Pomodoros/day</strong> (at ${pace} ${unit}/session)</p>
-    `;
+      const rxContent = document.getElementById('rx-content');
+      if (rxContent) {
+        rxContent.innerHTML = `
+          <p>📚 <strong>Remaining Material:</strong> ${amount} ${unit}</p>
+          <p>🗓️ <strong>Study Timeline:</strong> ${studyDays} active study days (${buffer} review/buffer days)</p>
+          <p>🎀 <strong>Prescribed Daily Quota:</strong> Approx. <strong>${dailyUnits} ${unit}/day</strong></p>
+          <p>🐱 <strong>Prescribed Focus Blocks:</strong> <strong>${dailyPomos} Pomodoros/day</strong> (at ${pace} ${unit}/session)</p>
+        `;
+      }
 
-    document.getElementById('rx-finish-date').textContent = `Target: ${studyDays} days`;
-    document.getElementById('rx-card').style.display = 'block';
-    btnApply.dataset.targetPomos = dailyPomos;
-  });
+      document.getElementById('rx-finish-date').textContent = `Target: ${studyDays} days`;
+      document.getElementById('rx-card').style.display = 'block';
+      if (btnApply) btnApply.dataset.targetPomos = dailyPomos;
+    });
+  }
 
-  btnApply.addEventListener('click', () => {
-    const target = parseInt(btnApply.dataset.targetPomos, 10);
-    if (target) {
-      state.settings.dailyTarget = target;
-      document.getElementById('cfg-interval').value = target;
-      saveLocalState();
-      renderProgressBar();
-      alert(`Daily goal updated to ${target} Pomodoros! Melog is ready. 🌸`);
-    }
-  });
+  if (btnApply) {
+    btnApply.addEventListener('click', () => {
+      const target = parseInt(btnApply.dataset.targetPomos, 10);
+      if (target) {
+        state.settings.dailyTarget = target;
+        const cfgInterval = document.getElementById('cfg-interval');
+        if (cfgInterval) cfgInterval.value = target;
+        saveLocalState();
+        renderProgressBar();
+        alert(`Daily goal updated to ${target} Pomodoros! Melog is ready. 🌸`);
+      }
+    });
+  }
 }
 
 // --- WORLD & CATALOG ---
@@ -649,6 +607,7 @@ function initWorldAndCatalog() {
 
 function renderWorld() {
   const mapGrid = document.getElementById('world-map-grid');
+  if (!mapGrid) return;
   mapGrid.innerHTML = '';
   WORLD_WINGS.forEach(w => {
     const unlocked = state.game.level >= w.reqLevel;
@@ -663,6 +622,7 @@ function renderWorld() {
   });
 
   const catalogGrid = document.getElementById('furniture-catalog-grid');
+  if (!catalogGrid) return;
   catalogGrid.innerHTML = '';
   state.game.catalog.forEach(item => {
     const cell = document.createElement('div');
@@ -693,42 +653,47 @@ function renderWorld() {
 }
 
 function renderStats() {
-  document.getElementById('txt-stats-streak').textContent = `${state.game.streak} Day Study Streak`;
+  const streakHeader = document.getElementById('txt-stats-streak');
+  if (streakHeader) streakHeader.textContent = `${state.game.streak} Day Study Streak`;
 
   const row = document.getElementById('weekly-tracker-row');
-  row.innerHTML = '';
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-  const today = new Date();
+  if (row) {
+    row.innerHTML = '';
+    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const today = new Date();
 
-  for (let i = 6; i >= 0; i--) {
-    const d = new Date();
-    d.setDate(today.getDate() - i);
-    const dStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    const done = (state.game.activeDays[dStr] || 0) > 0;
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date();
+      d.setDate(today.getDate() - i);
+      const dStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+      const done = (state.game.activeDays[dStr] || 0) > 0;
 
-    const cell = document.createElement('div');
-    cell.className = 'week-cell';
-    cell.innerHTML = `
-      <span>${days[d.getDay()]}</span>
-      <div class="week-circle ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
-    `;
-    row.appendChild(cell);
+      const cell = document.createElement('div');
+      cell.className = 'week-cell';
+      cell.innerHTML = `
+        <span>${days[d.getDay()]}</span>
+        <div class="week-circle ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
+      `;
+      row.appendChild(cell);
+    }
   }
 
   const list = document.getElementById('session-log-list');
-  list.innerHTML = '';
-  if (state.game.sessionLogs.length === 0) {
-    list.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-secondary); font-size:0.85rem;">No study sessions logged today yet.</div>`;
-  } else {
-    state.game.sessionLogs.slice(0, 10).forEach(log => {
-      const item = document.createElement('div');
-      item.className = 'log-row';
-      item.innerHTML = `
-        <div><strong>${escapeHTML(log.subject)}</strong> &mdash; ${escapeHTML(log.task)}</div>
-        <div style="color:var(--text-secondary);">${log.time} (${log.minutes}m)</div>
-      `;
-      list.appendChild(item);
-    });
+  if (list) {
+    list.innerHTML = '';
+    if (state.game.sessionLogs.length === 0) {
+      list.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-secondary); font-size:0.85rem;">No study sessions logged today yet.</div>`;
+    } else {
+      state.game.sessionLogs.slice(0, 10).forEach(log => {
+        const item = document.createElement('div');
+        item.className = 'log-row';
+        item.innerHTML = `
+          <div><strong>${escapeHTML(log.subject)}</strong> &mdash; ${escapeHTML(log.task)}</div>
+          <div style="color:var(--text-secondary);">${log.time} (${log.minutes}m)</div>
+        `;
+        list.appendChild(item);
+      });
+    }
   }
 }
 
@@ -739,18 +704,26 @@ function renderAll() {
 }
 
 function renderTopStats() {
-  document.getElementById('val-paw-points').textContent = state.game.pawPoints;
-  document.getElementById('val-xp-count').textContent = `${state.game.xp} XP`;
-  document.getElementById('val-streak-count').textContent = `${state.game.streak} Day${state.game.streak > 1 ? 's' : ''}`;
-  document.getElementById('user-level-badge').textContent = `Lvl ${state.game.level} • Medical Scholar`;
+  const pawEl = document.getElementById('val-paw-points');
+  const xpEl = document.getElementById('val-xp-count');
+  const streakEl = document.getElementById('val-streak-count');
+  const lvlEl = document.getElementById('user-level-badge');
+
+  if (pawEl) pawEl.textContent = state.game.pawPoints;
+  if (xpEl) xpEl.textContent = `${state.game.xp} XP`;
+  if (streakEl) streakEl.textContent = `${state.game.streak} Day${state.game.streak > 1 ? 's' : ''}`;
+  if (lvlEl) lvlEl.textContent = `Lvl ${state.game.level} • Medical Scholar`;
 }
 
 function renderProgressBar() {
   const target = state.settings.dailyTarget || 8;
   const count = state.game.todayPomodoros;
   const pct = Math.min(Math.round((count / target) * 100), 100);
-  document.getElementById('txt-daily-progress').textContent = `${count} / ${target} Pomodoros (${pct}%)`;
-  document.getElementById('bar-daily-progress').style.width = `${pct}%`;
+
+  const txt = document.getElementById('txt-daily-progress');
+  const bar = document.getElementById('bar-daily-progress');
+  if (txt) txt.textContent = `${count} / ${target} Pomodoros (${pct}%)`;
+  if (bar) bar.style.width = `${pct}%`;
 }
 
 function playChime(freq, dur) {
@@ -782,53 +755,71 @@ function initSettingsAndSync() {
   const form = document.getElementById('settings-form');
   const btnCloud = document.getElementById('btn-save-cloud');
   const btnSyncNow = document.getElementById('btn-force-sync');
+  const btnClear = document.getElementById('btn-clear-local');
 
-  document.getElementById('cfg-study-min').value = state.settings.studyMin;
-  document.getElementById('cfg-short-min').value = state.settings.shortMin;
-  document.getElementById('cfg-long-min').value = state.settings.longMin;
-  document.getElementById('cfg-interval').value = state.settings.longInterval;
-  document.getElementById('cfg-sound').value = String(state.settings.soundEnabled);
-  document.getElementById('cfg-supa-url').value = state.settings.supaUrl || '';
-  document.getElementById('cfg-supa-key').value = state.settings.supaKey || '';
+  const setStudy = document.getElementById('cfg-study-min');
+  const setShort = document.getElementById('cfg-short-min');
+  const setLong = document.getElementById('cfg-long-min');
+  const setIntervalEl = document.getElementById('cfg-interval');
+  const setSound = document.getElementById('cfg-sound');
+  const setSupaUrl = document.getElementById('cfg-supa-url');
+  const setSupaKey = document.getElementById('cfg-supa-key');
+
+  if (setStudy) setStudy.value = state.settings.studyMin;
+  if (setShort) setShort.value = state.settings.shortMin;
+  if (setLong) setLong.value = state.settings.longMin;
+  if (setIntervalEl) setIntervalEl.value = state.settings.longInterval;
+  if (setSound) setSound.value = String(state.settings.soundEnabled);
+  if (setSupaUrl) setSupaUrl.value = state.settings.supaUrl || '';
+  if (setSupaKey) setSupaKey.value = state.settings.supaKey || '';
 
   if (state.settings.supaUrl) {
-    document.getElementById('sync-status-badge').textContent = 'Cloud Active';
-    document.getElementById('sync-status-badge').classList.add('connected');
+    const badge = document.getElementById('sync-status-badge');
+    if (badge) {
+      badge.textContent = 'Cloud Active';
+      badge.classList.add('connected');
+    }
   }
 
-  form.addEventListener('submit', (e) => {
-    e.preventDefault();
-    state.settings.studyMin = parseInt(document.getElementById('cfg-study-min').value, 10);
-    state.settings.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10);
-    state.settings.longMin = parseInt(document.getElementById('cfg-long-min').value, 10);
-    state.settings.longInterval = parseInt(document.getElementById('cfg-interval').value, 10);
-    state.settings.soundEnabled = document.getElementById('cfg-sound').value === 'true';
+  if (form) {
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      state.settings.studyMin = parseInt(document.getElementById('cfg-study-min').value, 10);
+      state.settings.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10);
+      state.settings.longMin = parseInt(document.getElementById('cfg-long-min').value, 10);
+      state.settings.longInterval = parseInt(document.getElementById('cfg-interval').value, 10);
+      state.settings.soundEnabled = document.getElementById('cfg-sound').value === 'true';
 
-    if (!state.timer.isRunning && state.timer.mode === 'study') {
-      state.timer.totalDuration = state.settings.studyMin * 60;
-      state.timer.timeLeft = state.timer.totalDuration;
-    }
+      if (!state.timer.isRunning && state.timer.mode === 'study') {
+        state.timer.totalDuration = state.settings.studyMin * 60;
+        state.timer.timeLeft = state.timer.totalDuration;
+      }
 
-    saveLocalState();
-    renderAll();
-    alert('Preferences saved! 🩺');
-  });
+      saveLocalState();
+      renderAll();
+      alert('Preferences saved! 🩺');
+    });
+  }
 
-  btnCloud.addEventListener('click', () => {
-    state.settings.supaUrl = document.getElementById('cfg-supa-url').value.trim();
-    state.settings.supaKey = document.getElementById('cfg-supa-key').value.trim();
-    saveLocalState();
-    syncWithSupabase();
-  });
+  if (btnCloud) {
+    btnCloud.addEventListener('click', () => {
+      state.settings.supaUrl = document.getElementById('cfg-supa-url').value.trim();
+      state.settings.supaKey = document.getElementById('cfg-supa-key').value.trim();
+      saveLocalState();
+      syncWithSupabase();
+    });
+  }
 
-  btnSyncNow.addEventListener('click', syncWithSupabase);
+  if (btnSyncNow) btnSyncNow.addEventListener('click', syncWithSupabase);
 
-  document.getElementById('btn-clear-local').addEventListener('click', () => {
-    if (confirm('Reset local study data and streak?')) {
-      localStorage.removeItem('purrmodoro_save');
-      location.reload();
-    }
-  });
+  if (btnClear) {
+    btnClear.addEventListener('click', () => {
+      if (confirm('Reset local study data and streak?')) {
+        localStorage.removeItem('purrmodoro_save');
+        location.reload();
+      }
+    });
+  }
 }
 
 async function syncWithSupabase() {
@@ -839,7 +830,7 @@ async function syncWithSupabase() {
   }
 
   const badge = document.getElementById('sync-status-badge');
-  badge.textContent = 'Syncing...';
+  if (badge) badge.textContent = 'Syncing...';
 
   try {
     const res = await fetch(`${supaUrl}/rest/v1/purrmodoro_sync?id=eq.melog_user`, {
@@ -873,15 +864,17 @@ async function syncWithSupabase() {
         })
       });
 
-      badge.textContent = 'Cloud Active';
-      badge.classList.add('connected');
+      if (badge) {
+        badge.textContent = 'Cloud Active';
+        badge.classList.add('connected');
+      }
       saveLocalState();
       renderAll();
     } else {
-      badge.textContent = 'Auth Error';
+      if (badge) badge.textContent = 'Auth Error';
     }
   } catch (err) {
-    badge.textContent = 'Offline';
+    if (badge) badge.textContent = 'Offline';
   }
 }
 
