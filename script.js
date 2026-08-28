@@ -485,7 +485,6 @@ function initCanvas() {
     ctx.fillStyle = dark ? '#0F1E16' : '#28442E';
     ctx.fillRect(x, y, 8 * scale, 50 * scale);
     
-    // Detailed layered pixel pine clusters matching official game art
     const c1 = dark ? '#0B1710' : '#1B3422';
     const c2 = dark ? '#132C1F' : '#335C3E';
     
@@ -501,7 +500,6 @@ function initCanvas() {
   }
 
   function drawMajesticMountain(x, y, width, height, dark) {
-    // Rocky Cliff Face
     ctx.fillStyle = dark ? '#142236' : '#587D9E';
     ctx.beginPath();
     ctx.moveTo(x, y);
@@ -509,7 +507,6 @@ function initCanvas() {
     ctx.lineTo(x + width, y);
     ctx.fill();
 
-    // Crevice shadow shading
     ctx.fillStyle = dark ? '#1C3150' : '#7298B8';
     ctx.beginPath();
     ctx.moveTo(x + width * 0.32, y - height * 0.55);
@@ -517,7 +514,6 @@ function initCanvas() {
     ctx.lineTo(x + width * 0.48, y);
     ctx.fill();
 
-    // Authentic jagged pixel snow cap
     ctx.fillStyle = '#FFFFFF';
     ctx.beginPath();
     ctx.moveTo(x + width * 0.36, y - height * 0.62);
@@ -541,7 +537,6 @@ function initCanvas() {
     cloudOffset += 0.2;
     if (cloudOffset > w) cloudOffset = 0;
 
-    // 1. High-Definition 16-Bit Sky Gradients
     let sky = ctx.createLinearGradient(0, 0, 0, h);
     if (dark) {
       sky.addColorStop(0, '#090D14');
@@ -567,17 +562,13 @@ function initCanvas() {
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. Distinct Biome Environments
     if (biome === 'forest') {
-      // Drifting clouds
       drawVolumetricCloud((w * 0.05 + cloudOffset) % (w + 200) - 100, h * 0.12, 160, 30);
       drawVolumetricCloud((w * 0.55 + cloudOffset * 0.8) % (w + 220) - 110, h * 0.06, 200, 36);
 
-      // Mid-ground rolling pine hills
       ctx.fillStyle = dark ? '#10221A' : '#4E7A53';
       ctx.fillRect(0, h * 0.42, w, 80);
 
-      // Foreground crisp pixel pine forest (matching official art)
       for (let x = -20; x < w * 0.38; x += 28) {
         drawPixelForestCanopy(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.5, dark);
       }
@@ -588,7 +579,6 @@ function initCanvas() {
     else if (biome === 'mountain') {
       drawMajesticMountain(w * 0.1, h * 0.64, 380, 250, dark);
       
-      // Low mountain mist bank
       ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
       ctx.fillRect(0, h * 0.6, w, 40);
     }
@@ -600,14 +590,12 @@ function initCanvas() {
       ctx.fillRect(0, h * 0.74, w, h * 0.3);
     }
     else {
-      // Sakura
       ctx.fillStyle = dark ? '#1A1426' : '#D49CB3';
       ctx.beginPath();
       ctx.arc(w * 0.3, h * 0.78, w * 0.5, 0, Math.PI * 2);
       ctx.fill();
     }
 
-    // Ambient floating particles
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
