@@ -53,9 +53,8 @@
     <!-- Main Dynamic Viewport -->
     <main class="main-content">
       
-      <!-- ================= VIEW 1: STUDY & LIVING CAT WORLD ================= -->
+      <!-- ================= VIEW 1: POMOFOX-STYLE WHEEL TIMER ================= -->
       <section id="view-study" class="view-panel active">
-        <!-- Interactive Room Display -->
         <div class="room-viewport biome-sakura" id="room-viewport">
           
           <!-- Biome Selector Toolbar -->
@@ -71,105 +70,120 @@
           <div class="scenery-backdrop" id="scenery-backdrop"></div>
           <div class="scenery-glass-floor"></div>
 
-          <!-- Melog Center Stage -->
-          <div class="melog-center-stage">
-            <div class="speech-bubble" id="melog-speech">Let's study medical school together! 🩺</div>
+          <!-- Circular Orbit Ring Stage -->
+          <div class="wheel-stage-container">
             
-            <div class="cat-svg-wrapper" id="melog-touch-target" title="Pet Melog">
-              <svg viewBox="0 0 320 260" class="melog-vector">
-                <defs>
-                  <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
-                    <feDropShadow dx="0" dy="5" stdDeviation="4" flood-color="#874751" flood-opacity="0.18" />
-                  </filter>
-                </defs>
+            <!-- SVG Circular Track -->
+            <svg class="wheel-svg" viewBox="0 0 320 320">
+              <defs>
+                <linearGradient id="wheelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#FFB7C5" />
+                  <stop offset="50%" stop-color="#E89BAA" />
+                  <stop offset="100%" stop-color="#D47B8D" />
+                </linearGradient>
+              </defs>
+              <!-- Background Ring Track -->
+              <circle cx="160" cy="160" r="130" class="wheel-bg-track" />
+              <!-- Animated Progress Ring -->
+              <circle cx="160" cy="160" r="130" class="wheel-progress-bar" id="wheel-progress-bar" />
+            </svg>
 
-                <!-- Soft Blush Floor Shadow -->
-                <ellipse cx="160" cy="235" rx="100" ry="18" fill="#F7C8D0" opacity="0.6" />
+            <!-- Center Clock Display -->
+            <div class="wheel-center-content">
+              <div class="speech-bubble" id="melog-speech">Let's walk through this study block! 🐾</div>
+              <div class="mode-tag" id="timer-mode-tag">STUDY BLOCK</div>
+              <div class="clock-display" id="timer-readout">25:00</div>
+              <div class="task-active-label" id="task-active-label">Ready to study</div>
+            </div>
 
-                <!-- ================= MELOG VECTOR MODEL ================= -->
-                <g class="melog-figure" id="melog-figure">
-                  
-                  <!-- Fluffy Upright Curled Tail -->
-                  <g class="melog-tail-group">
-                    <path d="M190,175 C240,175 285,145 275,95 C265,55 215,65 220,105 C222,125 242,130 248,110 C252,90 232,85 240,78 C252,72 262,90 258,110 C250,140 215,155 185,160" 
-                          fill="#FCECD7" stroke="#4A2A20" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    <!-- Ginger Tail Bands -->
-                    <path d="M232,95 Q245,102 248,112" fill="none" stroke="#DE9F65" stroke-width="4" stroke-linecap="round"/>
-                    <path d="M238,125 Q252,130 255,140" fill="none" stroke="#DE9F65" stroke-width="4" stroke-linecap="round"/>
-                  </g>
+            <!-- Rotating Orbit Arm (Carries Melog Around the Circle) -->
+            <div class="wheel-orbit-arm" id="wheel-orbit-arm">
+              <div class="melog-walker-box" id="melog-walker-box">
+                <svg viewBox="0 0 160 140" class="melog-vector">
+                  <defs>
+                    <filter id="walkerShadow" x="-10%" y="-10%" width="120%" height="120%">
+                      <feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#4A2A20" flood-opacity="0.25" />
+                    </filter>
+                  </defs>
 
-                  <!-- Body & Little Paws -->
-                  <g class="melog-body">
-                    <!-- Main Body Contour -->
-                    <path d="M125,145 C115,160 115,225 125,230 C132,235 140,215 145,200 C150,215 158,235 165,230 C172,225 170,195 182,195 C190,215 198,235 205,230 C212,225 210,185 205,160 C198,145 165,140 125,145 Z" 
-                          fill="#FDF4EA" stroke="#4A2A20" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round"/>
-
-                    <!-- Ginger Peach Coat Accents on Flank -->
-                    <path d="M185,165 C205,168 208,190 198,210" fill="none" stroke="#F5C08C" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
-
-                    <!-- Star Bell Collar -->
-                    <path d="M120,145 Q160,165 200,145" fill="none" stroke="#F7BAC5" stroke-width="7" stroke-linecap="round"/>
-                    <path d="M160,154 L163,162 L171,162 L165,167 L167,175 L160,170 L153,175 L155,167 L149,162 L157,162 Z" 
-                          fill="#FFD23F" stroke="#4A2A20" stroke-width="3" stroke-linejoin="round"/>
-                  </g>
-
-                  <!-- Big Cute Head -->
-                  <g class="melog-head-group">
-                    <!-- Head Outline & Peach Cream Base Fur -->
-                    <path d="M92,85 C75,55 92,30 118,34 C132,36 142,42 160,42 C178,42 188,36 202,34 C228,30 245,55 228,85 C248,110 238,145 205,152 C185,156 135,156 115,152 C82,145 72,110 92,85 Z" 
-                          fill="#FDF4EA" stroke="#4A2A20" stroke-width="6.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#softShadow)"/>
-
-                    <!-- Soft Ginger Brow Patches -->
-                    <path d="M108,46 C120,44 135,55 128,70" fill="none" stroke="#F5C08C" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
-                    <path d="M212,46 C200,44 185,55 192,70" fill="none" stroke="#F5C08C" stroke-width="8" stroke-linecap="round" opacity="0.6"/>
-
-                    <!-- Inner Pink Ears -->
-                    <path d="M102,68 C96,54 105,42 118,45 C124,46 128,58 124,68 Z" fill="#FCAEBA"/>
-                    <path d="M218,68 C224,54 215,42 202,45 C196,46 192,58 196,68 Z" fill="#FCAEBA"/>
-
-                    <!-- Rosy Blush Cheeks -->
-                    <ellipse cx="108" cy="116" rx="12" ry="7" fill="#FCAAB7" opacity="0.85"/>
-                    <ellipse cx="212" cy="116" rx="12" ry="7" fill="#FCAAB7" opacity="0.85"/>
-
-                    <!-- Whiskers -->
-                    <path d="M86,108 L64,106 M86,116 L64,118" stroke="#4A2A20" stroke-width="5" stroke-linecap="round"/>
-                    <path d="M234,108 L256,106 M234,116 L256,118" stroke="#4A2A20" stroke-width="5" stroke-linecap="round"/>
-
-                    <!-- Blinking Sparkle Eyes (Natural Blink Only) -->
-                    <g class="melog-eyes-layer">
-                      <g class="eyes eyes-open">
-                        <!-- Left Big Eye -->
-                        <ellipse cx="126" cy="102" rx="16" ry="18" fill="#4A2A20"/>
-                        <!-- Top Sparkle -->
-                        <circle cx="121" cy="94" r="5" fill="#FFFFFF"/>
-                        <!-- Star Reflection Sparkle -->
-                        <path d="M128,104 L130,109 L135,109 L131,112 L133,117 L128,114 L123,117 L125,112 L121,109 L126,109 Z" fill="#FFFFFF"/>
-
-                        <!-- Right Big Eye -->
-                        <ellipse cx="194" cy="102" rx="16" ry="18" fill="#4A2A20"/>
-                        <!-- Top Sparkle -->
-                        <circle cx="189" cy="94" r="5" fill="#FFFFFF"/>
-                        <!-- Star Reflection Sparkle -->
-                        <path d="M196,104 L198,109 L203,109 L199,112 L201,117 L196,114 L191,117 L193,112 L189,109 L194,109 Z" fill="#FFFFFF"/>
-                      </g>
-
-                      <!-- Sleeping / Rest Eyes -->
-                      <g class="eyes eyes-closed" style="display: none;">
-                        <path d="M112,104 Q126,116 140,104" fill="none" stroke="#4A2A20" stroke-width="6" stroke-linecap="round"/>
-                        <path d="M180,104 Q194,116 208,104" fill="none" stroke="#4A2A20" stroke-width="6" stroke-linecap="round"/>
-                      </g>
+                  <!-- ================= WALKING MELOG MODEL ================= -->
+                  <g class="melog-character" id="melog-character">
+                    
+                    <!-- Swishing Tail -->
+                    <g class="walker-tail">
+                      <path d="M120,80 C150,75 160,50 145,35 C135,25 120,38 128,50 C132,56 142,55 138,45" 
+                            fill="#FCECD7" stroke="#4A2A20" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      <path d="M134,48 Q142,50 144,58" fill="none" stroke="#DE9F65" stroke-width="3" stroke-linecap="round"/>
                     </g>
 
-                    <!-- Cute :3 Cat Mouth -->
-                    <path d="M148,112 Q154,119 160,113 Q166,119 172,112" fill="none" stroke="#4A2A20" stroke-width="5" stroke-linecap="round"/>
+                    <!-- Back Left Paw -->
+                    <path class="paw-back-left" d="M108,88 Q110,112 104,115" stroke="#4A2A20" stroke-width="6" stroke-linecap="round" fill="none"/>
                     
-                    <!-- Happy Open Mouth for Celebrations -->
-                    <path id="mouth-celebrate" d="M150,113 Q160,128 170,113 Z" fill="#E85D75" stroke="#4A2A20" stroke-width="4" style="display: none;"/>
+                    <!-- Front Left Paw -->
+                    <path class="paw-front-left" d="M72,88 Q70,112 65,115" stroke="#4A2A20" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+                    <!-- Main Body -->
+                    <path d="M60,65 C55,75 55,100 70,102 C85,102 110,100 120,88 C125,80 120,65 105,62 C90,60 70,60 60,65 Z" 
+                          fill="#FDF4EA" stroke="#4A2A20" stroke-width="5" stroke-linejoin="round" filter="url(#walkerShadow)"/>
+
+                    <!-- Ginger Body Patch -->
+                    <path d="M90,68 C105,68 112,80 106,94" fill="none" stroke="#F5C08C" stroke-width="5" stroke-linecap="round" opacity="0.7"/>
+
+                    <!-- Back Right Paw -->
+                    <path class="paw-back-right" d="M96,90 Q98,114 104,116" stroke="#4A2A20" stroke-width="6" stroke-linecap="round" fill="none"/>
+                    
+                    <!-- Front Right Paw -->
+                    <path class="paw-front-right" d="M58,88 Q60,114 66,116" stroke="#4A2A20" stroke-width="6" stroke-linecap="round" fill="none"/>
+
+                    <!-- Star Collar -->
+                    <path d="M58,68 Q75,76 88,68" fill="none" stroke="#F7BAC5" stroke-width="4.5" stroke-linecap="round"/>
+                    <polygon points="72,74 74,78 78,78 75,81 76,85 72,83 68,85 69,81 66,78 70,78" fill="#FFD23F" stroke="#4A2A20" stroke-width="1.8"/>
+
+                    <!-- Sweet Head -->
+                    <g class="walker-head">
+                      <!-- Head Contour -->
+                      <path d="M42,48 C32,32 40,16 54,18 C62,19 68,22 78,22 C88,22 94,19 102,18 C116,16 124,32 114,48 C126,62 120,82 102,86 C90,88 66,88 54,86 C36,82 30,62 42,48 Z" 
+                            fill="#FDF4EA" stroke="#4A2A20" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+
+                      <!-- Inner Pink Ears -->
+                      <path d="M48,36 C44,28 50,22 56,24 Z" fill="#FCAEBA"/>
+                      <path d="M108,36 C112,28 106,22 100,24 Z" fill="#FCAEBA"/>
+
+                      <!-- Soft Blush Cheeks -->
+                      <ellipse cx="50" cy="62" rx="7" ry="4.5" fill="#FCAAB7" opacity="0.85"/>
+                      <ellipse cx="106" cy="62" rx="7" ry="4.5" fill="#FCAAB7" opacity="0.85"/>
+
+                      <!-- Whiskers -->
+                      <path d="M40,58 L28,56 M40,64 L28,66" stroke="#4A2A20" stroke-width="3.5" stroke-linecap="round"/>
+                      <path d="M116,58 L128,56 M116,64 L128,66" stroke="#4A2A20" stroke-width="3.5" stroke-linecap="round"/>
+
+                      <!-- Eyes: Blink Only -->
+                      <g class="walker-eyes">
+                        <g class="eyes eyes-open">
+                          <ellipse cx="62" cy="54" rx="9" ry="10" fill="#4A2A20"/>
+                          <circle cx="59" cy="50" r="3" fill="#FFFFFF"/>
+                          <circle cx="65" cy="58" r="1.8" fill="#FFFFFF"/>
+
+                          <ellipse cx="94" cy="54" rx="9" ry="10" fill="#4A2A20"/>
+                          <circle cx="91" cy="50" r="3" fill="#FFFFFF"/>
+                          <circle cx="97" cy="58" r="1.8" fill="#FFFFFF"/>
+                        </g>
+                        <g class="eyes eyes-closed" style="display:none;">
+                          <path d="M54,55 Q62,62 70,55" fill="none" stroke="#4A2A20" stroke-width="3.8" stroke-linecap="round"/>
+                          <path d="M86,55 Q94,62 102,55" fill="none" stroke="#4A2A20" stroke-width="3.8" stroke-linecap="round"/>
+                        </g>
+                      </g>
+
+                      <!-- Cute Mouth -->
+                      <path d="M72,60 Q76,64 78,61 Q80,64 84,60" fill="none" stroke="#4A2A20" stroke-width="3.5" stroke-linecap="round"/>
+                    </g>
                   </g>
-                </g>
-              </svg>
+                </svg>
+              </div>
             </div>
+
           </div>
+
         </div>
 
         <!-- Study Dashboard Card -->
@@ -187,12 +201,6 @@
               <label>Specific Target / Chapter</label>
               <input type="text" id="ipt-chapter-task" class="custom-input" placeholder="e.g. Sacral Diagnosis & Treatment Practical Review" />
             </div>
-          </div>
-
-          <div class="timer-center">
-            <div class="mode-tag" id="timer-mode-tag">STUDY BLOCK</div>
-            <div class="clock-display" id="timer-readout">25:00</div>
-            <div class="task-active-label" id="task-active-label">Ready to study</div>
           </div>
 
           <div class="timer-btn-row">
