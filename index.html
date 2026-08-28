@@ -270,8 +270,8 @@
       top: -24px;
       left: 50%;
       transform: translateX(-50%);
-      width: 48px;
-      height: 48px;
+      width: 52px;
+      height: 52px;
       pointer-events: auto;
       cursor: pointer;
     }
@@ -283,7 +283,7 @@
       shape-rendering: crispEdges;
     }
 
-    /* ================= FLUID TROT & BALANCED CAT TAIL ================= */
+    /* ================= FLUID TROT & ATTACHED TAIL/EARS ================= */
     .timer-running .px-cat-master {
       animation: catHopBounding 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: 8px 11px;
@@ -306,9 +306,9 @@
       transform-origin: 4px 8px;
     }
 
-    .timer-running .px-balanced-tail {
-      animation: balancedTailSway 0.54s infinite ease-in-out;
-      transform-origin: 3px 6px;
+    .timer-running .px-attached-tail {
+      animation: attachedTailSway 0.54s infinite ease-in-out;
+      transform-origin: 2px 7px;
     }
 
     @keyframes catHopBounding {
@@ -339,12 +339,12 @@
       100% { transform: rotate(20deg); }
     }
     @keyframes strideBackRight {
-      0% { transform: rotate(-14deg); }
-      35% { transform: rotate(22deg); }
-      70% { transform: rotate(-4deg); }
-      100% { transform: rotate(-14deg); }
+      0% { transform: rotate(-16deg); }
+      35% { transform: rotate(24deg); }
+      70% { transform: rotate(-6deg); }
+      100% { transform: rotate(-16deg); }
     }
-    @keyframes balancedTailSway {
+    @keyframes attachedTailSway {
       0% { transform: rotate(-4deg); }
       40% { transform: rotate(14deg); }
       75% { transform: rotate(-1deg); }
@@ -621,16 +621,16 @@
           <div class="orbit-arm" id="orbit-arm">
             <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
               
-              <!-- 100% PURE 16x16 PIXEL RIG (BALANCED REALISTIC TAIL & SHARP POINTED EARS) -->
+              <!-- 100% PURE 16x16 PIXEL RIG: ATTACHED TAIL & SHARP POINTED EARS -->
               <svg viewBox="0 0 16 16" class="pixel-melog-svg">
                 <g class="px-cat-master">
                   
-                  <!-- Balanced Natural Cat Tail -->
+                  <!-- Perfectly Attached Natural Cat Tail (Anchored at rear body 2, 7) -->
                   <g class="px-balanced-tail">
-                    <rect x="0" y="3" width="2" height="2" fill="#2C1E16" />
-                    <rect x="1" y="2" width="2" height="2" fill="#F4C28D" />
-                    <rect x="2" y="1" width="2" height="2" fill="#D9965B" />
-                    <rect x="3" y="0" width="2" height="2" fill="#FFFFFF" />
+                    <rect x="2" y="6" width="2" height="2" fill="#2C1E16" />
+                    <rect x="1" y="5" width="2" height="2" fill="#F4C28D" />
+                    <rect x="0" y="3" width="2" height="2" fill="#D9965B" />
+                    <rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" />
                   </g>
 
                   <!-- Back Left Leg -->
@@ -645,7 +645,7 @@
                     <rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" />
                   </g>
 
-                  <!-- Main Torso -->
+                  <!-- Main Torso (Fully Fused) -->
                   <g class="px-torso">
                     <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
                     <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
@@ -672,14 +672,14 @@
 
                   <!-- Head with Sharp Pointed Cat Ears -->
                   <g class="px-head">
-                    <!-- Left Pointed Ear -->
-                    <polygon points="7,4 5,0 8,3" fill="#2C1E16" />
-                    <polygon points="7,3 6,1 7,3" fill="#F4C28D" />
+                    <!-- Left Pointed Cat Ear -->
+                    <polygon points="7,4 4,0 8,3" fill="#2C1E16" />
+                    <polygon points="7,3 5,1 7,3" fill="#F4C28D" />
                     <polygon points="7,3 6,2 7,3" fill="#FCAEBA" />
 
-                    <!-- Right Pointed Ear -->
-                    <polygon points="10,4 12,0 9,3" fill="#2C1E16" />
-                    <polygon points="10,3 11,1 10,3" fill="#F4C28D" />
+                    <!-- Right Pointed Cat Ear -->
+                    <polygon points="10,4 13,0 9,3" fill="#2C1E16" />
+                    <polygon points="10,3 12,1 10,3" fill="#F4C28D" />
                     <polygon points="10,3 11,2 10,3" fill="#FCAEBA" />
 
                     <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
@@ -734,8 +734,9 @@
           <div class="form-item">
             <label for="plan-unit">Material Unit</label>
             <select id="plan-unit" class="med-select">
-              <option value="pages">Pages</option>
-              <option value="Anki cards">Anki Cards</option>
+              <option value="pages and anki cards">Pages &amp; Anki Cards</option>
+              <option value="pages">Pages Only</option>
+              <option value="Anki cards">Anki Cards Only</option>
               <option value="lectures">Lectures</option>
               <option value="board questions">Board / UWorld Qs</option>
               <option value="chapters">Chapters</option>
@@ -920,14 +921,14 @@
     }
 
     function saveState() {
-      localStorage.setItem('purrmodoro_pf_final_v5', JSON.stringify(state));
+      localStorage.setItem('purrmodoro_pf_final_v7', JSON.stringify(state));
       if (state.settings.supaUrl && state.settings.supaKey) {
         syncWithSupabase();
       }
     }
 
     function loadState() {
-      const raw = localStorage.getItem('purrmodoro_pf_final_v5');
+      const raw = localStorage.getItem('purrmodoro_pf_final_v7');
       if (raw) {
         try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
       }
@@ -1328,7 +1329,7 @@
       }
     }
 
-    /* 60 FPS Procedural Pixel Canvas matching your uploaded reference landscape images */
+    /* 60 FPS Procedural Pixel Canvas matching your exact reference landscape images */
     function initCanvas() {
       const canvas = document.getElementById('pixel-bg-canvas');
       if (!canvas) return;
@@ -1350,21 +1351,18 @@
         vy: Math.random() * 0.4 + 0.2
       }));
 
-      // Detailed Pixel Pine Tree matching your forest reference
       function drawDetailedPine(x, y, scale, dark) {
-        // Trunk
-        ctx.fillStyle = dark ? '#15241C' : '#321D16';
+        ctx.fillStyle = dark ? '#112218' : '#321D16';
         ctx.fillRect(x, y, 6 * scale, 42 * scale);
 
-        // Layered Pine Needles matching the uploaded forest style
         const pDark = dark ? '#0E291C' : '#234731';
         const pMed = dark ? '#153A26' : '#316345';
         const pLight = dark ? '#1D4F35' : '#45855B';
 
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 5; i++) {
           let tw = (32 - i * 5) * scale;
           let th = 8 * scale;
-          let ty = y - i * 6 * scale - 2 * scale;
+          let ty = y - i * 7 * scale - 4 * scale;
           ctx.fillStyle = pDark;
           ctx.fillRect(x - tw / 2 + 3 * scale, ty, tw, th);
           ctx.fillStyle = pMed;
@@ -1374,7 +1372,6 @@
         }
       }
 
-      // Detailed Mountain Peak matching your mountain reference
       function drawDetailedMountain(x, y, width, height, dark) {
         ctx.fillStyle = dark ? '#182C48' : '#6A92AF';
         ctx.beginPath();
@@ -1383,7 +1380,6 @@
         ctx.lineTo(x + width, y);
         ctx.fill();
 
-        // Shaded rock crevices & snow caps
         ctx.fillStyle = dark ? '#243D60' : '#88AFD2';
         ctx.beginPath();
         ctx.moveTo(x + width * 0.3, y - height * 0.6);
@@ -1391,7 +1387,7 @@
         ctx.lineTo(x + width * 0.45, y);
         ctx.fill();
 
-        ctx.fillStyle = '#FFFFFF'; // Snow cap
+        ctx.fillStyle = '#FFFFFF';
         ctx.beginPath();
         ctx.moveTo(x + width * 0.38, y - height * 0.62);
         ctx.lineTo(x + width / 2, y - height);
@@ -1400,7 +1396,6 @@
         ctx.fill();
       }
 
-      // Detailed Sunset Cloud matching your sunset reference
       function drawSunsetCloud(x, y, w_val, h_val) {
         ctx.fillStyle = '#F8AD9D';
         ctx.fillRect(x, y, w_val, h_val);
@@ -1415,29 +1410,24 @@
         const dark = state.settings.darkMode;
         const biome = state.settings.currentBiome;
 
-        // 1. Unique Sky Backgrounds for each Biome matching your uploaded images
         let sky = ctx.createLinearGradient(0, 0, 0, h);
         if (dark) {
           sky.addColorStop(0, '#0B101B');
           sky.addColorStop(0.65, '#172236');
           sky.addColorStop(1, '#233852');
         } else if (biome === 'forest') {
-          // Exactly matches the bright blue sky and fluffy white clouds in your forest reference
           sky.addColorStop(0, '#5899C5');
-          sky.addColorStop(0.5, '#89BFE0');
+          sky.addColorStop(0.55, '#89BFE0');
           sky.addColorStop(1, '#C2E3F1');
         } else if (biome === 'mountain') {
-          // Exactly matches the crisp alpine blue sky in your mountain reference
           sky.addColorStop(0, '#3A74B3');
           sky.addColorStop(0.6, '#649ACF');
           sky.addColorStop(1, '#B3D4EE');
         } else if (biome === 'sunset') {
-          // Exactly matches the purple/pink evening cloud gradient in your sunset reference
           sky.addColorStop(0, '#3F376B');
           sky.addColorStop(0.5, '#735E8E');
           sky.addColorStop(1, '#D8A4BE');
         } else {
-          // Sakura Spring
           sky.addColorStop(0, '#FEE5ED');
           sky.addColorStop(0.6, '#F8CAD9');
           sky.addColorStop(1, '#D8EAE4');
@@ -1445,19 +1435,15 @@
         ctx.fillStyle = sky;
         ctx.fillRect(0, 0, w, h);
 
-        // 2. Distinct Background Elements per Biome
         if (biome === 'forest') {
-          // Fluffy pixel cumulus clouds matching reference
-          drawSunsetCloud(w * 0.05, h * 0.1, 160, 32);
-          drawSunsetCloud(w * 0.55, h * 0.06, 200, 36);
+          drawSunsetCloud(w * 0.05, h * 0.08, 140, 26, dark ? 0.2 : 0.85);
+          drawSunsetCloud(w * 0.55, h * 0.05, 180, 32, dark ? 0.2 : 0.9);
 
-          // Distant rolling green forest hills
           ctx.fillStyle = '#8AB07A';
           ctx.fillRect(0, h * 0.38, w, 70);
           ctx.fillStyle = '#5A8850';
           ctx.fillRect(0, h * 0.44, w, 60);
 
-          // Dense Foreground Pine Forest matching reference
           for (let x = -15; x < w * 0.38; x += 24) {
             drawDetailedPine(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.45, dark);
           }
@@ -1466,15 +1452,12 @@
           }
         } 
         else if (biome === 'mountain') {
-          // Massive Alpine Peak matching reference
           drawDetailedMountain(w * 0.15, h * 0.62, 340, 220, dark);
 
-          // Low cloud bank at the base of the mountain
           ctx.fillStyle = 'rgba(255,255,255,0.75)';
           ctx.fillRect(0, h * 0.58, w, 35);
         }
         else if (biome === 'sunset') {
-          // Massive pixel sunset cumulus clouds matching reference
           drawSunsetCloud(w * 0.1, h * 0.2, 220, 60);
           drawSunsetCloud(w * 0.45, h * 0.45, 260, 70);
 
@@ -1482,14 +1465,12 @@
           ctx.fillRect(0, h * 0.72, w, h * 0.3);
         }
         else {
-          // Sakura
           ctx.fillStyle = dark ? '#1A1426' : '#E0B5C6';
           ctx.beginPath();
           ctx.arc(w * 0.3, h * 0.75, w * 0.5, 0, Math.PI * 2);
           ctx.fill();
         }
 
-        // Floating particles
         particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
