@@ -59,10 +59,10 @@
       align-items: center;
       justify-content: center;
       position: relative;
-      overflow-x: hidden;
+      overflow: hidden;
     }
 
-    /* Procedural 60 FPS Background Canvas */
+    /* 60 FPS Procedural Pixel Canvas Background */
     #pixel-bg-canvas {
       position: fixed;
       top: 0;
@@ -72,7 +72,6 @@
       z-index: 0;
     }
 
-    /* Main Container Shell */
     .app-shell {
       position: relative;
       z-index: 10;
@@ -85,7 +84,7 @@
       padding: 1rem 1rem 5.5rem 1rem;
     }
 
-    /* Floating Frosted Glass Card */
+    /* Center Glass Card */
     .pomofox-glass-card {
       width: 100%;
       background: var(--card-glass);
@@ -101,7 +100,6 @@
       gap: 1.15rem;
     }
 
-    /* View Panels */
     .view-panel {
       display: none;
       width: 100%;
@@ -150,7 +148,7 @@
       box-shadow: 0 4px 0px var(--btn-dark-shadow);
     }
 
-    /* Medical Subject & Goal Input */
+    /* Medical Subject Dropdown */
     .medical-select-wrap {
       width: 100%;
       display: flex;
@@ -212,7 +210,7 @@
       color: #FFFFFF;
     }
 
-    /* Central Wheel Timer Stage */
+    /* Central Wheel Timer */
     .timer-circle-stage {
       position: relative;
       width: 250px;
@@ -242,8 +240,8 @@
     .circle-progress-ring {
       fill: none;
       stroke: #EAA064;
-      stroke-width: 6;
-      stroke-linecap: round;
+      stroke-width: 24;
+      stroke-linecap: square;
       stroke-dasharray: 722.56; /* 2 * PI * 115 */
       stroke-dashoffset: 0;
       transition: stroke-dashoffset 0.5s ease;
@@ -260,7 +258,7 @@
       user-select: none;
     }
 
-    /* Orbit Arm Rotating Melog */
+    /* Rotating Orbit Arm (Carries Melog) */
     .orbit-arm {
       position: absolute;
       top: 0;
@@ -272,14 +270,14 @@
       transition: transform 0.5s ease;
     }
 
-    /* Exact Pixel Art Melog Running Sprite */
+    /* Pixel Melog Sprite Box */
     .melog-sprite-box {
       position: absolute;
-      top: -15px;
+      top: -16px;
       left: 50%;
       transform: translateX(-50%);
-      width: 36px;
-      height: 36px;
+      width: 32px;
+      height: 32px;
       pointer-events: auto;
       cursor: pointer;
     }
@@ -288,22 +286,23 @@
       width: 100%;
       height: 100%;
       overflow: visible;
+      shape-rendering: crispEdges;
     }
 
-    /* 4-Paw Pixel Trot */
-    .timer-running .leg-f-r { animation: legRunA 0.24s infinite alternate ease-in-out; }
-    .timer-running .leg-b-l { animation: legRunA 0.24s infinite alternate ease-in-out 0.04s; }
-    .timer-running .leg-f-l { animation: legRunB 0.24s infinite alternate ease-in-out 0.12s; }
-    .timer-running .leg-b-r { animation: legRunB 0.24s infinite alternate ease-in-out 0.16s; }
-    .timer-running .melog-torso { animation: bodyBob 0.24s infinite alternate ease-in-out; }
-    .timer-running .melog-tail { animation: tailBob 0.3s infinite alternate ease-in-out; }
+    /* 100% Strict Pixel Grid Leg Motion */
+    .timer-running .px-leg-fr { animation: pxRunA 0.22s infinite alternate ease-in-out; }
+    .timer-running .px-leg-bl { animation: pxRunA 0.22s infinite alternate ease-in-out 0.04s; }
+    .timer-running .px-leg-fl { animation: pxRunB 0.22s infinite alternate ease-in-out 0.11s; }
+    .timer-running .px-leg-br { animation: pxRunB 0.22s infinite alternate ease-in-out 0.15s; }
+    .timer-running .px-body-group { animation: pxBob 0.22s infinite alternate ease-in-out; }
+    .timer-running .px-tail-group { animation: pxTailBob 0.28s infinite alternate ease-in-out; }
 
-    @keyframes legRunA { 0% { transform: translate(0, 0); } 100% { transform: translate(3px, -3px); } }
-    @keyframes legRunB { 0% { transform: translate(3px, -3px); } 100% { transform: translate(-2px, 2px); } }
-    @keyframes bodyBob { 0% { transform: translateY(0); } 100% { transform: translateY(-2px); } }
-    @keyframes tailBob { 0% { transform: rotate(0deg); } 100% { transform: rotate(14deg); } }
+    @keyframes pxRunA { 0% { transform: translate(0, 0); } 100% { transform: translate(2px, -2px); } }
+    @keyframes pxRunB { 0% { transform: translate(2px, -2px); } 100% { transform: translate(-2px, 2px); } }
+    @keyframes pxBob { 0% { transform: translateY(0); } 100% { transform: translateY(-1.5px); } }
+    @keyframes pxTailBob { 0% { transform: rotate(0deg); } 100% { transform: rotate(15deg); } }
 
-    /* Bottom Cycle Tracker */
+    /* Bottom Cycle Pill */
     .bottom-cycle-pill {
       background: rgba(255, 255, 255, 0.88);
       border: 2px solid rgba(0, 0, 0, 0.06);
@@ -340,7 +339,7 @@
 
     .tomato-dot.active { background: #EAA064; }
 
-    /* Grids & Cards (Planner, World, Stats) */
+    /* Other Panels */
     .section-heading {
       font-size: 1.15rem;
       margin-bottom: 0.4rem;
@@ -569,7 +568,7 @@
           <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
         </div>
 
-        <!-- Wheel Timer Stage with Melog on Track -->
+        <!-- Wheel Timer Stage with Melog Tangent to the Track -->
         <div class="timer-circle-stage">
           <svg class="circle-svg" viewBox="0 0 250 250">
             <circle cx="125" cy="125" r="115" class="circle-bg-ring" />
@@ -579,60 +578,96 @@
           <!-- Countdown Digits -->
           <div class="timer-digits-text" id="timer-readout">25:00</div>
 
-          <!-- Orbit Arm with Exact Pixel-Art Melog Model -->
+          <!-- Orbit Arm Carrying Pixel Melog Around the Circle Track -->
           <div class="orbit-arm" id="orbit-arm">
             <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
-              <svg viewBox="0 0 40 40" class="pixel-melog-svg">
-                <g class="melog-rig">
+              
+              <!-- 100% PURE 16x16 PIXEL GRID (ZERO CURVES / DRAWN SHAPES) -->
+              <svg viewBox="0 0 16 16" class="pixel-melog-svg">
+                <g class="px-rig">
                   
-                  <!-- Melog Tail: Peach ginger with ivory tip -->
-                  <g class="melog-tail">
-                    <rect x="2" y="15" width="5" height="4" fill="#FFFFFF" stroke="#2C1F18" stroke-width="0.9"/>
-                    <rect x="6" y="17" width="5" height="5" fill="#F6C894" stroke="#2C1F18" stroke-width="0.9"/>
-                    <rect x="10" y="21" width="5" height="3" fill="#D9965B"/>
+                  <!-- Tail Group (Peach Fur + White Tip) -->
+                  <g class="px-tail-group">
+                    <rect x="0" y="3" width="2" height="2" fill="#FFFFFF" />
+                    <rect x="1" y="4" width="2" height="2" fill="#F4C28D" />
+                    <rect x="2" y="5" width="2" height="2" fill="#D9965B" />
+                    <rect x="3" y="6" width="2" height="2" fill="#2C1E16" />
                   </g>
 
                   <!-- Back Left Leg -->
-                  <rect class="leg-b-l" x="12" y="25" width="3" height="7" rx="1" fill="#D9965B" stroke="#2C1F18" stroke-width="0.9"/>
-                  <!-- Front Left Leg -->
-                  <rect class="leg-f-l" x="24" y="25" width="3" height="7" rx="1" fill="#D9965B" stroke="#2C1F18" stroke-width="0.9"/>
+                  <g class="px-leg-bl">
+                    <rect x="4" y="9" width="1" height="3" fill="#D9965B" />
+                    <rect x="3" y="11" width="2" height="1" fill="#2C1E16" />
+                  </g>
 
-                  <!-- Torso (Melog Buff-Ginger + Ivory Chest Bib) -->
-                  <g class="melog-torso">
-                    <rect x="10" y="17" width="18" height="10" rx="3" fill="#F6C894" stroke="#2C1F18" stroke-width="0.9"/>
-                    <polygon points="21,18 28,22 28,18" fill="#FFFFFF"/>
-                    <!-- Ginger Tabby Stripe -->
-                    <rect x="15" y="18" width="2" height="6" fill="#D9965B"/>
+                  <!-- Front Left Leg -->
+                  <g class="px-leg-fl">
+                    <rect x="8" y="9" width="1" height="3" fill="#D9965B" />
+                    <rect x="7" y="11" width="2" height="1" fill="#2C1E16" />
+                  </g>
+
+                  <!-- Main Body Pixel Grid (Peach Coat + White Bib) -->
+                  <g class="px-body-group">
+                    <!-- Black Outlines -->
+                    <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
+                    <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
+                    <rect x="10" y="7" width="1" height="3" fill="#2C1E16" />
+                    <rect x="3" y="10" width="7" height="1" fill="#2C1E16" />
+                    
+                    <!-- Peach Fill -->
+                    <rect x="3" y="7" width="5" height="3" fill="#F4C28D" />
+                    <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
+                    
+                    <!-- White Chest / Bib Pixels -->
+                    <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
                   </g>
 
                   <!-- Back Right Leg -->
-                  <rect class="leg-b-r" x="15" y="26" width="3" height="7" rx="1" fill="#F6C894" stroke="#2C1F18" stroke-width="0.9"/>
+                  <g class="px-leg-br">
+                    <rect x="5" y="10" width="1" height="3" fill="#F4C28D" />
+                    <rect x="4" y="12" width="2" height="1" fill="#2C1E16" />
+                  </g>
+
                   <!-- Front Right Leg -->
-                  <rect class="leg-f-r" x="27" y="26" width="3" height="7" rx="1" fill="#F6C894" stroke="#2C1F18" stroke-width="0.9"/>
+                  <g class="px-leg-fr">
+                    <rect x="9" y="10" width="1" height="3" fill="#F4C28D" />
+                    <rect x="8" y="12" width="2" height="1" fill="#2C1E16" />
+                  </g>
 
-                  <!-- Melog Head & Cute Cat Face -->
-                  <g class="melog-head">
-                    <polygon points="20,13 18,5 24,9" fill="#F6C894" stroke="#2C1F18" stroke-width="0.9"/>
-                    <polygon points="19,11 18,7 22,9" fill="#FCAEBA"/>
-                    
-                    <polygon points="27,13 31,5 25,9" fill="#F6C894" stroke="#2C1F18" stroke-width="0.9"/>
-                    <polygon points="28,11 30,7 26,9" fill="#FCAEBA"/>
+                  <!-- Head & Feline Ears Pixel Cluster -->
+                  <g class="px-head-group">
+                    <!-- Left Ear -->
+                    <rect x="7" y="1" width="2" height="1" fill="#2C1E16" />
+                    <rect x="7" y="2" width="2" height="2" fill="#F4C28D" />
+                    <rect x="8" y="2" width="1" height="1" fill="#FCAEBA" />
 
-                    <!-- Rounded Head Box -->
-                    <rect x="20" y="11" width="11" height="9" rx="2" fill="#F6C894" stroke="#2C1F18" stroke-width="0.9"/>
-                    <rect x="20" y="16" width="2" height="2" fill="#FFAEC0"/>
-                    
-                    <!-- Golden-Hazel Pixel Eye -->
-                    <rect x="26" y="13" width="2" height="2" fill="#2C1F18"/>
-                    <rect x="26" y="13" width="1" height="1" fill="#B4CE48"/>
-                    
-                    <!-- White Snout & Pink Nose -->
-                    <rect x="30" y="15" width="3" height="3" fill="#FFFFFF" stroke="#2C1F18" stroke-width="0.8"/>
-                    <rect x="32" y="15" width="1" height="1" fill="#E88894"/>
+                    <!-- Right Ear -->
+                    <rect x="10" y="1" width="2" height="1" fill="#2C1E16" />
+                    <rect x="10" y="2" width="2" height="2" fill="#F4C28D" />
+                    <rect x="10" y="2" width="1" height="1" fill="#FCAEBA" />
+
+                    <!-- Head Outline & Peach Fur -->
+                    <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
+                    <rect x="6" y="4" width="1" height="4" fill="#2C1E16" />
+                    <rect x="13" y="5" width="1" height="3" fill="#2C1E16" />
+                    <rect x="8" y="3" width="4" height="1" fill="#2C1E16" />
+                    <rect x="7" y="8" width="5" height="1" fill="#2C1E16" />
+
+                    <!-- Forehead Ginger Pixel -->
+                    <rect x="9" y="4" width="1" height="1" fill="#D9965B" />
+
+                    <!-- Hazel Eye Pixel -->
+                    <rect x="10" y="5" width="1" height="1" fill="#2C1E16" />
+                    <rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
+
+                    <!-- White Snout & Pink Nose Pixel -->
+                    <rect x="11" y="6" width="2" height="2" fill="#FFFFFF" />
+                    <rect x="12" y="6" width="1" height="1" fill="#E88894" />
                   </g>
 
                 </g>
               </svg>
+
             </div>
           </div>
         </div>
@@ -771,7 +806,7 @@
 
   <script>
     /* -------------------------------------------------------------
-       PURRMODORO - Complete PomoFox Rebuild Engine
+       PURRMODORO - Pure Pixel Grid Model & PomoFox Engine
        ------------------------------------------------------------- */
     const MEDICAL_SUBJECTS = [
       "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -834,11 +869,11 @@
     }
 
     function saveState() {
-      localStorage.setItem('purrmodoro_pf_master', JSON.stringify(state));
+      localStorage.setItem('purrmodoro_pf_exact_px', JSON.stringify(state));
     }
 
     function loadState() {
-      const raw = localStorage.getItem('purrmodoro_pf_master');
+      const raw = localStorage.getItem('purrmodoro_pf_exact_px');
       if (raw) {
         try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
       }
@@ -1043,17 +1078,20 @@
 
       const progress = (state.timer.totalDuration - state.timer.timeLeft) / state.timer.totalDuration;
       const ringFill = document.getElementById('circle-progress-ring');
-      if (ringFill) ringFill.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - progress);
+      if (ringFill) {
+        ringFill.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - progress);
+      }
 
+      // Rotate Orbit Arm so Melog physically traverses along the circle progress
       const orbitArm = document.getElementById('orbit-arm');
-      if (orbitArm) orbitArm.style.transform = `rotate(${progress * 360}deg)`;
+      if (orbitArm) {
+        orbitArm.style.transform = `rotate(${progress * 360}deg)`;
+      }
     }
 
     function renderAll() {
       renderTimer();
-      document.getElementById('val-cycle-count').textContent = state.game.cycleCount;
       
-      // Update Cycle Dots
       const activeDot = (state.game.cycleCount - 1) % 4;
       for (let i = 1; i <= 4; i++) {
         const dot = document.getElementById(`dot-${i}`);
@@ -1154,7 +1192,7 @@
           const dailyUnits = Math.ceil(amount / studyDays);
           const dailyPomos = Math.ceil(dailyUnits / pace);
 
-          document.getElementById('rx-content').innerHTML = `<p>📚 <strong>Remaining:</strong> ${amount} ${unit}</p><p>🗓️ <strong>Study Days:</strong> ${studyDays} days</p><p>🎀 <strong>Daily Target:</strong> <strong>${dailyUnits} ${unit}/day</strong></p><p>🐱 <strong>Focus Blocks:</strong> <strong>${dailyPomos} Pomodoros/day</strong></p>`;
+          document.getElementById('rx-content').innerHTML = `<p>📚 <strong>Remaining:</strong> ${amount} ${unit}</p><p>🗓️ <strong>Study Days:</strong> ${studyDays} days (${buffer} buffer days)</p><p>🎀 <strong>Daily Target:</strong> <strong>${dailyUnits} ${unit}/day</strong></p><p>🐱 <strong>Focus Blocks:</strong> <strong>${dailyPomos} Pomodoros/day</strong></p>`;
           document.getElementById('rx-card').style.display = 'block';
 
           const applyBtn = document.getElementById('btn-apply-plan-goal');
@@ -1197,7 +1235,7 @@
         const dark = state.settings.darkMode;
         const biome = state.settings.currentBiome;
 
-        // 1. Sky Gradient Base
+        // Sky Gradient
         let sky = ctx.createLinearGradient(0, 0, 0, h);
         if (dark) {
           sky.addColorStop(0, '#0C111D');
@@ -1223,7 +1261,7 @@
         ctx.fillStyle = sky;
         ctx.fillRect(0, 0, w, h);
 
-        // 2. Pixel Mountains Ridge
+        // Pixel Mountains Ridge
         ctx.fillStyle = dark ? '#101B2B' : biome === 'sakura' ? '#D6A2B8' : '#7298B3';
         ctx.beginPath();
         ctx.moveTo(0, h * 0.5);
@@ -1236,7 +1274,7 @@
         ctx.lineTo(0, h);
         ctx.fill();
 
-        // 3. Pixel Floating Particles
+        // Particles
         particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
