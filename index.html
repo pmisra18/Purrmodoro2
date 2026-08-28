@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#A6CFE2" />
   <title>Purrmodoro 🐾 Study with Melog</title>
   
-  <!-- Pixel & UI Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
@@ -63,7 +62,7 @@
       overflow: hidden;
     }
 
-    /* 60 FPS Procedural Pixel Canvas */
+    /* 60 FPS Procedural Background */
     #pixel-bg-canvas {
       position: fixed;
       top: 0;
@@ -149,7 +148,7 @@
       box-shadow: 0 4px 0px var(--btn-dark-shadow);
     }
 
-    /* Compact Medical Subject Selector */
+    /* Subject & Task Selectors */
     .medical-select-wrap {
       width: 100%;
       display: flex;
@@ -211,7 +210,7 @@
       color: #FFFFFF;
     }
 
-    /* Enlarged Central Circle Wheel */
+    /* Central Circle Wheel */
     .timer-circle-stage {
       position: relative;
       width: 300px;
@@ -243,7 +242,7 @@
       stroke: #EAA064;
       stroke-width: 8;
       stroke-linecap: round;
-      stroke-dasharray: 867.08; /* 2 * PI * 138 */
+      stroke-dasharray: 867.08;
       stroke-dashoffset: 0;
       transition: stroke-dashoffset 0.5s ease;
     }
@@ -271,7 +270,7 @@
       transition: transform 0.5s ease;
     }
 
-    /* Scaled-Up Melog Sprite for High Visibility */
+    /* Melog Sprite Box */
     .melog-sprite-box {
       position: absolute;
       top: -24px;
@@ -290,29 +289,81 @@
       shape-rendering: crispEdges;
     }
 
-    /* Fluid, Slow Relaxed Walking Trot Animation */
-    .timer-running .px-leg-fr { animation: slowTrotA 0.48s infinite alternate ease-in-out; }
-    .timer-running .px-leg-bl { animation: slowTrotA 0.48s infinite alternate ease-in-out 0.08s; }
-    .timer-running .px-leg-fl { animation: slowTrotB 0.48s infinite alternate ease-in-out 0.24s; }
-    .timer-running .px-leg-br { animation: slowTrotB 0.48s infinite alternate ease-in-out 0.32s; }
-    .timer-running .px-body-group { animation: slowBob 0.48s infinite alternate ease-in-out; }
-    .timer-running .px-tail-group { animation: slowTail 0.56s infinite alternate ease-in-out; }
+    /* ================= NATURAL HOPPING & RUNNING PHYSICS (NO DETACHING) ================= */
+    /* Root Melog Hopping Body Cycle */
+    .timer-running .px-rig {
+      animation: melogHopMotion 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 8px 12px;
+    }
 
-    @keyframes slowTrotA { 
-      0% { transform: translate(0, 0); } 
-      100% { transform: translate(2px, -2px); } 
+    /* Natural Leg Rotations (Anchored firmly at the hip and shoulder joints) */
+    .timer-running .px-leg-fl {
+      animation: frontLeftStride 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 8px 9px;
     }
-    @keyframes slowTrotB { 
-      0% { transform: translate(2px, -2px); } 
-      100% { transform: translate(-1.5px, 1.5px); } 
+    .timer-running .px-leg-fr {
+      animation: frontRightStride 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 8px 9px;
     }
-    @keyframes slowBob { 
-      0% { transform: translateY(0); } 
-      100% { transform: translateY(-1.2px); } 
+    .timer-running .px-leg-bl {
+      animation: backLeftStride 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 4px 9px;
     }
-    @keyframes slowTail { 
-      0% { transform: rotate(0deg); } 
-      100% { transform: rotate(10deg); } 
+    .timer-running .px-leg-br {
+      animation: backRightStride 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 4px 9px;
+    }
+
+    /* Tail Bounce */
+    .timer-running .px-tail-group {
+      animation: melogTailWave 0.54s infinite ease-in-out;
+      transform-origin: 3px 6px;
+    }
+
+    /* Body Compression & Stretch during hops */
+    @keyframes melogHopMotion {
+      0% { transform: translateY(0) rotate(0deg); }
+      20% { transform: translateY(-3.5px) rotate(4deg); } /* Upward bound */
+      45% { transform: translateY(-4.5px) rotate(1deg); } /* Apex of the jump */
+      70% { transform: translateY(-1px) rotate(-3deg); } /* Paws descending */
+      85% { transform: translateY(0.5px) scaleY(0.95); } /* Soft ground contact cushion */
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+
+    /* Front Limbs Gait */
+    @keyframes frontLeftStride {
+      0% { transform: rotate(-18deg); }
+      35% { transform: rotate(26deg); }
+      65% { transform: rotate(-8deg); }
+      100% { transform: rotate(-18deg); }
+    }
+    @keyframes frontRightStride {
+      0% { transform: rotate(24deg); }
+      35% { transform: rotate(-16deg); }
+      65% { transform: rotate(14deg); }
+      100% { transform: rotate(24deg); }
+    }
+
+    /* Back Limbs Gait */
+    @keyframes backLeftStride {
+      0% { transform: rotate(22deg); }
+      35% { transform: rotate(-18deg); }
+      65% { transform: rotate(10deg); }
+      100% { transform: rotate(22deg); }
+    }
+    @keyframes backRightStride {
+      0% { transform: rotate(-16deg); }
+      35% { transform: rotate(24deg); }
+      65% { transform: rotate(-6deg); }
+      100% { transform: rotate(-16deg); }
+    }
+
+    /* Tail Natural Resonance */
+    @keyframes melogTailWave {
+      0% { transform: rotate(-4deg); }
+      40% { transform: rotate(14deg); }
+      75% { transform: rotate(-1deg); }
+      100% { transform: rotate(-4deg); }
     }
 
     /* Bottom Cycle Pill */
@@ -595,11 +646,11 @@
           <div class="orbit-arm" id="orbit-arm">
             <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
               
-              <!-- PURE 16x16 PIXEL GRID MELOG MODEL -->
+              <!-- 100% PURE 16x16 PIXEL RIG (SEAMLESS JOINTS) -->
               <svg viewBox="0 0 16 16" class="pixel-melog-svg">
                 <g class="px-rig">
                   
-                  <!-- Tail Group -->
+                  <!-- Tail -->
                   <g class="px-tail-group">
                     <rect x="0" y="3" width="2" height="2" fill="#FFFFFF" />
                     <rect x="1" y="4" width="2" height="2" fill="#F4C28D" />
@@ -607,19 +658,19 @@
                     <rect x="3" y="6" width="2" height="2" fill="#2C1E16" />
                   </g>
 
-                  <!-- Back Left Leg -->
+                  <!-- Back Left Leg (Anchored at 4, 9) -->
                   <g class="px-leg-bl">
-                    <rect x="4" y="9" width="1" height="3" fill="#D9965B" />
-                    <rect x="3" y="11" width="2" height="1" fill="#2C1E16" />
+                    <rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" />
+                    <rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" />
                   </g>
 
-                  <!-- Front Left Leg -->
+                  <!-- Front Left Leg (Anchored at 8, 9) -->
                   <g class="px-leg-fl">
-                    <rect x="8" y="9" width="1" height="3" fill="#D9965B" />
-                    <rect x="7" y="11" width="2" height="1" fill="#2C1E16" />
+                    <rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" />
+                    <rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" />
                   </g>
 
-                  <!-- Main Body Pixel Grid -->
+                  <!-- Main Torso Block -->
                   <g class="px-body-group">
                     <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
                     <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
@@ -629,19 +680,20 @@
                     <rect x="3" y="7" width="5" height="3" fill="#F4C28D" />
                     <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
                     
+                    <!-- White Bib -->
                     <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
                   </g>
 
-                  <!-- Back Right Leg -->
+                  <!-- Back Right Leg (Anchored at 4, 9) -->
                   <g class="px-leg-br">
-                    <rect x="5" y="10" width="1" height="3" fill="#F4C28D" />
-                    <rect x="4" y="12" width="2" height="1" fill="#2C1E16" />
+                    <rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" />
+                    <rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" />
                   </g>
 
-                  <!-- Front Right Leg -->
+                  <!-- Front Right Leg (Anchored at 8, 9) -->
                   <g class="px-leg-fr">
-                    <rect x="9" y="10" width="1" height="3" fill="#F4C28D" />
-                    <rect x="8" y="12" width="2" height="1" fill="#2C1E16" />
+                    <rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" />
+                    <rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" />
                   </g>
 
                   <!-- Head & Feline Ears -->
@@ -809,7 +861,7 @@
 
   <script>
     /* -------------------------------------------------------------
-       PURRMODORO - Fluid Stride & 16-Bit Pixel Landscape Engine
+       PURRMODORO - Seamless Pixel Rig & 60 FPS Canvas Engine
        ------------------------------------------------------------- */
     const MEDICAL_SUBJECTS = [
       "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -872,11 +924,11 @@
     }
 
     function saveState() {
-      localStorage.setItem('purrmodoro_pf_fluid_px', JSON.stringify(state));
+      localStorage.setItem('purrmodoro_pf_seamless_rig', JSON.stringify(state));
     }
 
     function loadState() {
-      const raw = localStorage.getItem('purrmodoro_pf_fluid_px');
+      const raw = localStorage.getItem('purrmodoro_pf_seamless_rig');
       if (raw) {
         try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
       }
@@ -1085,7 +1137,7 @@
         ringFill.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - progress);
       }
 
-      // Smoothly rotate Melog along the circle ring perimeter
+      // Smooth circular tracking
       const orbitArm = document.getElementById('orbit-arm');
       if (orbitArm) {
         orbitArm.style.transform = `rotate(${progress * 360}deg)`;
@@ -1211,9 +1263,7 @@
       }
     }
 
-    /* -------------------------------------------------------------
-       High-Detail 16-Bit Pixel Landscape Canvas Engine
-       ------------------------------------------------------------- */
+    /* 60 FPS Procedural Biome Canvas */
     function initCanvas() {
       const canvas = document.getElementById('pixel-bg-canvas');
       if (!canvas) return;
@@ -1236,11 +1286,9 @@
       }));
 
       function drawPixelPineTree(x, y, scale, dark) {
-        // Pixel Trunk
         ctx.fillStyle = dark ? '#15241C' : '#3E271E';
         ctx.fillRect(x, y, 6 * scale, 32 * scale);
 
-        // Layered Pixel Pine Canopies
         const pineDark = dark ? '#0E291C' : '#1C4A32';
         const pineLight = dark ? '#1A4230' : '#2D6B48';
 
@@ -1267,7 +1315,6 @@
         const dark = state.settings.darkMode;
         const biome = state.settings.currentBiome;
 
-        // 1. Sky Gradient
         let sky = ctx.createLinearGradient(0, 0, 0, h);
         if (dark) {
           sky.addColorStop(0, '#0B101B');
@@ -1293,11 +1340,9 @@
         ctx.fillStyle = sky;
         ctx.fillRect(0, 0, w, h);
 
-        // 2. Pixel Clouds
         drawPixelCloud(w * 0.08, h * 0.12, 110, 24, dark ? 0.2 : 0.65);
         drawPixelCloud(w * 0.68, h * 0.08, 140, 28, dark ? 0.2 : 0.75);
 
-        // 3. Multi-Tiered Mountain Peaks
         ctx.fillStyle = dark ? '#0E1724' : biome === 'sakura' ? '#D49CB3' : '#6A92AF';
         ctx.beginPath();
         ctx.moveTo(0, h * 0.48);
@@ -1310,7 +1355,6 @@
         ctx.lineTo(0, h);
         ctx.fill();
 
-        // 4. Foreground Pine Forests (Left & Right Flanks)
         for (let x = -10; x < w * 0.32; x += 28) {
           drawPixelPineTree(x, h * 0.64 + (Math.abs(x) % 3) * 10, 1.35, dark);
         }
@@ -1318,7 +1362,6 @@
           drawPixelPineTree(x, h * 0.64 + (Math.abs(x) % 3) * 10, 1.35, dark);
         }
 
-        // 5. Floating Ambient Particles (Petals / Embers / Fireflies)
         particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
