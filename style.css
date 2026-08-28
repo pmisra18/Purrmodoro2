@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Sakura Blossom Voxel Aesthetic
+   PURRMODORO - Minecraft Voxel & Soft Melog Aesthetic
    ------------------------------------------------------------- */
 :root {
   --bg-cream: #FDF7F4;
@@ -10,11 +10,8 @@
   --blush-primary: #E89BAA;
   --blush-dark: #D47B8D;
   
-  --sakura-leaf-1: #FFB7C5;
-  --sakura-leaf-2: #FCA1B3;
-  --wood-bark: #6E4F42;
+  --wood-bark: #624338;
   --wood-deck: #DDB497;
-  
   --sage-accent: #C4DEC3;
   --sage-dark: #375E36;
   
@@ -33,16 +30,6 @@
   --font-display: 'Quicksand', system-ui, sans-serif;
 }
 
-/* Time of Day Modifiers */
-body.theme-day { background-color: #FDF7F4; }
-body.theme-sunset { background-color: #FAEEEB; }
-body.theme-night { background-color: #241E28; color: #F7EEF2; }
-body.theme-night .card-panel,
-body.theme-night .study-control-card { background: #302636; border-color: #4A3A52; color: #F7EEF2; }
-body.theme-night .custom-input,
-body.theme-night .custom-select { background: #261D2B; color: #FFFFFF; border-color: #4A3A52; }
-body.theme-night .room-viewport { background: linear-gradient(180deg, #1C1721 0%, #302636 100%); border-color: #4A3A52; }
-
 * {
   box-sizing: border-box;
   margin: 0;
@@ -52,6 +39,7 @@ body.theme-night .room-viewport { background: linear-gradient(180deg, #1C1721 0%
 
 body {
   font-family: var(--font-main);
+  background-color: var(--bg-cream);
   color: var(--text-dark);
   min-height: 100vh;
   display: flex;
@@ -182,23 +170,62 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Sakura Voxel Viewport */
+/* ================= DETAILED MINECRAFT VOXEL VIEWPORT ================= */
 .room-viewport {
   position: relative;
-  background: linear-gradient(180deg, #FDE6EC 0%, #FFF8FA 70%, #F5E8E5 100%);
   border: 2px solid var(--border-soft);
   border-radius: var(--radius-lg);
-  padding: 1.5rem 1rem 0.75rem 1rem;
+  padding: 3rem 1rem 0.75rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-shadow: var(--shadow-md);
   margin-bottom: 1.25rem;
   overflow: hidden;
-  min-height: 275px;
+  min-height: 290px;
+  transition: background 0.4s ease;
 }
 
-.pixel-scenery {
+/* Biome Selector Toolbar */
+.biome-bar {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(4px);
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-soft);
+  z-index: 3;
+}
+
+.biome-label {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.btn-biome {
+  background: transparent;
+  border: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  color: var(--text-dark);
+}
+
+.btn-biome.active {
+  background: var(--blush-primary);
+  color: #FFFFFF;
+}
+
+/* Minecraft Multi-Layer World Scenery */
+.minecraft-world-layer {
   position: absolute;
   top: 0;
   left: 0;
@@ -208,91 +235,113 @@ body {
   z-index: 0;
 }
 
+/* Square Pixel Sun */
+.voxel-sun-moon {
+  position: absolute;
+  top: 24px;
+  right: 65px;
+  width: 32px;
+  height: 32px;
+  background: #FFF5CC;
+  box-shadow: 0 0 0 4px #FFE28A, 0 0 16px rgba(255, 226, 138, 0.6);
+}
+
+/* Pixel Clouds */
 .voxel-cloud {
   position: absolute;
   background: #FFFFFF;
-  opacity: 0.75;
-  box-shadow: 6px 6px 0 rgba(255, 230, 238, 0.6);
+  opacity: 0.8;
+  box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.5);
 }
-.cloud-1 {
-  top: 18px;
-  left: 30px;
-  width: 70px;
-  height: 16px;
-}
-.cloud-1::after {
-  content: '';
-  position: absolute;
-  top: -10px;
-  left: 14px;
-  width: 40px;
-  height: 10px;
-  background: #FFFFFF;
-}
+.cloud-1 { top: 38px; left: 40px; width: 68px; height: 16px; }
+.cloud-1::after { content: ''; position: absolute; top: -8px; left: 14px; width: 38px; height: 8px; background: #FFFFFF; }
+.cloud-2 { top: 56px; right: 120px; width: 84px; height: 18px; }
+.cloud-2::after { content: ''; position: absolute; top: -10px; left: 18px; width: 44px; height: 10px; background: #FFFFFF; }
 
-.cloud-2 {
-  top: 32px;
-  right: 50px;
-  width: 90px;
-  height: 18px;
-}
-.cloud-2::after {
-  content: '';
-  position: absolute;
-  top: -12px;
-  left: 20px;
-  width: 50px;
-  height: 12px;
-  background: #FFFFFF;
-}
-
-.sakura-tree-bg {
-  position: absolute;
-  bottom: 38px;
-  width: 70px;
-  height: 120px;
-  background: var(--wood-bark);
-}
-
-.tree-left {
-  left: -15px;
-  width: 16px;
-  height: 90px;
-  box-shadow: 
-    16px -20px 0 var(--wood-bark),
-    24px -55px 0 35px var(--sakura-leaf-1),
-    10px -75px 0 25px var(--sakura-leaf-2),
-    35px -35px 0 20px #FFA8BB;
-}
-
-.tree-right {
-  right: -15px;
-  width: 16px;
-  height: 90px;
-  box-shadow: 
-    -16px -20px 0 var(--wood-bark),
-    -24px -55px 0 35px var(--sakura-leaf-1),
-    -10px -75px 0 25px var(--sakura-leaf-2),
-    -35px -35px 0 20px #FFA8BB;
-}
-
-.voxel-deck-rail {
+/* Deck Platform */
+.voxel-deck {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 38px;
+  height: 42px;
   background: var(--wood-deck);
-  border-top: 3px solid var(--wood-bark);
-  box-shadow: inset 0 6px 0 rgba(110, 79, 66, 0.15);
+  border-top: 4px solid var(--wood-bark);
+  box-shadow: inset 0 8px 0 rgba(98, 67, 56, 0.12);
 }
 
+/* BIOME 1: Sakura Blossom Grove */
+.room-viewport.biome-sakura {
+  background: linear-gradient(180deg, #FDE6EC 0%, #FFF8FA 65%, #F5E8E5 100%);
+}
+.biome-sakura .voxel-trees-backdrop {
+  position: absolute;
+  bottom: 42px;
+  left: 0;
+  width: 100%;
+  height: 110px;
+  background: 
+    radial-gradient(circle at 15% 40%, #FFA8BB 35px, transparent 36px),
+    radial-gradient(circle at 85% 35%, #FFA8BB 42px, transparent 43px),
+    radial-gradient(circle at 50% 65%, #FFB7C5 28px, transparent 29px);
+}
+
+/* BIOME 2: Taiga Pine Forest */
+.room-viewport.biome-forest {
+  background: linear-gradient(180deg, #D4E8DA 0%, #EDF7F0 65%, #E3EFE5 100%);
+}
+.biome-forest .voxel-trees-backdrop {
+  position: absolute;
+  bottom: 42px;
+  left: 0;
+  width: 100%;
+  height: 120px;
+  background: 
+    linear-gradient(135deg, #3A6348 25%, transparent 25%) -24px 0,
+    linear-gradient(225deg, #3A6348 25%, transparent 25%) -24px 0,
+    linear-gradient(315deg, #4A7A5C 25%, transparent 25%),
+    linear-gradient(45deg, #4A7A5C 25%, transparent 25%);
+  background-size: 48px 48px;
+}
+
+/* BIOME 3: Misty Mountains */
+.room-viewport.biome-mountain {
+  background: linear-gradient(180deg, #D3DFEE 0%, #F0F4FA 65%, #E4EBF4 100%);
+}
+.biome-mountain .mountain-ridges {
+  position: absolute;
+  bottom: 42px;
+  left: 0;
+  width: 100%;
+  height: 130px;
+  background: 
+    linear-gradient(135deg, #7A8D9E 35%, transparent 35%) 0 0,
+    linear-gradient(225deg, #FFFFFF 15%, #92A3B3 16%, transparent 35%) 0 0;
+  background-size: 90px 130px;
+}
+
+/* BIOME 4: Sunset Meadow */
+.room-viewport.biome-meadow {
+  background: linear-gradient(180deg, #FCD9C4 0%, #FEECE1 55%, #FDE0D0 100%);
+}
+.biome-meadow .voxel-trees-backdrop {
+  position: absolute;
+  bottom: 42px;
+  left: 0;
+  width: 100%;
+  height: 90px;
+  background: 
+    radial-gradient(circle at 20% 50%, #76A562 32px, transparent 33px),
+    radial-gradient(circle at 80% 45%, #8EB97A 38px, transparent 39px);
+}
+
+/* Living Interactive Buttons */
 .room-interactive-layer {
   position: absolute;
-  top: 0.85rem;
-  right: 0.85rem;
+  top: 0.75rem;
+  right: 0.75rem;
   display: flex;
-  gap: 0.5rem;
+  gap: 0.45rem;
   z-index: 2;
 }
 
@@ -300,9 +349,9 @@ body {
   background: #FFFFFF;
   border: 1.5px solid var(--border-soft);
   border-radius: 10px;
-  width: 36px;
-  height: 36px;
-  font-size: 1.1rem;
+  width: 34px;
+  height: 34px;
+  font-size: 1rem;
   cursor: pointer;
   box-shadow: var(--shadow-sm);
   display: flex;
@@ -311,10 +360,9 @@ body {
   transition: transform 0.2s;
 }
 
-.interactive-prop:active {
-  transform: scale(0.9);
-}
+.interactive-prop:active { transform: scale(0.9); }
 
+/* Center Stage & Speech Bubble */
 .melog-center-stage {
   display: flex;
   flex-direction: column;
@@ -328,13 +376,13 @@ body {
   color: var(--text-dark);
   font-size: 0.88rem;
   font-weight: 600;
-  padding: 0.5rem 1.1rem;
+  padding: 0.45rem 1.1rem;
   border-radius: 14px;
   border: 1.5px solid var(--border-soft);
   box-shadow: var(--shadow-sm);
   text-align: center;
   max-width: 90%;
-  margin-bottom: 0.35rem;
+  margin-bottom: 0.25rem;
   position: relative;
 }
 
@@ -350,8 +398,8 @@ body {
 }
 
 .cat-svg-wrapper {
-  width: 310px;
-  height: 205px;
+  width: 320px;
+  height: 215px;
   cursor: pointer;
 }
 
@@ -360,24 +408,60 @@ body {
   height: 100%;
 }
 
+/* ================= FLUID MELOG ANIMATIONS ================= */
 .melog-figure {
-  transform-origin: 170px 170px;
-  animation: melogBreathe 4s ease-in-out infinite;
+  transform-origin: 180px 180px;
+  animation: melogBreathe 4.2s ease-in-out infinite;
 }
 
-.melog-tail {
-  transform-origin: 85px 165px;
-  animation: melogTail 5s ease-in-out infinite;
+/* Tail Swish */
+.melog-tail-joint {
+  transform-origin: 90px 165px;
+  animation: melogTailWag 4.5s ease-in-out infinite;
+}
+
+/* Ear Twitches */
+.melog-ear-left {
+  transform-origin: 140px 85px;
+  animation: earTwitchLeft 6s ease-in-out infinite;
+}
+
+.melog-ear-right {
+  transform-origin: 220px 85px;
+  animation: earTwitchRight 6s ease-in-out infinite 0.5s;
+}
+
+/* Natural Eye Blinking */
+.eyes-layer {
+  animation: eyeBlink 5s infinite;
 }
 
 @keyframes melogBreathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.015, 0.988); }
+  50% { transform: scale(1.018, 0.985); }
 }
 
-@keyframes melogTail {
+@keyframes melogTailWag {
   0%, 100% { transform: rotate(0deg); }
-  50% { transform: rotate(-5deg); }
+  35% { transform: rotate(-8deg); }
+  70% { transform: rotate(4deg); }
+}
+
+@keyframes earTwitchLeft {
+  0%, 90%, 100% { transform: rotate(0deg); }
+  92% { transform: rotate(-7deg); }
+  95% { transform: rotate(3deg); }
+}
+
+@keyframes earTwitchRight {
+  0%, 90%, 100% { transform: rotate(0deg); }
+  92% { transform: rotate(7deg); }
+  95% { transform: rotate(-3deg); }
+}
+
+@keyframes eyeBlink {
+  0%, 96%, 100% { transform: scaleY(1); }
+  98% { transform: scaleY(0.1); }
 }
 
 .celebrating .melog-figure {
@@ -386,9 +470,10 @@ body {
 
 @keyframes melogBounce {
   from { transform: translateY(0); }
-  to { transform: translateY(-8px); }
+  to { transform: translateY(-10px); }
 }
 
+/* Cards & Dashboards */
 .study-control-card, .card-panel {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
