@@ -58,7 +58,7 @@
       display: flex;
       justify-content: center;
       position: relative;
-      overflow-y: auto; /* Fully Scrollable */
+      overflow-y: auto;
     }
 
     #pixel-bg-canvas {
@@ -83,7 +83,6 @@
       min-height: 100vh;
     }
 
-    /* Floating Frosted Glass Card */
     .pomofox-glass-card {
       width: 100%;
       background: var(--card-glass);
@@ -239,7 +238,7 @@
       stroke: #EAA064;
       stroke-width: 8;
       stroke-linecap: round;
-      stroke-dasharray: 835.66; /* 2 * PI * 133 */
+      stroke-dasharray: 835.66;
       stroke-dashoffset: 0;
       transition: stroke-dashoffset 0.5s ease;
     }
@@ -268,11 +267,11 @@
 
     .melog-sprite-box {
       position: absolute;
-      top: -26px;
+      top: -24px;
       left: 50%;
       transform: translateX(-50%);
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
       pointer-events: auto;
       cursor: pointer;
     }
@@ -284,72 +283,72 @@
       shape-rendering: crispEdges;
     }
 
-    /* ================= FLUID TROT & LONG TAIL ANIMATION ================= */
+    /* ================= FLUID TROT & BALANCED CAT TAIL ================= */
     .timer-running .px-cat-master {
-      animation: catHopBounding 0.56s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      animation: catHopBounding 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: 8px 11px;
     }
 
     .timer-running .px-leg-fl {
-      animation: strideFrontLeft 0.56s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      animation: strideFrontLeft 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: 8px 8px;
     }
     .timer-running .px-leg-fr {
-      animation: strideFrontRight 0.56s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      animation: strideFrontRight 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: 8px 8px;
     }
     .timer-running .px-leg-bl {
-      animation: strideBackLeft 0.56s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      animation: strideBackLeft 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: 4px 8px;
     }
     .timer-running .px-leg-br {
-      animation: strideBackRight 0.56s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      animation: strideBackRight 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: 4px 8px;
     }
 
-    .timer-running .px-long-tail {
-      animation: longTailSway 0.56s infinite ease-in-out;
-      transform-origin: 2px 7px;
+    .timer-running .px-balanced-tail {
+      animation: balancedTailSway 0.54s infinite ease-in-out;
+      transform-origin: 3px 6px;
     }
 
     @keyframes catHopBounding {
       0% { transform: translateY(0) rotate(0deg); }
-      22% { transform: translateY(-4px) rotate(4deg); }
-      48% { transform: translateY(-5px) rotate(1deg); }
-      75% { transform: translateY(-1.5px) rotate(-3deg); }
-      88% { transform: translateY(0.5px) scaleY(0.95); }
+      22% { transform: translateY(-3.5px) rotate(4deg); }
+      48% { transform: translateY(-4.2px) rotate(1deg); }
+      75% { transform: translateY(-1px) rotate(-3deg); }
+      88% { transform: translateY(0.4px) scaleY(0.96); }
       100% { transform: translateY(0) rotate(0deg); }
     }
 
     @keyframes strideFrontLeft {
-      0% { transform: rotate(-18deg); }
-      35% { transform: rotate(26deg); }
-      70% { transform: rotate(-8deg); }
-      100% { transform: rotate(-18deg); }
-    }
-    @keyframes strideFrontRight {
-      0% { transform: rotate(24deg); }
-      35% { transform: rotate(-16deg); }
-      70% { transform: rotate(14deg); }
-      100% { transform: rotate(24deg); }
-    }
-    @keyframes strideBackLeft {
-      0% { transform: rotate(22deg); }
-      35% { transform: rotate(-18deg); }
-      70% { transform: rotate(10deg); }
-      100% { transform: rotate(22deg); }
-    }
-    @keyframes strideBackRight {
       0% { transform: rotate(-16deg); }
       35% { transform: rotate(24deg); }
       70% { transform: rotate(-6deg); }
       100% { transform: rotate(-16deg); }
     }
-    @keyframes longTailSway {
-      0% { transform: rotate(-8deg); }
-      40% { transform: rotate(22deg); }
-      75% { transform: rotate(-2deg); }
-      100% { transform: rotate(-8deg); }
+    @keyframes strideFrontRight {
+      0% { transform: rotate(22deg); }
+      35% { transform: rotate(-14deg); }
+      70% { transform: rotate(12deg); }
+      100% { transform: rotate(22deg); }
+    }
+    @keyframes strideBackLeft {
+      0% { transform: rotate(20deg); }
+      35% { transform: rotate(-16deg); }
+      70% { transform: rotate(8deg); }
+      100% { transform: rotate(20deg); }
+    }
+    @keyframes strideBackRight {
+      0% { transform: rotate(-14deg); }
+      35% { transform: rotate(22deg); }
+      70% { transform: rotate(-4deg); }
+      100% { transform: rotate(-14deg); }
+    }
+    @keyframes balancedTailSway {
+      0% { transform: rotate(-4deg); }
+      40% { transform: rotate(14deg); }
+      75% { transform: rotate(-1deg); }
+      100% { transform: rotate(-4deg); }
     }
 
     .bottom-cycle-pill {
@@ -532,7 +531,6 @@
       border-color: rgba(255, 255, 255, 0.1);
     }
 
-    /* Fixed Bottom Dock Navigation */
     .pf-bottom-dock {
       position: fixed;
       bottom: 1rem;
@@ -599,10 +597,10 @@
         </div>
 
         <div class="biome-tag-bar">
-          <button type="button" class="biome-btn active" data-biome="sakura">🌸 Sakura</button>
-          <button type="button" class="biome-btn" data-biome="taiga">🌲 Firefly</button>
-          <button type="button" class="biome-btn" data-biome="mountain">🏔️ Snow</button>
-          <button type="button" class="biome-btn" data-biome="autumn">🍂 Fall</button>
+          <button type="button" class="biome-btn active" data-biome="forest">🌲 Forest</button>
+          <button type="button" class="biome-btn" data-biome="mountain">🏔️ Peak</button>
+          <button type="button" class="biome-btn" data-biome="sunset">🌅 Sunset</button>
+          <button type="button" class="biome-btn" data-biome="sakura">🌸 Sakura</button>
         </div>
 
         <div class="medical-select-wrap">
@@ -623,16 +621,16 @@
           <div class="orbit-arm" id="orbit-arm">
             <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
               
-              <!-- 100% PURE 16x16 PIXEL RIG (LONG CAT TAIL & SHARP POINTED EARS) -->
+              <!-- 100% PURE 16x16 PIXEL RIG (BALANCED REALISTIC TAIL & SHARP POINTED EARS) -->
               <svg viewBox="0 0 16 16" class="pixel-melog-svg">
                 <g class="px-cat-master">
                   
-                  <!-- Long Real-Life Cat Tail -->
-                  <g class="px-long-tail" transform="translate(2, 4)">
-                    <rect x="0" y="2" width="2" height="3" fill="#2C1E16" />
-                    <rect x="-1" y="0" width="2" height="3" fill="#F4C28D" />
-                    <rect x="-3" y="-1" width="2" height="2" fill="#F4C28D" />
-                    <rect x="-5" y="-2" width="2" height="2" fill="#FFFFFF" />
+                  <!-- Balanced Natural Cat Tail -->
+                  <g class="px-balanced-tail">
+                    <rect x="0" y="3" width="2" height="2" fill="#2C1E16" />
+                    <rect x="1" y="2" width="2" height="2" fill="#F4C28D" />
+                    <rect x="2" y="1" width="2" height="2" fill="#D9965B" />
+                    <rect x="3" y="0" width="2" height="2" fill="#FFFFFF" />
                   </g>
 
                   <!-- Back Left Leg -->
@@ -675,14 +673,14 @@
                   <!-- Head with Sharp Pointed Cat Ears -->
                   <g class="px-head">
                     <!-- Left Pointed Ear -->
-                    <rect x="7" y="1" width="1" height="2" fill="#2C1E16" />
-                    <polygon points="7,2 5,0 8,2" fill="#F4C28D" />
-                    <polygon points="7,2 6,1 7,2" fill="#FCAEBA" />
+                    <polygon points="7,4 5,0 8,3" fill="#2C1E16" />
+                    <polygon points="7,3 6,1 7,3" fill="#F4C28D" />
+                    <polygon points="7,3 6,2 7,3" fill="#FCAEBA" />
 
                     <!-- Right Pointed Ear -->
-                    <rect x="11" y="1" width="1" height="2" fill="#2C1E16" />
-                    <polygon points="11,2 13,0 10,2" fill="#F4C28D" />
-                    <polygon points="10,2 11,1 10,2" fill="#FCAEBA" />
+                    <polygon points="10,4 12,0 9,3" fill="#2C1E16" />
+                    <polygon points="10,3 11,1 10,3" fill="#F4C28D" />
+                    <polygon points="10,3 11,2 10,3" fill="#FCAEBA" />
 
                     <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
                     <rect x="6" y="4" width="1" height="4" fill="#2C1E16" />
@@ -859,7 +857,7 @@
 
   <script>
     /* -------------------------------------------------------------
-       PURRMODORO - Complete Supabase API Sync & 16-Bit Engine
+       PURRMODORO - Complete 16-Bit Pixel Engine & Supabase Sync
        ------------------------------------------------------------- */
     const MEDICAL_SUBJECTS = [
       "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -898,7 +896,7 @@
     ];
 
     let state = {
-      settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false, currentBiome: 'sakura', supaUrl: '', supaKey: '' },
+      settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false, currentBiome: 'forest', supaUrl: '', supaKey: '' },
       timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
       game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, cycleCount: 1, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
     };
@@ -922,14 +920,14 @@
     }
 
     function saveState() {
-      localStorage.setItem('purrmodoro_pf_supabase_v4', JSON.stringify(state));
+      localStorage.setItem('purrmodoro_pf_final_v5', JSON.stringify(state));
       if (state.settings.supaUrl && state.settings.supaKey) {
         syncWithSupabase();
       }
     }
 
     function loadState() {
-      const raw = localStorage.getItem('purrmodoro_pf_supabase_v4');
+      const raw = localStorage.getItem('purrmodoro_pf_final_v5');
       if (raw) {
         try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
       }
@@ -1330,7 +1328,7 @@
       }
     }
 
-    /* 60 FPS Procedural Pixel Canvas Engine matching your exact reference landscape */
+    /* 60 FPS Procedural Pixel Canvas matching your uploaded reference landscape images */
     function initCanvas() {
       const canvas = document.getElementById('pixel-bg-canvas');
       if (!canvas) return;
@@ -1352,29 +1350,64 @@
         vy: Math.random() * 0.4 + 0.2
       }));
 
-      function drawPixelPineTree(x, y, scale, dark) {
-        ctx.fillStyle = dark ? '#112218' : '#2D4A32';
-        ctx.fillRect(x, y, 6 * scale, 34 * scale);
+      // Detailed Pixel Pine Tree matching your forest reference
+      function drawDetailedPine(x, y, scale, dark) {
+        // Trunk
+        ctx.fillStyle = dark ? '#15241C' : '#321D16';
+        ctx.fillRect(x, y, 6 * scale, 42 * scale);
 
-        const pineDark = dark ? '#0B1E14' : '#1C3D2B';
-        const pineLight = dark ? '#163625' : '#28593F';
+        // Layered Pine Needles matching the uploaded forest style
+        const pDark = dark ? '#0E291C' : '#234731';
+        const pMed = dark ? '#153A26' : '#316345';
+        const pLight = dark ? '#1D4F35' : '#45855B';
 
-        for (let i = 0; i < 5; i++) {
-          let tierW = (30 - i * 5) * scale;
-          let tierH = 8 * scale;
-          let tierY = y - i * 7 * scale - 4 * scale;
-          ctx.fillStyle = pineDark;
-          ctx.fillRect(x - tierW / 2 + 3 * scale, tierY, tierW, tierH);
-          ctx.fillStyle = pineLight;
-          ctx.fillRect(x - tierW / 2 + 5 * scale, tierY, tierW - 4 * scale, 3 * scale);
+        for (let i = 0; i < 6; i++) {
+          let tw = (32 - i * 5) * scale;
+          let th = 8 * scale;
+          let ty = y - i * 6 * scale - 2 * scale;
+          ctx.fillStyle = pDark;
+          ctx.fillRect(x - tw / 2 + 3 * scale, ty, tw, th);
+          ctx.fillStyle = pMed;
+          ctx.fillRect(x - tw / 2 + 5 * scale, ty, tw - 4 * scale, th - 3 * scale);
+          ctx.fillStyle = pLight;
+          ctx.fillRect(x - tw / 2 + 8 * scale, ty, tw - 10 * scale, 2 * scale);
         }
       }
 
-      function drawPixelCloud(x, y, width, height, alpha) {
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.fillRect(x, y, width, height);
-        ctx.fillRect(x + 12, y - 8, width - 24, 8);
-        ctx.fillRect(x + 24, y - 16, width - 48, 8);
+      // Detailed Mountain Peak matching your mountain reference
+      function drawDetailedMountain(x, y, width, height, dark) {
+        ctx.fillStyle = dark ? '#182C48' : '#6A92AF';
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + width / 2, y - height);
+        ctx.lineTo(x + width, y);
+        ctx.fill();
+
+        // Shaded rock crevices & snow caps
+        ctx.fillStyle = dark ? '#243D60' : '#88AFD2';
+        ctx.beginPath();
+        ctx.moveTo(x + width * 0.3, y - height * 0.6);
+        ctx.lineTo(x + width / 2, y - height);
+        ctx.lineTo(x + width * 0.45, y);
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF'; // Snow cap
+        ctx.beginPath();
+        ctx.moveTo(x + width * 0.38, y - height * 0.62);
+        ctx.lineTo(x + width / 2, y - height);
+        ctx.lineTo(x + width * 0.62, y - height * 0.62);
+        ctx.lineTo(x + width * 0.5, y - height * 0.48);
+        ctx.fill();
+      }
+
+      // Detailed Sunset Cloud matching your sunset reference
+      function drawSunsetCloud(x, y, w_val, h_val) {
+        ctx.fillStyle = '#F8AD9D';
+        ctx.fillRect(x, y, w_val, h_val);
+        ctx.fillStyle = '#FBC4AB';
+        ctx.fillRect(x + 10, y - 8, w_val - 20, 10);
+        ctx.fillStyle = '#FFE5D9';
+        ctx.fillRect(x + 25, y - 14, w_val - 50, 8);
       }
 
       function renderScenery() {
@@ -1382,71 +1415,81 @@
         const dark = state.settings.darkMode;
         const biome = state.settings.currentBiome;
 
-        // Sky Gradient matching your reference image style
+        // 1. Unique Sky Backgrounds for each Biome matching your uploaded images
         let sky = ctx.createLinearGradient(0, 0, 0, h);
         if (dark) {
           sky.addColorStop(0, '#0B101B');
           sky.addColorStop(0.65, '#172236');
           sky.addColorStop(1, '#233852');
-        } else if (biome === 'sakura') {
+        } else if (biome === 'forest') {
+          // Exactly matches the bright blue sky and fluffy white clouds in your forest reference
+          sky.addColorStop(0, '#5899C5');
+          sky.addColorStop(0.5, '#89BFE0');
+          sky.addColorStop(1, '#C2E3F1');
+        } else if (biome === 'mountain') {
+          // Exactly matches the crisp alpine blue sky in your mountain reference
+          sky.addColorStop(0, '#3A74B3');
+          sky.addColorStop(0.6, '#649ACF');
+          sky.addColorStop(1, '#B3D4EE');
+        } else if (biome === 'sunset') {
+          // Exactly matches the purple/pink evening cloud gradient in your sunset reference
+          sky.addColorStop(0, '#3F376B');
+          sky.addColorStop(0.5, '#735E8E');
+          sky.addColorStop(1, '#D8A4BE');
+        } else {
+          // Sakura Spring
           sky.addColorStop(0, '#FEE5ED');
           sky.addColorStop(0.6, '#F8CAD9');
           sky.addColorStop(1, '#D8EAE4');
-        } else if (biome === 'taiga') {
-          sky.addColorStop(0, '#5DA4C4');
-          sky.addColorStop(0.55, '#89C2D9');
-          sky.addColorStop(1, '#C2E5ED');
-        } else if (biome === 'aurora') {
-          sky.addColorStop(0, '#0C182A');
-          sky.addColorStop(0.6, '#183656');
-          sky.addColorStop(1, '#285573');
-        } else {
-          sky.addColorStop(0, '#436B95');
-          sky.addColorStop(0.5, '#7BA4C4');
-          sky.addColorStop(1, '#CBE3EE');
         }
         ctx.fillStyle = sky;
         ctx.fillRect(0, 0, w, h);
 
-        // Pixel Clouds matching the reference image style
-        drawPixelCloud(w * 0.05, h * 0.08, 140, 26, dark ? 0.2 : 0.85);
-        drawPixelCloud(w * 0.55, h * 0.05, 180, 32, dark ? 0.2 : 0.9);
+        // 2. Distinct Background Elements per Biome
+        if (biome === 'forest') {
+          // Fluffy pixel cumulus clouds matching reference
+          drawSunsetCloud(w * 0.05, h * 0.1, 160, 32);
+          drawSunsetCloud(w * 0.55, h * 0.06, 200, 36);
 
-        // Majestic Snow-Capped Mountain Range matching your reference image
-        ctx.fillStyle = dark ? '#101B2B' : '#6892B4';
-        ctx.beginPath();
-        ctx.moveTo(0, h * 0.45);
-        for (let x = 0; x <= w; x += 36) {
-          let my = h * 0.45 - ((x % 144 === 0) ? 110 : (x % 72 === 0) ? 65 : 25);
-          ctx.lineTo(x, my);
-          ctx.lineTo(x + 36, my);
+          // Distant rolling green forest hills
+          ctx.fillStyle = '#8AB07A';
+          ctx.fillRect(0, h * 0.38, w, 70);
+          ctx.fillStyle = '#5A8850';
+          ctx.fillRect(0, h * 0.44, w, 60);
+
+          // Dense Foreground Pine Forest matching reference
+          for (let x = -15; x < w * 0.38; x += 24) {
+            drawDetailedPine(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.45, dark);
+          }
+          for (let x = w * 0.62; x < w + 20; x += 24) {
+            drawDetailedPine(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.45, dark);
+          }
+        } 
+        else if (biome === 'mountain') {
+          // Massive Alpine Peak matching reference
+          drawDetailedMountain(w * 0.15, h * 0.62, 340, 220, dark);
+
+          // Low cloud bank at the base of the mountain
+          ctx.fillStyle = 'rgba(255,255,255,0.75)';
+          ctx.fillRect(0, h * 0.58, w, 35);
         }
-        ctx.lineTo(w, h);
-        ctx.lineTo(0, h);
-        ctx.fill();
+        else if (biome === 'sunset') {
+          // Massive pixel sunset cumulus clouds matching reference
+          drawSunsetCloud(w * 0.1, h * 0.2, 220, 60);
+          drawSunsetCloud(w * 0.45, h * 0.45, 260, 70);
 
-        // White Snow Caps on Mountain Peaks
-        ctx.fillStyle = '#FFFFFF';
-        for (let x = 0; x <= w; x += 144) {
+          ctx.fillStyle = '#2C1E2B';
+          ctx.fillRect(0, h * 0.72, w, h * 0.3);
+        }
+        else {
+          // Sakura
+          ctx.fillStyle = dark ? '#1A1426' : '#E0B5C6';
           ctx.beginPath();
-          ctx.moveTo(x + 18, h * 0.45 - 90);
-          ctx.lineTo(x + 36, h * 0.45 - 110);
-          ctx.lineTo(x + 54, h * 0.45 - 90);
+          ctx.arc(w * 0.3, h * 0.75, w * 0.5, 0, Math.PI * 2);
           ctx.fill();
         }
 
-        // Mid-ground Pine Forest Canopy Layer
-        ctx.fillStyle = dark ? '#0F261C' : '#234731';
-        ctx.fillRect(0, h * 0.52, w, 40);
-
-        // Foreground Dense Pine Forest matching your reference image
-        for (let x = -15; x < w * 0.35; x += 26) {
-          drawPixelPineTree(x, h * 0.58 + (Math.abs(x) % 3) * 8, 1.4, dark);
-        }
-        for (let x = w * 0.65; x < w + 20; x += 26) {
-          drawPixelPineTree(x, h * 0.58 + (Math.abs(x) % 3) * 8, 1.4, dark);
-        }
-
+        // Floating particles
         particles.forEach(p => {
           p.x += p.vx;
           p.y += p.vy;
