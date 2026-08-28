@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#18121E" />
+  <meta name="theme-color" content="#0F0B15" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Purrmodoro 🩺 Study with Melog</title>
@@ -11,135 +11,146 @@
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body class="theme-dark">
-  <!-- Live Procedural Animated Background Canvas -->
+  <!-- Dynamic Fullscreen Procedural Canvas -->
   <canvas id="animated-bg-canvas"></canvas>
 
-  <div class="app-layout">
-    <!-- Top Bar Navigation -->
-    <header class="top-nav">
-      <div class="brand-group">
-        <span class="app-logo">🩺</span>
-        <div class="brand-text">
+  <div class="app-shell">
+    
+    <!-- Top Glass Header -->
+    <header class="app-header">
+      <div class="brand-cluster">
+        <span class="brand-icon">🩺</span>
+        <div class="brand-info">
           <h1>Purrmodoro</h1>
-          <span class="user-level" id="user-level-badge">Lvl 1 • Medical Scholar</span>
+          <span class="level-tag" id="user-level-badge">Lvl 1 • Medical Scholar</span>
         </div>
       </div>
 
-      <div class="top-stats-pill">
-        <div class="stat-chip" title="Paw Points">
-          <span>🐾</span> <strong id="val-paw-points">0</strong>
+      <!-- Quick Stats Pill -->
+      <div class="top-stats-row">
+        <div class="stat-pill" title="Paw Points">
+          <span class="pill-icon">🐾</span>
+          <span class="pill-val" id="val-paw-points">0</span>
         </div>
-        <div class="stat-chip" title="XP Progress">
-          <span>⭐</span> <strong id="val-xp-count">0 XP</strong>
+        <div class="stat-pill" title="Experience Points">
+          <span class="pill-icon">⭐</span>
+          <span class="pill-val" id="val-xp-count">0 XP</span>
         </div>
-        <div class="stat-chip" title="Day Streak">
-          <span>🔥</span> <strong id="val-streak-count">1 Day</strong>
+        <div class="stat-pill" title="Daily Streak">
+          <span class="pill-icon">🔥</span>
+          <span class="pill-val" id="val-streak-count">1 Day</span>
         </div>
       </div>
 
-      <nav class="nav-links">
-        <button class="nav-btn active" data-view="view-study">⏱️ Study</button>
-        <button class="nav-btn" data-view="view-world">🏡 World</button>
-        <button class="nav-btn" data-view="view-planner">🩷 Planner</button>
-        <button class="nav-btn" data-view="view-stats">📊 Progress</button>
-        <button class="nav-btn" data-view="view-settings">⚙️ Settings</button>
+      <!-- Navigation Tabs -->
+      <nav class="nav-bar">
+        <button class="tab-btn active" data-view="view-study">⏱️ Study</button>
+        <button class="tab-btn" data-view="view-world">🏡 World</button>
+        <button class="tab-btn" data-view="view-planner">🩷 Planner</button>
+        <button class="tab-btn" data-view="view-stats">📊 Progress</button>
+        <button class="tab-btn" data-view="view-settings">⚙️ Settings</button>
       </nav>
     </header>
 
-    <!-- Main Content Panels -->
-    <main class="main-content">
+    <!-- Main Dynamic Content Views -->
+    <main class="main-container">
       
-      <!-- ================= VIEW 1: POMOFOX WHEEL TIMER ================= -->
-      <section id="view-study" class="view-panel active">
-        <div class="room-viewport" id="room-viewport">
+      <!-- ================= VIEW 1: POMOFOX STUDY WHEEL ================= -->
+      <section id="view-study" class="content-panel active">
+        
+        <!-- Interactive Wheel Viewport -->
+        <div class="timer-viewport">
           
-          <!-- Animated Biome Selector Toolbar -->
-          <div class="biome-bar">
-            <span class="biome-label">Animated Biome:</span>
-            <button class="btn-biome active" data-biome="sakura">🌸 Blossom</button>
-            <button class="btn-biome" data-biome="taiga">🌲 Fireflies</button>
-            <button class="btn-biome" data-biome="aurora">🏔️ Aurora</button>
-            <button class="btn-biome" data-biome="twilight">🌅 Twilight</button>
+          <!-- Biome Selector Toolbar -->
+          <div class="biome-selector-bar">
+            <span class="bar-title">Biome:</span>
+            <button class="biome-btn active" data-biome="sakura">🌸 Sakura</button>
+            <button class="biome-btn" data-biome="taiga">🌲 Firefly</button>
+            <button class="biome-btn" data-biome="aurora">🏔️ Aurora</button>
+            <button class="biome-btn" data-biome="twilight">🌅 Twilight</button>
           </div>
 
-          <!-- Circular Orbit Ring Stage -->
-          <div class="wheel-stage-container">
+          <!-- Circular Orbit Stage -->
+          <div class="circular-wheel-stage">
             
-            <!-- SVG Circular Glowing Track -->
-            <svg class="wheel-svg" viewBox="0 0 320 320">
+            <!-- SVG Glowing Circular Track -->
+            <svg class="wheel-svg" viewBox="0 0 340 340">
               <defs>
                 <linearGradient id="wheelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#FF9EAF" />
                   <stop offset="50%" stop-color="#E86A82" />
-                  <stop offset="100%" stop-color="#D14966" />
+                  <stop offset="100%" stop-color="#FF5C7A" />
                 </linearGradient>
-                <filter id="glowEffect">
-                  <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="4" result="glow" />
                   <feMerge>
-                    <feMergeNode in="coloredBlur"/>
-                    <feMergeNode in="SourceGraphic"/>
+                    <feMergeNode in="glow" />
+                    <feMergeNode in="SourceGraphic" />
                   </feMerge>
                 </filter>
               </defs>
-              <circle cx="160" cy="160" r="130" class="wheel-bg-track" />
-              <circle cx="160" cy="160" r="130" class="wheel-progress-bar" id="wheel-progress-bar" filter="url(#glowEffect)" />
+              <circle cx="170" cy="170" r="140" class="wheel-track-bg" />
+              <circle cx="170" cy="170" r="140" class="wheel-track-fill" id="wheel-progress-bar" filter="url(#neonGlow)" />
             </svg>
 
-            <!-- Center Clock Display -->
-            <div class="wheel-center-content">
-              <div class="speech-bubble" id="melog-speech">Let's study in cozy dark mode! 🩺</div>
-              <div class="mode-tag" id="timer-mode-tag">STUDY BLOCK</div>
-              <div class="clock-display" id="timer-readout">25:00</div>
-              <div class="task-active-label" id="task-active-label">Ready to study</div>
+            <!-- Center Clock Face -->
+            <div class="clock-hub">
+              <div class="cat-speech" id="melog-speech">Let's crush this study block! 🩺</div>
+              <div class="session-badge" id="timer-mode-tag">STUDY BLOCK</div>
+              <div class="timer-digits" id="timer-readout">25:00</div>
+              <div class="active-focus-task" id="task-active-label">Ready to study</div>
             </div>
 
-            <!-- Rotating Orbit Arm -->
-            <div class="wheel-orbit-arm" id="wheel-orbit-arm">
-              <div class="melog-walker-box" id="melog-walker-box" title="Pet Melog">
-                <svg viewBox="0 0 160 140" class="melog-vector">
+            <!-- Orbit Track Carriage (Carries Walking Melog) -->
+            <div class="orbit-carriage" id="orbit-carriage">
+              <div class="melog-walker-sprite" id="melog-walker" title="Pet Melog">
+                <svg viewBox="0 0 160 140" class="melog-svg">
                   <!-- Melog Walking Model -->
-                  <g class="melog-character" id="melog-character">
-                    <g class="walker-tail">
+                  <g class="melog-cat-group">
+                    <!-- Tail -->
+                    <g class="melog-tail">
                       <path d="M120,80 C150,75 160,50 145,35 C135,25 120,38 128,50 C132,56 142,55 138,45" 
                             fill="#FCECD7" stroke="#2B161B" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
                       <path d="M134,48 Q142,50 144,58" fill="none" stroke="#DE9F65" stroke-width="3" stroke-linecap="round"/>
                     </g>
 
-                    <path class="paw-back-left" d="M108,88 Q110,112 104,115" stroke="#2B161B" stroke-width="6" stroke-linecap="round" fill="none"/>
-                    <path class="paw-front-left" d="M72,88 Q70,112 65,115" stroke="#2B161B" stroke-width="6" stroke-linecap="round" fill="none"/>
+                    <!-- Paws (Animated in Trot) -->
+                    <path class="paw paw-back-l" d="M108,88 Q110,112 104,115" stroke="#2B161B" stroke-width="6" stroke-linecap="round" fill="none"/>
+                    <path class="paw paw-front-l" d="M72,88 Q70,112 65,115" stroke="#2B161B" stroke-width="6" stroke-linecap="round" fill="none"/>
 
+                    <!-- Torso -->
                     <path d="M60,65 C55,75 55,100 70,102 C85,102 110,100 120,88 C125,80 120,65 105,62 C90,60 70,60 60,65 Z" 
                           fill="#FDF4EA" stroke="#2B161B" stroke-width="5" stroke-linejoin="round"/>
-
                     <path d="M90,68 C105,68 112,80 106,94" fill="none" stroke="#F5C08C" stroke-width="5" stroke-linecap="round" opacity="0.75"/>
 
-                    <path class="paw-back-right" d="M96,90 Q98,114 104,116" stroke="#2B161B" stroke-width="6" stroke-linecap="round" fill="none"/>
-                    <path class="paw-front-right" d="M58,88 Q60,114 66,116" stroke="#2B161B" stroke-width="6" stroke-linecap="round" fill="none"/>
+                    <path class="paw paw-back-r" d="M96,90 Q98,114 104,116" stroke="#2B161B" stroke-width="6" stroke-linecap="round" fill="none"/>
+                    <path class="paw paw-front-r" d="M58,88 Q60,114 66,116" stroke="#2B161B" stroke-width="6" stroke-linecap="round" fill="none"/>
 
                     <!-- Star Collar -->
                     <path d="M58,68 Q75,76 88,68" fill="none" stroke="#F7BAC5" stroke-width="4.5" stroke-linecap="round"/>
                     <polygon points="72,74 74,78 78,78 75,81 76,85 72,83 68,85 69,81 66,78 70,78" fill="#FFD23F" stroke="#2B161B" stroke-width="1.8"/>
 
                     <!-- Head -->
-                    <g class="walker-head">
+                    <g class="melog-head">
                       <path d="M42,48 C32,32 40,16 54,18 C62,19 68,22 78,22 C88,22 94,19 102,18 C116,16 124,32 114,48 C126,62 120,82 102,86 C90,88 66,88 54,86 C36,82 30,62 42,48 Z" 
                             fill="#FDF4EA" stroke="#2B161B" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-
                       <path d="M48,36 C44,28 50,22 56,24 Z" fill="#FCAEBA"/>
                       <path d="M108,36 C112,28 106,22 100,24 Z" fill="#FCAEBA"/>
 
+                      <!-- Cheeks -->
                       <ellipse cx="50" cy="62" rx="7" ry="4.5" fill="#FCAAB7" opacity="0.9"/>
                       <ellipse cx="106" cy="62" rx="7" ry="4.5" fill="#FCAAB7" opacity="0.9"/>
 
+                      <!-- Whiskers -->
                       <path d="M40,58 L28,56 M40,64 L28,66" stroke="#2B161B" stroke-width="3.5" stroke-linecap="round"/>
                       <path d="M116,58 L128,56 M116,64 L128,66" stroke="#2B161B" stroke-width="3.5" stroke-linecap="round"/>
 
-                      <!-- Eyes (Blink Only) -->
-                      <g class="walker-eyes">
+                      <!-- Eyes (Clean Blink Only) -->
+                      <g class="melog-eyes">
                         <g class="eyes eyes-open">
                           <ellipse cx="62" cy="54" rx="9" ry="10" fill="#2B161B"/>
                           <circle cx="59" cy="50" r="3" fill="#FFFFFF"/>
@@ -165,81 +176,83 @@
           </div>
         </div>
 
-        <!-- Dashboard Control Card -->
-        <div class="study-control-card">
-          <div class="curriculum-selector-bar">
-            <div class="input-cell flex-1">
+        <!-- Task & Timer Controls Box -->
+        <div class="glass-card">
+          <div class="form-row-grid">
+            <div class="form-field flex-1">
               <label>Course / Subject</label>
-              <select id="sel-subject" class="custom-select"></select>
+              <select id="sel-subject" class="styled-select"></select>
             </div>
-            <div class="input-cell flex-1">
+            <div class="form-field flex-1">
               <label>Resource / Mode</label>
-              <select id="sel-resource" class="custom-select"></select>
+              <select id="sel-resource" class="styled-select"></select>
             </div>
-            <div class="input-cell flex-2">
-              <label>Specific Target / Chapter</label>
-              <input type="text" id="ipt-chapter-task" class="custom-input" placeholder="e.g. Sacral Diagnosis & Treatment Review" />
+            <div class="form-field flex-2">
+              <label>Specific Chapter / Topic</label>
+              <input type="text" id="ipt-chapter-task" class="styled-input" placeholder="e.g. Sacral Diagnosis & Treatment Practical Review" />
             </div>
           </div>
 
-          <div class="timer-btn-row">
+          <!-- Buttons -->
+          <div class="btn-cluster">
             <button class="btn btn-primary" id="btn-timer-start">Start Study 🍅</button>
             <button class="btn btn-secondary" id="btn-timer-pause" style="display:none;">Pause ⏸️</button>
             <button class="btn btn-subtle" id="btn-timer-reset">Reset 🔄</button>
             <button class="btn btn-subtle" id="btn-timer-skip">Skip ⏭️</button>
           </div>
 
-          <div class="daily-progress-meter">
-            <div class="meter-labels">
-              <span>Daily Target</span>
+          <!-- Daily Target Meter -->
+          <div class="daily-meter-wrap">
+            <div class="meter-info">
+              <span>Today's Target</span>
               <span id="txt-daily-progress">0 / 8 Pomodoros (0%)</span>
             </div>
-            <div class="meter-bar-track">
-              <div class="meter-bar-fill" id="bar-daily-progress" style="width: 0%;"></div>
+            <div class="meter-track">
+              <div class="meter-bar" id="bar-daily-progress" style="width: 0%;"></div>
             </div>
           </div>
         </div>
       </section>
 
       <!-- ================= VIEW 2: WORLD & ROOMS ================= -->
-      <section id="view-world" class="view-panel">
-        <div class="card-panel">
-          <div class="panel-header">
+      <section id="view-world" class="content-panel">
+        <div class="glass-card">
+          <div class="card-title-group">
             <h2>🏡 Melog's Medical World</h2>
-            <p>Unlock new wings of the academy and furnish Melog's rooms with Paw Points 🐾</p>
+            <p>Unlock new hospital wings and cozy study gear using Paw Points 🐾</p>
           </div>
 
-          <div class="world-map-grid" id="world-map-grid"></div>
+          <div class="world-grid" id="world-map-grid"></div>
 
-          <h3 class="section-title">🐾 Furniture &amp; Medical Gear Catalog</h3>
+          <h3 class="sub-heading">🐾 Furniture &amp; Medical Gear Catalog</h3>
           <div class="catalog-grid" id="furniture-catalog-grid"></div>
         </div>
       </section>
 
       <!-- ================= VIEW 3: STUDY PLANNER ================= -->
-      <section id="view-planner" class="view-panel">
-        <div class="card-panel">
-          <div class="panel-header">
+      <section id="view-planner" class="content-panel">
+        <div class="glass-card">
+          <div class="card-title-group">
             <h2>🩷 Medical Workload &amp; Exam Planner</h2>
             <p>Calculate your daily quota and Pomodoros to comfortably finish before exam day.</p>
           </div>
 
-          <div class="planner-grid">
-            <div class="input-cell">
+          <div class="form-row-grid">
+            <div class="form-field">
               <label>Exam / Deadline Date</label>
-              <input type="date" id="plan-date" class="custom-input" />
+              <input type="date" id="plan-date" class="styled-input" />
             </div>
-            <div class="input-cell">
+            <div class="form-field">
               <label>Buffer Days (Review / Rest)</label>
-              <input type="number" id="plan-buffer" class="custom-input" value="2" min="0" />
+              <input type="number" id="plan-buffer" class="styled-input" value="2" min="0" />
             </div>
-            <div class="input-cell">
+            <div class="form-field">
               <label>Material Remaining</label>
-              <input type="number" id="plan-amount" class="custom-input" value="240" min="1" />
+              <input type="number" id="plan-amount" class="styled-input" value="240" min="1" />
             </div>
-            <div class="input-cell">
+            <div class="form-field">
               <label>Material Unit</label>
-              <select id="plan-unit" class="custom-select">
+              <select id="plan-unit" class="styled-select">
                 <option value="pages">Pages</option>
                 <option value="Anki cards">Anki Cards</option>
                 <option value="lectures">Lectures</option>
@@ -247,9 +260,9 @@
                 <option value="chapters">Chapters</option>
               </select>
             </div>
-            <div class="input-cell">
+            <div class="form-field">
               <label>Pace (Units per 25m Pomodoro)</label>
-              <input type="number" id="plan-pace" class="custom-input" value="6" min="1" />
+              <input type="number" id="plan-pace" class="styled-input" value="6" min="1" />
             </div>
           </div>
 
@@ -257,99 +270,100 @@
             Generate Rx Study Plan 🩺
           </button>
 
-          <div class="rx-card" id="rx-card" style="display: none;">
-            <div class="rx-header">
+          <div class="rx-box" id="rx-card" style="display: none;">
+            <div class="rx-top">
               <span>🩺 Official Study Prescription</span>
               <span id="rx-finish-date">Target Date</span>
             </div>
-            <div class="rx-content" id="rx-content"></div>
+            <div class="rx-body" id="rx-content"></div>
             <button class="btn btn-secondary" id="btn-apply-plan-goal" style="margin-top: 1rem;">Set as Daily Target</button>
           </div>
         </div>
       </section>
 
       <!-- ================= VIEW 4: PROGRESS & ANALYTICS ================= -->
-      <section id="view-stats" class="view-panel">
-        <div class="card-panel">
-          <div class="panel-header">
+      <section id="view-stats" class="content-panel">
+        <div class="glass-card">
+          <div class="card-title-group">
             <h2>📊 Study History &amp; Streaks</h2>
-            <p>Track your board prep consistency and subject breakdown.</p>
+            <p>Track your board prep consistency and session breakdown.</p>
           </div>
 
-          <div class="streak-banner">
-            <div class="streak-badge-flame">🔥</div>
+          <div class="streak-box">
+            <div class="streak-flame">🔥</div>
             <div>
               <h3 id="txt-stats-streak">1 Day Streak</h3>
               <p>Melog is cheering you on through every chapter!</p>
             </div>
           </div>
 
-          <div class="weekly-tracker-row" id="weekly-tracker-row"></div>
+          <div class="weekly-row" id="weekly-tracker-row"></div>
 
-          <h3 class="section-title">Recent Study Sessions</h3>
-          <div class="session-log-list" id="session-log-list"></div>
+          <h3 class="sub-heading">Recent Study Sessions</h3>
+          <div class="log-list" id="session-log-list"></div>
         </div>
       </section>
 
       <!-- ================= VIEW 5: SETTINGS & CLOUD SYNC ================= -->
-      <section id="view-settings" class="view-panel">
-        <div class="card-panel">
-          <div class="panel-header">
+      <section id="view-settings" class="content-panel">
+        <div class="glass-card">
+          <div class="card-title-group">
             <h2>⚙️ Timer &amp; Cloud Sync</h2>
             <p>Customize your study experience and connect your free cloud sync database.</p>
           </div>
 
-          <div class="cloud-sync-card">
-            <div class="cloud-header">
+          <!-- Supabase Sync Box -->
+          <div class="sync-card">
+            <div class="sync-top">
               <span>☁️ Multi-Device Cloud Sync (Supabase)</span>
-              <span class="sync-status-badge" id="sync-status-badge">Local Mode</span>
+              <span class="status-pill" id="sync-status-badge">Local Mode</span>
             </div>
-            <p class="helper-text">Enter your free Supabase credentials to sync progress automatically across your Mac, PC, iPhone, and iPad.</p>
+            <p class="helper-msg">Enter your free Supabase credentials to sync progress automatically across your Mac, PC, iPhone, and iPad.</p>
             
-            <div class="planner-grid" style="margin-top: 0.75rem;">
-              <div class="input-cell flex-1">
+            <div class="form-row-grid" style="margin-top: 0.85rem;">
+              <div class="form-field flex-1">
                 <label>Supabase Project URL</label>
-                <input type="text" id="cfg-supa-url" class="custom-input" placeholder="https://xyzcompany.supabase.co" />
+                <input type="text" id="cfg-supa-url" class="styled-input" placeholder="https://xyzcompany.supabase.co" />
               </div>
-              <div class="input-cell flex-1">
+              <div class="form-field flex-1">
                 <label>Supabase Anon Key</label>
-                <input type="password" id="cfg-supa-key" class="custom-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5c..." />
+                <input type="password" id="cfg-supa-key" class="styled-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5c..." />
               </div>
             </div>
-            <div class="timer-btn-row" style="margin-top: 0.75rem; justify-content: flex-start;">
+            <div class="btn-cluster" style="margin-top: 0.85rem; justify-content: flex-start;">
               <button class="btn btn-secondary" id="btn-save-cloud">Connect Cloud Sync</button>
               <button class="btn btn-subtle" id="btn-force-sync">Sync Now 🔄</button>
             </div>
           </div>
 
           <form id="settings-form" style="margin-top: 1.5rem;">
-            <div class="planner-grid">
-              <div class="input-cell">
+            <div class="form-row-grid">
+              <div class="form-field">
                 <label>Study Interval (Minutes)</label>
-                <input type="number" id="cfg-study-min" class="custom-input" value="25" min="1" max="90" />
+                <input type="number" id="cfg-study-min" class="styled-input" value="25" min="1" max="90" />
               </div>
-              <div class="input-cell">
+              <div class="form-field">
                 <label>Short Break (Minutes)</label>
-                <input type="number" id="cfg-short-min" class="custom-input" value="5" min="1" max="30" />
+                <input type="number" id="cfg-short-min" class="styled-input" value="5" min="1" max="30" />
               </div>
-              <div class="input-cell">
+              <div class="form-field">
                 <label>Long Break (Minutes)</label>
-                <input type="number" id="cfg-long-min" class="custom-input" value="20" min="5" max="60" />
+                <input type="number" id="cfg-long-min" class="styled-input" value="20" min="5" max="60" />
               </div>
-              <div class="input-cell">
+              <div class="form-field">
                 <label>Pomodoros per Long Break</label>
-                <input type="number" id="cfg-interval" class="custom-input" value="4" min="2" max="10" />
+                <input type="number" id="cfg-interval" class="styled-input" value="4" min="2" max="10" />
               </div>
-              <div class="input-cell">
+              <div class="form-field">
                 <label>Audio Chimes</label>
-                <select id="cfg-sound" class="custom-select">
+                <select id="cfg-sound" class="styled-select">
                   <option value="true">Enabled (Soft Bell)</option>
                   <option value="false">Muted</option>
                 </select>
               </div>
             </div>
 
-            <div class="timer-btn-row" style="margin-top: 1.5rem; justify-content: flex-start;">
+            <div class="btn-cluster" style="margin-top: 1.5rem; justify-content: flex-start;">
               <button type="submit" class="btn btn-primary">Save Preferences</button>
               <button type="button" class="btn btn-subtle" id="btn-clear-local" style="color: #FF7B88;">Reset Data</button>
             </div>
@@ -359,7 +373,7 @@
 
     </main>
 
-    <!-- Footer -->
+    <!-- App Footer -->
     <footer class="app-footer">
       <p>Purrmodoro 🩺 Built with 💖 for Medical School Prep • Featuring <strong>Melog</strong> 🐾</p>
     </footer>
