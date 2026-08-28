@@ -310,24 +310,28 @@ body.theme-dark .biome-btn { color: #BBB; }
   70% { transform: rotate(-6deg); }
   100% { transform: rotate(-16deg); }
 }
+
 @keyframes strideFrontRight {
   0% { transform: rotate(22deg); }
   35% { transform: rotate(-14deg); }
   70% { transform: rotate(12deg); }
   100% { transform: rotate(22deg); }
 }
+
 @keyframes strideBackLeft {
   0% { transform: rotate(20deg); }
   35% { transform: rotate(-16deg); }
   70% { transform: rotate(8deg); }
   100% { transform: rotate(20deg); }
 }
+
 @keyframes strideBackRight {
   0% { transform: rotate(-16deg); }
   35% { transform: rotate(24deg); }
   70% { transform: rotate(-6deg); }
   100% { transform: rotate(-16deg); }
 }
+
 @keyframes attachedTailSway {
   0% { transform: rotate(-4deg); }
   40% { transform: rotate(14deg); }
