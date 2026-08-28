@@ -3,198 +3,706 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#FFF7ED" />
+  <meta name="theme-color" content="#FDF3E3" />
   <title>Purrmodoro 🐾 Study with Melog</title>
   
-  <link rel="manifest" href="manifest.json" />
+  <!-- Authentic Pixel & Rounded Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --pf-bg: #FDF3E3;
+      --pf-border: #3A2416;
+      --pf-card-bg: #FFFFFF;
+      --pf-orange: #FFA785;
+      --pf-orange-dark: #F28963;
+      --pf-mint: #94D8A2;
+      --pf-blue: #96C5F7;
+      --pf-cream: #FFF9F0;
+      --pf-text: #3A2416;
+      --pf-muted: #8E7361;
+      
+      --shadow-block: 4px 4px 0px var(--pf-border);
+      --shadow-block-lg: 6px 6px 0px var(--pf-border);
+      --shadow-press: 1px 1px 0px var(--pf-border);
+      
+      --font-pixel: 'Silkscreen', 'VT323', monospace;
+      --font-digits: 'VT323', monospace;
+      --font-ui: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      image-rendering: pixelated;
+    }
+
+    body {
+      font-family: var(--font-pixel);
+      background-color: var(--pf-bg);
+      color: var(--pf-text);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      position: relative;
+      overflow-x: hidden;
+    }
+
+    /* Ambient Falling Pixel Canvas */
+    #ambient-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .pomofox-container {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 1.15rem;
+      padding: 1.25rem 1rem 6.5rem 1rem;
+      z-index: 1;
+    }
+
+    /* Top Pixel Header */
+    .pf-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .pf-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      background: var(--pf-card-bg);
+      border: 3px solid var(--pf-border);
+      box-shadow: var(--shadow-block);
+      padding: 0.4rem 0.85rem;
+      border-radius: 12px;
+      font-size: 1.1rem;
+      font-weight: 700;
+    }
+
+    .pf-stat-badges {
+      display: flex;
+      gap: 0.4rem;
+    }
+
+    .pf-badge {
+      background: var(--pf-card-bg);
+      border: 3px solid var(--pf-border);
+      box-shadow: 2px 2px 0px var(--pf-border);
+      padding: 0.35rem 0.65rem;
+      border-radius: 10px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    /* Main PomoFox Chunky Block Card */
+    .pf-main-card {
+      background: var(--pf-card-bg);
+      border: 3.5px solid var(--pf-border);
+      border-radius: 24px;
+      box-shadow: var(--shadow-block-lg);
+      padding: 1.5rem 1.25rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.2rem;
+    }
+
+    /* Tabs Views */
+    .tab-view {
+      display: none;
+      width: 100%;
+    }
+
+    .tab-view.active {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    /* Top Mode Selector Buttons */
+    .pf-mode-bar {
+      display: flex;
+      gap: 0.4rem;
+      background: var(--pf-cream);
+      border: 3px solid var(--pf-border);
+      padding: 0.3rem;
+      border-radius: 14px;
+      width: 100%;
+    }
+
+    .pf-mode-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      font-family: var(--font-pixel);
+      font-weight: 700;
+      font-size: 0.76rem;
+      color: var(--pf-muted);
+      padding: 0.55rem 0.3rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.1s ease;
+      text-transform: uppercase;
+    }
+
+    .pf-mode-btn.active {
+      background: var(--pf-orange);
+      color: var(--pf-text);
+      border: 2px solid var(--pf-border);
+      box-shadow: 2px 2px 0px var(--pf-border);
+    }
+
+    /* Medical Subject & Goal Input */
+    .pf-input-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .pf-select, .pf-input {
+      width: 100%;
+      background: var(--pf-cream);
+      border: 3px solid var(--pf-border);
+      border-radius: 12px;
+      padding: 0.65rem 0.85rem;
+      font-family: var(--font-ui);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--pf-text);
+      outline: none;
+      box-shadow: 2px 2px 0px var(--pf-border);
+    }
+
+    .pf-select:focus, .pf-input:focus {
+      background: #FFFFFF;
+      border-color: var(--pf-orange-dark);
+    }
+
+    /* Central Wheel Timer */
+    .pf-wheel-container {
+      position: relative;
+      width: 270px;
+      height: 270px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0.25rem auto;
+    }
+
+    .pf-wheel-svg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      transform: rotate(-90deg);
+    }
+
+    .pf-ring-bg {
+      fill: none;
+      stroke: #F4E2D2;
+      stroke-width: 18;
+    }
+
+    .pf-ring-fill {
+      fill: none;
+      stroke: var(--pf-orange);
+      stroke-width: 18;
+      stroke-linecap: square;
+      stroke-dasharray: 785.39; /* 2 * PI * 125 */
+      stroke-dashoffset: 0;
+      transition: stroke-dashoffset 0.5s ease;
+    }
+
+    .pf-wheel-inner {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      z-index: 2;
+    }
+
+    /* Running Pixel Melog Model Stage */
+    .pf-melog-stage {
+      width: 105px;
+      height: 85px;
+      cursor: pointer;
+    }
+
+    .pf-melog-svg {
+      width: 100%;
+      height: 100%;
+      overflow: visible;
+    }
+
+    /* Pixel Art Running Animation Cycles */
+    .timer-running .paw-fr { animation: pixelRunA 0.3s infinite alternate ease-in-out; }
+    .timer-running .paw-bl { animation: pixelRunA 0.3s infinite alternate ease-in-out 0.06s; }
+    .timer-running .paw-fl { animation: pixelRunB 0.3s infinite alternate ease-in-out 0.15s; }
+    .timer-running .paw-br { animation: pixelRunB 0.3s infinite alternate ease-in-out 0.21s; }
+    .timer-running .melog-body-box { animation: pixelBob 0.3s infinite alternate ease-in-out; }
+    .timer-running .melog-tail-joint { animation: pixelTail 0.35s infinite alternate ease-in-out; }
+
+    @keyframes pixelRunA {
+      0% { transform: translate(0, 0); }
+      100% { transform: translate(5px, -6px); }
+    }
+    @keyframes pixelRunB {
+      0% { transform: translate(5px, -6px); }
+      100% { transform: translate(-4px, 4px); }
+    }
+    @keyframes pixelBob {
+      0% { transform: translateY(0); }
+      100% { transform: translateY(-4px); }
+    }
+    @keyframes pixelTail {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(16deg); }
+    }
+
+    .pf-timer-readout {
+      font-family: var(--font-digits);
+      font-size: 4.5rem;
+      font-weight: 700;
+      line-height: 0.9;
+      letter-spacing: -1px;
+      margin-top: 0.2rem;
+    }
+
+    .pf-speech-text {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--pf-muted);
+      margin-top: 0.2rem;
+      max-width: 180px;
+    }
+
+    /* Chunky Pixel Action Controls */
+    .pf-action-row {
+      display: flex;
+      gap: 0.65rem;
+      width: 100%;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .pf-btn {
+      font-family: var(--font-pixel);
+      font-weight: 700;
+      border: 3px solid var(--pf-border);
+      border-radius: 14px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.1s ease;
+      text-transform: uppercase;
+    }
+
+    .pf-btn:active {
+      transform: translate(2px, 2px);
+      box-shadow: var(--shadow-press) !important;
+    }
+
+    .btn-start-large {
+      background: var(--pf-orange);
+      color: var(--pf-text);
+      font-size: 1.25rem;
+      padding: 0.75rem 2.2rem;
+      box-shadow: var(--shadow-block);
+      letter-spacing: 1px;
+    }
+
+    .btn-pause-large {
+      background: var(--pf-mint);
+      color: var(--pf-text);
+      font-size: 1.25rem;
+      padding: 0.75rem 2.2rem;
+      box-shadow: var(--shadow-block);
+    }
+
+    .btn-tool-square {
+      background: var(--pf-cream);
+      color: var(--pf-text);
+      font-size: 1.15rem;
+      width: 48px;
+      height: 48px;
+      box-shadow: var(--shadow-block);
+    }
+
+    .full-btn { width: 100%; }
+
+    /* Daily Goal Pixel Tracker */
+    .pf-goal-section {
+      width: 100%;
+      border-top: 3px dashed #E2CEBE;
+      padding-top: 0.9rem;
+    }
+
+    .pf-goal-labels {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: var(--pf-muted);
+      margin-bottom: 0.35rem;
+      text-transform: uppercase;
+    }
+
+    .pf-goal-track {
+      width: 100%;
+      height: 14px;
+      background: var(--pf-cream);
+      border: 2.5px solid var(--pf-border);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .pf-goal-fill {
+      height: 100%;
+      background: var(--pf-orange);
+      transition: width 0.4s ease;
+    }
+
+    /* Grids for Planner, Sanctuary, Stats, Settings */
+    .pf-section-title {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.65rem;
+    }
+
+    .pf-item-card {
+      background: var(--pf-cream);
+      border: 2.5px solid var(--pf-border);
+      box-shadow: 2px 2px 0px var(--pf-border);
+      border-radius: 14px;
+      padding: 0.85rem 0.65rem;
+      text-align: center;
+    }
+
+    .pf-item-card.locked {
+      opacity: 0.5;
+      border-style: dashed;
+    }
+
+    .pf-box-panel {
+      background: var(--pf-cream);
+      border: 2.5px solid var(--pf-border);
+      box-shadow: 2px 2px 0px var(--pf-border);
+      border-radius: 14px;
+      padding: 0.85rem;
+    }
+
+    .week-row-pills {
+      display: flex;
+      justify-content: space-between;
+      margin: 1rem 0;
+    }
+
+    .day-square {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      background: var(--pf-cream);
+      border: 2.5px solid var(--pf-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 0.85rem;
+    }
+
+    .day-square.done {
+      background: var(--pf-orange);
+      box-shadow: 2px 2px 0px var(--pf-border);
+    }
+
+    .log-scroll-box {
+      display: flex;
+      flex-direction: column;
+      gap: 0.45rem;
+      max-height: 210px;
+      overflow-y: auto;
+    }
+
+    .log-row-item {
+      background: var(--pf-cream);
+      border: 2px solid var(--pf-border);
+      border-radius: 10px;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.78rem;
+      font-family: var(--font-ui);
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    /* Bottom Fixed Pixel Dock */
+    .pf-bottom-dock {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: calc(100% - 2rem);
+      max-width: 480px;
+      background: var(--pf-card-bg);
+      border: 3.5px solid var(--pf-border);
+      border-radius: 20px;
+      box-shadow: var(--shadow-block);
+      padding: 0.35rem;
+      display: flex;
+      justify-content: space-between;
+      z-index: 50;
+    }
+
+    .pf-dock-btn {
+      flex: 1;
+      background: transparent;
+      border: none;
+      font-family: var(--font-pixel);
+      font-weight: 700;
+      font-size: 0.65rem;
+      color: var(--pf-muted);
+      padding: 0.55rem 0.2rem;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      text-transform: uppercase;
+      transition: all 0.1s ease;
+    }
+
+    .pf-dock-btn.active {
+      background: var(--pf-orange);
+      color: var(--pf-text);
+      border: 2px solid var(--pf-border);
+      box-shadow: 2px 2px 0px var(--pf-border);
+    }
+
+    .dock-ico { font-size: 1.15rem; }
+  </style>
 </head>
 <body>
   <!-- Ambient Petal Canvas -->
   <canvas id="ambient-canvas"></canvas>
 
-  <div class="pomofox-layout">
+  <div class="pomofox-container">
     
-    <!-- Top Header & Mini Stats -->
-    <header class="fox-header">
-      <div class="logo-badge">
-        <span class="logo-emoji">🩺</span>
-        <span class="logo-text">Purrmodoro</span>
+    <!-- Top Header -->
+    <header class="pf-header">
+      <div class="pf-logo">
+        <span>🩺</span>
+        <span>Purrmodoro</span>
       </div>
-
-      <div class="header-badges">
-        <div class="chip-badge" title="Paw Points">🐾 <strong id="val-paw-points">0</strong></div>
-        <div class="chip-badge" title="Daily Streak">🔥 <strong id="val-streak-count">1</strong></div>
-        <div class="chip-badge" id="level-badge">⭐ Lvl 1</div>
+      <div class="pf-stat-badges">
+        <div class="pf-badge" title="Paw Points">🐾 <strong id="val-paw-points">0</strong></div>
+        <div class="pf-badge" title="Daily Streak">🔥 <strong id="val-streak-count">1</strong></div>
+        <div class="pf-badge" id="level-badge">⭐ Lvl 1</div>
       </div>
     </header>
 
-    <!-- Main PomoFox Central Block -->
-    <main class="fox-card main-timer-card">
+    <!-- Main Card Body -->
+    <main class="pf-main-card">
       
-      <!-- Top Mode Selector Pills -->
-      <div class="mode-pill-bar">
-        <button class="mode-btn active" id="btn-mode-pomo" data-mode="study">Pomodoro</button>
-        <button class="mode-btn" id="btn-mode-short" data-mode="shortBreak">Short Break</button>
-        <button class="mode-btn" id="btn-mode-long" data-mode="longBreak">Long Break</button>
-      </div>
-
-      <!-- Subject / Task Bar -->
-      <div class="task-bar-wrap">
-        <select id="sel-subject" class="fox-select"></select>
-        <input type="text" id="ipt-chapter-task" class="fox-input" placeholder="What are you studying? (e.g. Ch. 4, Practical Prep)" />
-      </div>
-
-      <!-- Center Wheel Timer with Running Melog Inside -->
-      <div class="wheel-display-stage">
+      <!-- ================= VIEW 1: TIMER ================= -->
+      <section id="tab-timer" class="tab-view active">
         
-        <!-- Circular SVG Progress Bar -->
-        <svg class="progress-ring" viewBox="0 0 320 320">
-          <circle cx="160" cy="160" r="135" class="ring-bg" />
-          <circle cx="160" cy="160" r="135" class="ring-fill" id="ring-fill" />
-        </svg>
+        <!-- Mode Pills -->
+        <div class="pf-mode-bar">
+          <button type="button" class="pf-mode-btn active" id="btn-mode-pomo" data-mode="study">Pomodoro</button>
+          <button type="button" class="pf-mode-btn" id="btn-mode-short" data-mode="shortBreak">Short Break</button>
+          <button type="button" class="pf-mode-btn" id="btn-mode-long" data-mode="longBreak">Long Break</button>
+        </div>
 
-        <!-- Center Stage Content -->
-        <div class="wheel-inner">
-          
-          <!-- Running Cat Sprite (Melog) -->
-          <div class="running-cat-stage" id="running-cat-stage">
-            <svg viewBox="0 0 160 120" class="melog-fox-sprite">
-              <defs>
-                <radialGradient id="melogPeachFur" cx="50%" cy="40%" r="60%">
-                  <stop offset="0%" stop-color="#FFDFB8" />
-                  <stop offset="55%" stop-color="#F5C492" />
-                  <stop offset="100%" stop-color="#E0A46D" />
-                </radialGradient>
-              </defs>
+        <!-- Task / Subject Bar -->
+        <div class="pf-input-group">
+          <select id="sel-subject" class="pf-select"></select>
+          <input type="text" id="ipt-chapter-task" class="pf-input" placeholder="What are you studying? (e.g. Robbins Ch. 4, Practical Prep)" />
+        </div>
 
-              <g class="melog-running-group">
-                <!-- Tail -->
-                <g class="melog-tail">
-                  <path d="M125,65 C148,60 158,35 142,22 C132,14 118,26 126,38 C130,44 140,42 136,34" 
-                        fill="none" stroke="#F5C492" stroke-width="12" stroke-linecap="round"/>
-                  <path d="M136,32 Q144,38 146,45" fill="none" stroke="#C97F3E" stroke-width="3" stroke-linecap="round"/>
-                </g>
+        <!-- Wheel Timer Stage with Pixel Melog -->
+        <div class="pf-wheel-container">
+          <svg class="pf-wheel-svg" viewBox="0 0 300 300">
+            <circle cx="150" cy="150" r="125" class="pf-ring-bg" />
+            <circle cx="150" cy="150" r="125" class="pf-ring-fill" id="ring-fill" />
+          </svg>
 
-                <!-- Back Left Leg -->
-                <path class="leg leg-bl" d="M102,68 Q108,96 98,102" stroke="#E0A46D" stroke-width="10" stroke-linecap="round" fill="none"/>
-                <!-- Front Left Leg -->
-                <path class="leg leg-fl" d="M64,68 Q58,96 52,102" stroke="#E0A46D" stroke-width="10" stroke-linecap="round" fill="none"/>
+          <div class="pf-wheel-inner">
+            <!-- Pixel Art Melog -->
+            <div class="pf-melog-stage" id="running-cat-stage">
+              <svg viewBox="0 0 160 120" class="pf-melog-svg">
+                <defs>
+                  <linearGradient id="melogPeach" x1="0%" y1="0%" x2="0%" y2="100%">
+                    <stop offset="0%" stop-color="#FFDEB8" />
+                    <stop offset="55%" stop-color="#F7C694" />
+                    <stop offset="100%" stop-color="#E2A66E" />
+                  </linearGradient>
+                </defs>
 
-                <!-- Torso -->
-                <ellipse cx="84" cy="62" rx="34" ry="24" fill="url(#melogPeachFur)" stroke="#36220F" stroke-width="3.5"/>
-                <!-- Tabby Flank Stripes -->
-                <path d="M80,48 Q86,60 80,72" fill="none" stroke="#BD7739" stroke-width="2.6" stroke-linecap="round"/>
-                <path d="M94,50 Q98,62 92,72" fill="none" stroke="#BD7739" stroke-width="2.6" stroke-linecap="round"/>
-                <!-- White Chest -->
-                <path d="M52,52 Q64,74 74,62 Q62,48 52,52 Z" fill="#FFFBF5"/>
-
-                <!-- Back Right Leg -->
-                <path class="leg leg-br" d="M92,68 Q98,96 104,102" stroke="#FFDFB8" stroke-width="10" stroke-linecap="round" fill="none"/>
-                <!-- Front Right Leg -->
-                <path class="leg leg-fr" d="M52,68 Q54,96 62,102" stroke="#FFDFB8" stroke-width="10" stroke-linecap="round" fill="none"/>
-
-                <!-- Head -->
-                <g class="melog-head">
-                  <!-- Ears -->
-                  <path d="M38,26 C32,8 40,2 50,8 C54,11 56,18 54,28 Z" fill="#F5C492" stroke="#36220F" stroke-width="2.5"/>
-                  <path d="M40,22 C36,10 42,6 48,10 Z" fill="#FCAEBA"/>
-                  <path d="M78,26 C84,8 76,2 66,8 C62,11 60,18 62,28 Z" fill="#F5C492" stroke="#36220F" stroke-width="2.5"/>
-                  <path d="M76,22 C80,10 74,6 68,10 Z" fill="#FCAEBA"/>
-
-                  <!-- Head Round Base -->
-                  <circle cx="58" cy="38" r="24" fill="url(#melogPeachFur)" stroke="#36220F" stroke-width="3.5"/>
-
-                  <!-- Cheeks -->
-                  <ellipse cx="42" cy="45" rx="6" ry="3.5" fill="#FFAEC0"/>
-                  <ellipse cx="74" cy="45" rx="6" ry="3.5" fill="#FFAEC0"/>
-
-                  <!-- Eyes (Blinking) -->
-                  <g class="melog-eyes">
-                    <g class="eyes-open">
-                      <circle cx="48" cy="35" r="5" fill="#36220F"/>
-                      <circle cx="46" cy="33" r="1.5" fill="#FFFFFF"/>
-                      <circle cx="68" cy="35" r="5" fill="#36220F"/>
-                      <circle cx="66" cy="33" r="1.5" fill="#FFFFFF"/>
-                    </g>
-                    <g class="eyes-closed" style="display:none;">
-                      <path d="M43,36 Q48,42 53,36" fill="none" stroke="#36220F" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M63,36 Q68,42 73,36" fill="none" stroke="#36220F" stroke-width="3" stroke-linecap="round"/>
-                    </g>
+                <g class="melog-body-box">
+                  <!-- Tail -->
+                  <g class="melog-tail-joint">
+                    <rect x="120" y="55" width="22" height="12" rx="4" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
+                    <rect x="134" y="38" width="14" height="20" rx="4" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
+                    <rect x="126" y="24" width="18" height="16" rx="4" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
+                    <!-- Ginger Tail Tip -->
+                    <rect x="128" y="26" width="6" height="6" fill="#BD7739"/>
                   </g>
 
-                  <!-- Cute Smiling Mouth -->
-                  <polygon points="58,41 55,38 61,38" fill="#E88894"/>
-                  <path d="M52,43 Q55,47 58,43 Q61,47 64,43" fill="none" stroke="#36220F" stroke-width="2.4" stroke-linecap="round"/>
-                  <!-- Whiskers -->
-                  <path d="M38,41 L24,39 M38,45 L24,47" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
-                  <path d="M78,41 L92,39 M78,45 L92,47" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+                  <!-- Back Left Leg -->
+                  <g class="paw paw-bl">
+                    <rect x="98" y="70" width="12" height="26" rx="5" fill="#E2A66E" stroke="#3A2416" stroke-width="2.5"/>
+                    <rect x="94" y="90" width="16" height="8" rx="3" fill="#E2A66E" stroke="#3A2416" stroke-width="2.5"/>
+                  </g>
+                  
+                  <!-- Front Left Leg -->
+                  <g class="paw paw-fl">
+                    <rect x="58" y="70" width="12" height="26" rx="5" fill="#E2A66E" stroke="#3A2416" stroke-width="2.5"/>
+                    <rect x="54" y="90" width="16" height="8" rx="3" fill="#E2A66E" stroke="#3A2416" stroke-width="2.5"/>
+                  </g>
+
+                  <!-- Torso Block -->
+                  <rect x="50" y="48" width="70" height="38" rx="14" fill="url(#melogPeach)" stroke="#3A2416" stroke-width="3.5"/>
+                  
+                  <!-- Flank Stripes -->
+                  <rect x="80" y="52" width="5" height="18" rx="2" fill="#BD7739"/>
+                  <rect x="94" y="52" width="5" height="18" rx="2" fill="#BD7739"/>
+
+                  <!-- White Bib -->
+                  <polygon points="50,56 68,76 68,56" fill="#FFFBF5"/>
+
+                  <!-- Back Right Leg -->
+                  <g class="paw paw-br">
+                    <rect x="90" y="70" width="12" height="26" rx="5" fill="#FFDEB8" stroke="#3A2416" stroke-width="2.5"/>
+                    <rect x="86" y="90" width="16" height="8" rx="3" fill="#FFDEB8" stroke="#3A2416" stroke-width="2.5"/>
+                  </g>
+
+                  <!-- Front Right Leg -->
+                  <g class="paw paw-fr">
+                    <rect x="48" y="70" width="12" height="26" rx="5" fill="#FFDEB8" stroke="#3A2416" stroke-width="2.5"/>
+                    <rect x="44" y="90" width="16" height="8" rx="3" fill="#FFDEB8" stroke="#3A2416" stroke-width="2.5"/>
+                  </g>
+
+                  <!-- Head Block -->
+                  <g class="melog-head-block">
+                    <!-- Ears -->
+                    <polygon points="34,24 24,6 44,12" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
+                    <polygon points="32,20 27,10 40,14" fill="#FCAEBA"/>
+                    
+                    <polygon points="76,24 86,6 66,12" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
+                    <polygon points="78,20 83,10 70,14" fill="#FCAEBA"/>
+
+                    <!-- Head Contour -->
+                    <rect x="32" y="18" width="48" height="42" rx="14" fill="url(#melogPeach)" stroke="#3A2416" stroke-width="3.5"/>
+                    
+                    <!-- Forehead M -->
+                    <path d="M50,24 L53,29 L56,25 L59,29 L62,24" fill="none" stroke="#BD7739" stroke-width="2" stroke-linecap="square"/>
+
+                    <!-- Cheeks -->
+                    <rect x="34" y="44" width="8" height="6" rx="2" fill="#FFAEC0"/>
+                    <rect x="70" y="44" width="8" height="6" rx="2" fill="#FFAEC0"/>
+
+                    <!-- Hazel Pixel Eyes -->
+                    <g class="melog-eyes">
+                      <!-- Left Eye -->
+                      <rect x="44" y="34" width="8" height="8" rx="2" fill="#3A2416"/>
+                      <rect x="44" y="34" width="6" height="6" rx="1" fill="#9CBD38"/>
+                      <rect x="44" y="34" width="3" height="3" fill="#FFFFFF"/>
+
+                      <!-- Right Eye -->
+                      <rect x="60" y="34" width="8" height="8" rx="2" fill="#3A2416"/>
+                      <rect x="60" y="34" width="6" height="6" rx="1" fill="#9CBD38"/>
+                      <rect x="60" y="34" width="3" height="3" fill="#FFFFFF"/>
+                    </g>
+
+                    <!-- Pink Nose & Smile -->
+                    <polygon points="56,44 53,41 59,41" fill="#E88894"/>
+                    <path d="M49,46 Q53,50 56,46 Q59,50 63,46" fill="none" stroke="#3A2416" stroke-width="2.2" stroke-linecap="round"/>
+
+                    <!-- Whiskers -->
+                    <line x1="32" y1="42" x2="20" y2="40" stroke="#FFFFFF" stroke-width="2"/>
+                    <line x1="32" y1="46" x2="20" y2="48" stroke="#FFFFFF" stroke-width="2"/>
+                    <line x1="80" y1="42" x2="92" y2="40" stroke="#FFFFFF" stroke-width="2"/>
+                    <line x1="80" y1="46" x2="92" y2="48" stroke="#FFFFFF" stroke-width="2"/>
+                  </g>
                 </g>
-              </g>
-            </svg>
+              </svg>
+            </div>
+
+            <!-- Digits -->
+            <div class="pf-timer-readout" id="timer-readout">25:00</div>
+            <div class="pf-speech-text" id="melog-speech">Ready to study with Melog! 🐾</div>
           </div>
-
-          <!-- Countdown Digits -->
-          <div class="time-readout" id="timer-readout">25:00</div>
-          <div class="cat-message-bubble" id="melog-speech">Ready to study with Melog! 🐾</div>
         </div>
-      </div>
 
-      <!-- Action Buttons Block -->
-      <div class="action-btn-row">
-        <button type="button" class="fox-btn btn-main-start" id="btn-timer-start">START</button>
-        <button type="button" class="fox-btn btn-main-pause" id="btn-timer-pause" style="display:none;">PAUSE</button>
-        <button type="button" class="fox-btn btn-icon-subtle" id="btn-timer-skip" title="Skip Session">⏭️</button>
-        <button type="button" class="fox-btn btn-icon-subtle" id="btn-timer-reset" title="Reset Timer">🔄</button>
-        <button type="button" class="fox-btn btn-icon-subtle" id="btn-sound-toggle" title="Toggle Sound">🔔</button>
-      </div>
-
-      <!-- Daily Goal Progress -->
-      <div class="goal-progress-box">
-        <div class="goal-labels">
-          <span>Today's Study Goal</span>
-          <span id="txt-daily-progress">0 / 8 Pomodoros</span>
+        <!-- Controls Row -->
+        <div class="pf-action-row">
+          <button type="button" class="pf-btn btn-start-large" id="btn-timer-start">START</button>
+          <button type="button" class="pf-btn btn-pause-large" id="btn-timer-pause" style="display:none;">PAUSE</button>
+          <button type="button" class="pf-btn btn-tool-square" id="btn-timer-skip" title="Skip Session">⏭️</button>
+          <button type="button" class="pf-btn btn-tool-square" id="btn-timer-reset" title="Reset Timer">🔄</button>
+          <button type="button" class="pf-btn btn-tool-square" id="btn-sound-toggle" title="Toggle Sound">🔔</button>
         </div>
-        <div class="goal-track">
-          <div class="goal-fill" id="bar-daily-progress" style="width: 0%;"></div>
-        </div>
-      </div>
-    </main>
 
-    <!-- Navigation Drawer Modals / Tabs -->
-    <div class="bottom-tools-dock">
-      <button class="dock-btn" data-modal="modal-planner">🩷 Study Planner</button>
-      <button class="dock-btn" data-modal="modal-world">🏡 Melog's World</button>
-      <button class="dock-btn" data-modal="modal-stats">📊 Stats</button>
-      <button class="dock-btn" data-modal="modal-settings">⚙️ Settings</button>
-    </div>
-
-    <!-- MODAL 1: STUDY PLANNER -->
-    <div class="fox-modal" id="modal-planner">
-      <div class="fox-modal-content fox-card">
-        <div class="modal-header">
-          <h2>🩷 Medical Study Planner</h2>
-          <button class="modal-close">&times;</button>
+        <!-- Daily Target Bar -->
+        <div class="pf-goal-section">
+          <div class="pf-goal-labels">
+            <span>Today's Study Goal</span>
+            <span id="txt-daily-progress">0 / 8 Pomodoros</span>
+          </div>
+          <div class="pf-goal-track">
+            <div class="pf-goal-fill" id="bar-daily-progress" style="width: 0%;"></div>
+          </div>
         </div>
-        <div class="form-grid">
-          <div class="form-field">
+
+      </section>
+
+      <!-- ================= VIEW 2: PLANNER ================= -->
+      <section id="tab-planner" class="tab-view">
+        <h2 class="pf-section-title">🩷 Medical Study Planner</h2>
+        <div class="form-stack">
+          <div class="form-item">
             <label for="plan-date">Exam Date</label>
-            <input type="date" id="plan-date" class="fox-input" />
+            <input type="date" id="plan-date" class="pf-input" />
           </div>
-          <div class="form-field">
-            <label for="plan-buffer">Buffer Days (Review)</label>
-            <input type="number" id="plan-buffer" class="fox-input" value="2" min="0" />
+          <div class="form-item">
+            <label for="plan-buffer">Buffer Days (Review / Rest)</label>
+            <input type="number" id="plan-buffer" class="pf-input" value="2" min="0" />
           </div>
-          <div class="form-field">
+          <div class="form-item">
             <label for="plan-amount">Material Remaining</label>
-            <input type="number" id="plan-amount" class="fox-input" value="240" min="1" />
+            <input type="number" id="plan-amount" class="pf-input" value="240" min="1" />
           </div>
-          <div class="form-field">
+          <div class="form-item">
             <label for="plan-unit">Material Unit</label>
-            <select id="plan-unit" class="fox-select">
+            <select id="plan-unit" class="pf-select">
               <option value="pages">Pages</option>
               <option value="Anki cards">Anki Cards</option>
               <option value="lectures">Lectures</option>
@@ -202,110 +710,557 @@
               <option value="chapters">Chapters</option>
             </select>
           </div>
-          <div class="form-field">
+          <div class="form-item">
             <label for="plan-pace">Pace (Units per 25m Pomodoro)</label>
-            <input type="number" id="plan-pace" class="fox-input" value="6" min="1" />
+            <input type="number" id="plan-pace" class="pf-input" value="6" min="1" />
           </div>
+          <button type="button" class="pf-btn btn-start-large full-btn" id="btn-calc-schedule" style="margin-top:0.5rem;">
+            Calculate Schedule 🩺
+          </button>
         </div>
-        <button type="button" class="fox-btn btn-main-start full-width" id="btn-calc-schedule" style="margin-top:1rem;">
-          Calculate Schedule 🩺
-        </button>
-        <div class="rx-box" id="rx-card" style="display: none; margin-top:1rem;">
-          <div class="rx-top"><span>Prescription</span><span id="rx-finish-date"></span></div>
-          <div id="rx-content" style="padding:0.75rem 0;"></div>
-          <button type="button" class="fox-btn btn-icon-subtle full-width" id="btn-apply-plan-goal">Set as Today's Goal</button>
-        </div>
-      </div>
-    </div>
 
-    <!-- MODAL 2: MELOG'S WORLD -->
-    <div class="fox-modal" id="modal-world">
-      <div class="fox-modal-content fox-card">
-        <div class="modal-header">
-          <h2>🏡 Melog's World &amp; Gear</h2>
-          <button class="modal-close">&times;</button>
+        <div class="pf-box-panel" id="rx-card" style="display: none; margin-top: 1rem;">
+          <div style="font-weight: 800; border-bottom: 2px dashed #E2CEBE; padding-bottom: 0.4rem; display: flex; justify-content: space-between;">
+            <span>Rx Prescription</span>
+            <span id="rx-finish-date"></span>
+          </div>
+          <div id="rx-content" style="padding: 0.75rem 0; font-family: var(--font-ui); font-size: 0.88rem;"></div>
+          <button type="button" class="pf-btn btn-tool-square full-btn" id="btn-apply-plan-goal" style="height: auto; padding: 0.65rem;">Set as Daily Target</button>
         </div>
-        <div class="world-grid" id="world-map-grid"></div>
-        <h3 style="margin: 1.25rem 0 0.5rem 0; font-size:1.1rem;">🐾 Adopt Gear with Paw Points</h3>
-        <div class="catalog-grid" id="furniture-catalog-grid"></div>
-      </div>
-    </div>
+      </section>
 
-    <!-- MODAL 3: STATS -->
-    <div class="fox-modal" id="modal-stats">
-      <div class="fox-modal-content fox-card">
-        <div class="modal-header">
-          <h2>📊 Study Consistency</h2>
-          <button class="modal-close">&times;</button>
-        </div>
-        <div class="streak-box">
-          <span style="font-size:2rem;">🔥</span>
+      <!-- ================= VIEW 3: SANCTUARY WORLD ================= -->
+      <section id="tab-world" class="tab-view">
+        <h2 class="pf-section-title">🏡 Melog's Sanctuary</h2>
+        <div class="grid-2" id="world-map-grid"></div>
+
+        <h3 style="margin: 1.25rem 0 0.5rem 0; font-size: 1rem; text-transform: uppercase;">🐾 Adopt Gear with Paw Points</h3>
+        <div class="grid-2" id="furniture-catalog-grid"></div>
+      </section>
+
+      <!-- ================= VIEW 4: STATS ================= -->
+      <section id="tab-stats" class="tab-view">
+        <h2 class="pf-section-title">📊 Study Consistency</h2>
+        <div class="pf-box-panel" style="display:flex; align-items:center; gap:0.75rem;">
+          <span style="font-size: 2.2rem;">🔥</span>
           <div>
             <h3 id="txt-stats-streak">1 Day Streak</h3>
-            <p style="font-size:0.85rem; color:#785A44;">Keep up the amazing focus!</p>
+            <p style="font-size: 0.82rem; color: var(--pf-muted);">Melog is cheering you on!</p>
           </div>
         </div>
-        <div class="weekly-row" id="weekly-tracker-row"></div>
-        <h3 style="margin: 1.25rem 0 0.5rem 0; font-size:1.1rem;">Session Logs</h3>
-        <div class="log-list" id="session-log-list"></div>
-      </div>
-    </div>
 
-    <!-- MODAL 4: SETTINGS -->
-    <div class="fox-modal" id="modal-settings">
-      <div class="fox-modal-content fox-card">
-        <div class="modal-header">
-          <h2>⚙️ Timer &amp; Cloud Sync</h2>
-          <button class="modal-close">&times;</button>
-        </div>
+        <div class="week-row-pills" id="weekly-tracker-row"></div>
+
+        <h3 style="margin: 1.25rem 0 0.5rem 0; font-size: 1rem; text-transform: uppercase;">Session Logs</h3>
+        <div class="log-scroll-box" id="session-log-list"></div>
+      </section>
+
+      <!-- ================= VIEW 5: SETTINGS ================= -->
+      <section id="tab-settings" class="tab-view">
+        <h2 class="pf-section-title">⚙️ Preferences</h2>
         <form id="settings-form">
-          <div class="form-grid">
-            <div class="form-field">
-              <label for="cfg-study-min">Focus (Minutes)</label>
-              <input type="number" id="cfg-study-min" class="fox-input" value="25" min="1" max="90" />
+          <div class="form-stack">
+            <div class="form-item">
+              <label for="cfg-study-min">Focus Duration (Minutes)</label>
+              <input type="number" id="cfg-study-min" class="pf-input" value="25" min="1" max="90" />
             </div>
-            <div class="form-field">
+            <div class="form-item">
               <label for="cfg-short-min">Short Break</label>
-              <input type="number" id="cfg-short-min" class="fox-input" value="5" min="1" max="30" />
+              <input type="number" id="cfg-short-min" class="pf-input" value="5" min="1" max="30" />
             </div>
-            <div class="form-field">
+            <div class="form-item">
               <label for="cfg-long-min">Long Break</label>
-              <input type="number" id="cfg-long-min" class="fox-input" value="20" min="5" max="60" />
+              <input type="number" id="cfg-long-min" class="pf-input" value="20" min="5" max="60" />
             </div>
-            <div class="form-field">
-              <label for="cfg-interval">Long Break Interval</label>
-              <input type="number" id="cfg-interval" class="fox-input" value="4" min="2" max="10" />
-            </div>
+            <button type="submit" class="pf-btn btn-start-large full-btn" style="margin-top:0.5rem;">Save Settings</button>
           </div>
-          <button type="submit" class="fox-btn btn-main-start full-width" style="margin-top:1rem;">Save Settings</button>
         </form>
+      </section>
 
-        <div style="margin-top: 1.5rem; border-top: 2px dashed #E0C9B6; padding-top: 1rem;">
-          <h3>☁️ Supabase Cloud Sync</h3>
-          <div class="form-grid" style="margin-top:0.5rem;">
-            <div class="form-field">
-              <label for="cfg-supa-url">Project URL</label>
-              <input type="text" id="cfg-supa-url" class="fox-input" placeholder="https://xyz.supabase.co" />
-            </div>
-            <div class="form-field">
-              <label for="cfg-supa-key">Anon Key</label>
-              <input type="password" id="cfg-supa-key" class="fox-input" placeholder="eyJhbGci..." />
-            </div>
-          </div>
-          <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
-            <button type="button" class="fox-btn btn-icon-subtle" id="btn-save-cloud" style="flex:1;">Connect Sync</button>
-            <button type="button" class="fox-btn btn-icon-subtle" id="btn-force-sync" style="flex:1;">Sync Now 🔄</button>
-          </div>
-        </div>
-      </div>
-    </div>
+    </main>
 
-    <!-- Footer -->
-    <footer class="fox-footer">
-      <p>PomoFox-inspired Pomodoro • Dedicated to <strong>Melog</strong> 🐾</p>
-    </footer>
+    <!-- Bottom Pixel Navigation Dock -->
+    <nav class="pf-bottom-dock">
+      <button type="button" class="pf-dock-btn active" data-tab="tab-timer">
+        <span class="dock-ico">⏱️</span>
+        <span>Timer</span>
+      </button>
+      <button type="button" class="pf-dock-btn" data-tab="tab-planner">
+        <span class="dock-ico">🩷</span>
+        <span>Planner</span>
+      </button>
+      <button type="button" class="pf-dock-btn" data-tab="tab-world">
+        <span class="dock-ico">🏡</span>
+        <span>World</span>
+      </button>
+      <button type="button" class="pf-dock-btn" data-tab="tab-stats">
+        <span class="dock-ico">📊</span>
+        <span>Stats</span>
+      </button>
+      <button type="button" class="pf-dock-btn" data-tab="tab-settings">
+        <span class="dock-ico">⚙️</span>
+        <span>Settings</span>
+      </button>
+    </nav>
+
   </div>
 
-  <script src="script.js"></script>
+  <script>
+    /* -------------------------------------------------------------
+       PURRMODORO - Complete PomoFox Exact Rebuild Logic
+       ------------------------------------------------------------- */
+    const MEDICAL_SUBJECTS = [
+      "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
+      "🦴 OPP / OMM",
+      "🩺 CE (Clinical Education)",
+      "👥 PBL (Problem-Based Learning)",
+      "🫀 Robbins Pathology",
+      "⚡ Guyton Physiology",
+      "💊 Katzung Pharmacology",
+      "🔬 Murray Microbiology",
+      "🧬 Abbas Immunology",
+      "💀 Moore's Anatomy",
+      "🧪 Marks' Biochemistry & Genetics",
+      "🧠 Anki / Spaced Repetition",
+      "✏️ Other Custom Subject"
+    ];
+
+    const WORLD_WINGS = [
+      { name: "Melog's Bedroom", icon: '🛏️', reqLevel: 1 },
+      { name: "Medical Library", icon: '📚', reqLevel: 5 },
+      { name: "Cozy Anatomy Café", icon: '☕', reqLevel: 10 },
+      { name: "Pharmacology Greenhouse", icon: '🌿', reqLevel: 20 },
+      { name: "The Whisker Clinic", icon: '🩺', reqLevel: 35 },
+      { name: "Simulation Suite", icon: '🫀', reqLevel: 50 },
+      { name: "Stargazer Lounge", icon: '🌙', reqLevel: 75 },
+      { name: "Teaching Hospital", icon: '🏥', reqLevel: 100 }
+    ];
+
+    const CATALOG_ITEMS = [
+      { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false },
+      { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 50, purchased: false },
+      { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 100, purchased: false },
+      { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false },
+      { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false },
+      { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1000, purchased: false }
+    ];
+
+    let state = {
+      settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true },
+      timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
+      game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
+    };
+
+    const RING_CIRCUMFERENCE = 2 * Math.PI * 125; // 785.39
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadState();
+      initTabs();
+      initUI();
+      initTimer();
+      initPlanner();
+      initCanvas();
+      renderAll();
+    });
+
+    function getTodayDateString() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    }
+
+    function saveState() {
+      localStorage.setItem('purrmodoro_save', JSON.stringify(state));
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem('purrmodoro_save');
+      if (raw) {
+        try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
+      }
+      state.timer.timeLeft = state.settings.studyMin * 60;
+      state.timer.totalDuration = state.settings.studyMin * 60;
+    }
+
+    /* Bottom Dock Tab Navigation */
+    function initTabs() {
+      const dockBtns = document.querySelectorAll('.pf-dock-btn');
+      dockBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          dockBtns.forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.tab-view').forEach(v => v.classList.remove('active'));
+
+          btn.classList.add('active');
+          const target = document.getElementById(btn.dataset.tab);
+          if (target) {
+            target.classList.add('active');
+            if (btn.dataset.tab === 'tab-world') renderWorld();
+            if (btn.dataset.tab === 'tab-stats') renderStats();
+          }
+        });
+      });
+    }
+
+    function initUI() {
+      const subSelect = document.getElementById('sel-subject');
+      if (subSelect) {
+        subSelect.innerHTML = '';
+        MEDICAL_SUBJECTS.forEach(s => {
+          const opt = document.createElement('option');
+          opt.value = s;
+          opt.textContent = s;
+          subSelect.appendChild(opt);
+        });
+      }
+
+      document.querySelectorAll('.pf-mode-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.pf-mode-btn').forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          setMode(btn.dataset.mode);
+        });
+      });
+
+      const soundBtn = document.getElementById('btn-sound-toggle');
+      if (soundBtn) {
+        soundBtn.addEventListener('click', () => {
+          state.settings.soundEnabled = !state.settings.soundEnabled;
+          soundBtn.textContent = state.settings.soundEnabled ? '🔔' : '🔕';
+          saveState();
+        });
+      }
+
+      const melogStage = document.getElementById('running-cat-stage');
+      if (melogStage) {
+        melogStage.addEventListener('click', () => {
+          setSpeech("Purrr! Melog is energized and ready to study! 🐾");
+          playTone(587.33, 0.3);
+        });
+      }
+
+      const settingsForm = document.getElementById('settings-form');
+      if (settingsForm) {
+        settingsForm.addEventListener('submit', (e) => {
+          e.preventDefault();
+          state.settings.studyMin = parseInt(document.getElementById('cfg-study-min').value, 10);
+          state.settings.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10);
+          state.settings.longMin = parseInt(document.getElementById('cfg-long-min').value, 10);
+          saveState();
+          alert('Settings saved! 🩺');
+          document.querySelector('.pf-dock-btn[data-tab="tab-timer"]').click();
+        });
+      }
+    }
+
+    function initTimer() {
+      const startBtn = document.getElementById('btn-timer-start');
+      const pauseBtn = document.getElementById('btn-timer-pause');
+      const skipBtn = document.getElementById('btn-timer-skip');
+      const resetBtn = document.getElementById('btn-timer-reset');
+
+      if (startBtn) startBtn.addEventListener('click', startTimer);
+      if (pauseBtn) pauseBtn.addEventListener('click', pauseTimer);
+      if (skipBtn) skipBtn.addEventListener('click', skipTimer);
+      if (resetBtn) resetBtn.addEventListener('click', resetTimer);
+    }
+
+    function startTimer() {
+      if (state.timer.isRunning) return;
+      state.timer.isRunning = true;
+      document.getElementById('btn-timer-start').style.display = 'none';
+      document.getElementById('btn-timer-pause').style.display = 'inline-flex';
+      
+      const sprite = document.getElementById('running-cat-stage');
+      if (sprite) sprite.classList.add('timer-running');
+
+      setSpeech("Melog is running! Let's focus! 🐾");
+
+      state.timer.intervalId = setInterval(() => {
+        if (state.timer.timeLeft > 0) {
+          state.timer.timeLeft--;
+          renderTimer();
+        } else {
+          completeBlock();
+        }
+      }, 1000);
+    }
+
+    function pauseTimer() {
+      if (!state.timer.isRunning) return;
+      state.timer.isRunning = false;
+      clearInterval(state.timer.intervalId);
+      document.getElementById('btn-timer-start').style.display = 'inline-flex';
+      document.getElementById('btn-timer-pause').style.display = 'none';
+
+      const sprite = document.getElementById('running-cat-stage');
+      if (sprite) sprite.classList.remove('timer-running');
+      setSpeech("Paused! Melog is taking a rest with you. 🐾");
+    }
+
+    function resetTimer() {
+      clearInterval(state.timer.intervalId);
+      state.timer.isRunning = false;
+      document.getElementById('btn-timer-start').style.display = 'inline-flex';
+      document.getElementById('btn-timer-pause').style.display = 'none';
+
+      const sprite = document.getElementById('running-cat-stage');
+      if (sprite) sprite.classList.remove('timer-running');
+
+      if (state.timer.mode === 'study') state.timer.totalDuration = state.settings.studyMin * 60;
+      else if (state.timer.mode === 'shortBreak') state.timer.totalDuration = state.settings.shortMin * 60;
+      else state.timer.totalDuration = state.settings.longMin * 60;
+
+      state.timer.timeLeft = state.timer.totalDuration;
+      setSpeech("Timer reset. Ready whenever you are!");
+      renderTimer();
+    }
+
+    function skipTimer() {
+      clearInterval(state.timer.intervalId);
+      state.timer.isRunning = false;
+      document.getElementById('btn-timer-start').style.display = 'inline-flex';
+      document.getElementById('btn-timer-pause').style.display = 'none';
+
+      const sprite = document.getElementById('running-cat-stage');
+      if (sprite) sprite.classList.remove('timer-running');
+
+      if (state.timer.mode === 'study') setMode('shortBreak');
+      else setMode('study');
+    }
+
+    function completeBlock() {
+      clearInterval(state.timer.intervalId);
+      state.timer.isRunning = false;
+      document.getElementById('btn-timer-start').style.display = 'inline-flex';
+      document.getElementById('btn-timer-pause').style.display = 'none';
+
+      const sprite = document.getElementById('running-cat-stage');
+      if (sprite) sprite.classList.remove('timer-running');
+
+      if (state.timer.mode === 'study') {
+        state.game.todayPomodoros++;
+        state.game.totalPomodoros++;
+        state.game.todayMinutes += state.settings.studyMin;
+        state.game.pawPoints += 10;
+        state.game.xp += 25;
+
+        const newLevel = Math.floor(state.game.xp / 100) + 1;
+        if (newLevel > state.game.level) {
+          state.game.level = newLevel;
+          setSpeech(`⭐ Level Up! You reached Level ${newLevel}!`);
+        }
+
+        const today = getTodayDateString();
+        state.game.activeDays[today] = (state.game.activeDays[today] || 0) + 1;
+
+        const sub = document.getElementById('sel-subject').value;
+        const task = document.getElementById('ipt-chapter-task').value || 'Focus Session';
+        state.game.sessionLogs.unshift({
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          subject: sub,
+          task: task,
+          minutes: state.settings.studyMin
+        });
+
+        saveState();
+        playFanfare();
+        setSpeech("🎉 Block complete! +10 🐾 Paw Points earned!");
+
+        setTimeout(() => setMode('shortBreak'), 2500);
+      } else {
+        setSpeech("Break over! Ready for the next round? 🩺");
+        setMode('study');
+      }
+      renderAll();
+    }
+
+    function setMode(mode) {
+      state.timer.mode = mode;
+      document.querySelectorAll('.pf-mode-btn').forEach(b => {
+        b.classList.toggle('active', b.dataset.mode === mode);
+      });
+
+      if (mode === 'study') state.timer.totalDuration = state.settings.studyMin * 60;
+      else if (mode === 'shortBreak') state.timer.totalDuration = state.settings.shortMin * 60;
+      else state.timer.totalDuration = state.settings.longMin * 60;
+
+      state.timer.timeLeft = state.timer.totalDuration;
+      renderTimer();
+    }
+
+    function setSpeech(msg) {
+      const el = document.getElementById('melog-speech');
+      if (el) el.textContent = msg;
+    }
+
+    function renderTimer() {
+      const m = Math.floor(state.timer.timeLeft / 60);
+      const s = state.timer.timeLeft % 60;
+      const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+      
+      const readout = document.getElementById('timer-readout');
+      if (readout) readout.textContent = str;
+      document.title = `${str} 🐾 Purrmodoro`;
+
+      const progress = (state.timer.totalDuration - state.timer.timeLeft) / state.timer.totalDuration;
+      const ringFill = document.getElementById('ring-fill');
+      if (ringFill) ringFill.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - progress);
+    }
+
+    function renderAll() {
+      renderTimer();
+      document.getElementById('val-paw-points').textContent = state.game.pawPoints;
+      document.getElementById('val-streak-count').textContent = state.game.streak;
+      document.getElementById('level-badge').textContent = `⭐ Lvl ${state.game.level}`;
+
+      const target = state.settings.dailyTarget || 8;
+      const count = state.game.todayPomodoros;
+      document.getElementById('txt-daily-progress').textContent = `${count} / ${target} Pomodoros`;
+      document.getElementById('bar-daily-progress').style.width = `${Math.min((count / target) * 100, 100)}%`;
+    }
+
+    function renderWorld() {
+      const map = document.getElementById('world-map-grid');
+      if (map) {
+        map.innerHTML = '';
+        WORLD_WINGS.forEach(w => {
+          const unlocked = state.game.level >= w.reqLevel;
+          const div = document.createElement('div');
+          div.className = `pf-item-card ${unlocked ? '' : 'locked'}`;
+          div.innerHTML = `<div style="font-size:1.8rem;">${w.icon}</div><div style="font-weight:700; font-size:0.82rem; margin-top:0.2rem;">${w.name}</div><div style="font-size:0.7rem; color:var(--pf-muted);">${unlocked ? '✨ Unlocked' : `Req. Lvl ${w.reqLevel}`}</div>`;
+          map.appendChild(div);
+        });
+      }
+
+      const cat = document.getElementById('furniture-catalog-grid');
+      if (cat) {
+        cat.innerHTML = '';
+        state.game.catalog.forEach(item => {
+          const div = document.createElement('div');
+          div.className = `pf-item-card ${item.purchased ? '' : 'locked'}`;
+          div.innerHTML = `<div style="font-size:1.8rem;">${item.icon}</div><div style="font-weight:700; font-size:0.82rem; margin-top:0.2rem;">${item.name}</div><div style="font-size:0.75rem; font-weight:800; color:var(--pf-orange-dark);">${item.purchased ? 'Owned 🎀' : `${item.cost} 🐾`}</div>${!item.purchased ? `<button type="button" class="pf-btn btn-start-large" style="font-size:0.75rem; padding:0.35rem 0.8rem; margin-top:0.4rem;">Adopt</button>` : ''}`;
+          if (!item.purchased) {
+            div.querySelector('button').addEventListener('click', () => {
+              if (state.game.pawPoints >= item.cost) {
+                state.game.pawPoints -= item.cost;
+                item.purchased = true;
+                saveState();
+                renderWorld();
+                renderAll();
+              } else alert(`Need ${item.cost - state.game.pawPoints} more 🐾 Paw Points!`);
+            });
+          }
+          cat.appendChild(div);
+        });
+      }
+    }
+
+    function renderStats() {
+      const streakHeader = document.getElementById('txt-stats-streak');
+      if (streakHeader) streakHeader.textContent = `${state.game.streak} Day Streak`;
+
+      const row = document.getElementById('weekly-tracker-row');
+      if (row) {
+        row.innerHTML = '';
+        const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+        const today = new Date();
+        for (let i = 6; i >= 0; i--) {
+          const d = new Date();
+          d.setDate(today.getDate() - i);
+          const dStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+          const done = (state.game.activeDays[dStr] || 0) > 0;
+          const div = document.createElement('div');
+          div.style.display = 'flex';
+          div.style.flexDirection = 'column';
+          div.style.alignItems = 'center';
+          div.style.gap = '0.3rem';
+          div.innerHTML = `<span style="font-size:0.72rem; font-weight:700;">${days[d.getDay()]}</span><div class="day-square ${done ? 'done' : ''}">${done ? '✓' : ''}</div>`;
+          row.appendChild(div);
+        }
+      }
+    }
+
+    function initPlanner() {
+      const calc = document.getElementById('btn-calc-schedule');
+      if (calc) {
+        calc.addEventListener('click', () => {
+          const dateVal = document.getElementById('plan-date').value;
+          const buffer = parseInt(document.getElementById('plan-buffer').value, 10) || 0;
+          const amount = parseFloat(document.getElementById('plan-amount').value) || 0;
+          const unit = document.getElementById('plan-unit').value;
+          const pace = parseFloat(document.getElementById('plan-pace').value) || 1;
+
+          if (!dateVal) return alert('Please enter an exam date.');
+
+          const diffDays = Math.ceil((new Date(dateVal) - new Date()) / (1000 * 60 * 60 * 24));
+          const studyDays = Math.max(diffDays - buffer, 1);
+          const dailyUnits = Math.ceil(amount / studyDays);
+          const dailyPomos = Math.ceil(dailyUnits / pace);
+
+          document.getElementById('rx-content').innerHTML = `<p>📚 <strong>Remaining:</strong> ${amount} ${unit}</p><p>🗓️ <strong>Study Days:</strong> ${studyDays} days</p><p>🎀 <strong>Daily Target:</strong> <strong>${dailyUnits} ${unit}/day</strong></p><p>🐱 <strong>Focus Blocks:</strong> <strong>${dailyPomos} Pomodoros/day</strong></p>`;
+          document.getElementById('rx-card').style.display = 'block';
+
+          const applyBtn = document.getElementById('btn-apply-plan-goal');
+          if (applyBtn) {
+            applyBtn.onclick = () => {
+              state.settings.dailyTarget = dailyPomos;
+              saveState();
+              renderProgressBar();
+              alert(`Daily goal updated to ${dailyPomos} Pomodoros! 🌸`);
+              document.querySelector('.pf-dock-btn[data-tab="tab-timer"]').click();
+            };
+          }
+        });
+      }
+    }
+
+    function initCanvas() {
+      const canvas = document.getElementById('ambient-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let w = canvas.width = window.innerWidth;
+      let h = canvas.height = window.innerHeight;
+      window.addEventListener('resize', () => { w = canvas.width = window.innerWidth; h = canvas.height = window.innerHeight; });
+
+      let petals = Array.from({ length: 18 }, () => ({
+        x: Math.random() * w, y: Math.random() * h, size: Math.random() * 4 + 2, vx: (Math.random() - 0.5) * 0.4, vy: Math.random() * 0.4 + 0.2
+      }));
+
+      function loop() {
+        ctx.clearRect(0, 0, w, h);
+        petals.forEach(p => {
+          p.x += p.vx; p.y += p.vy;
+          if (p.y > h) { p.y = -10; p.x = Math.random() * w; }
+          ctx.beginPath();
+          ctx.fillStyle = 'rgba(255, 167, 133, 0.25)';
+          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+          ctx.fill();
+        });
+        requestAnimationFrame(loop);
+      }
+      loop();
+    }
+
+    function playTone(freq, dur) {
+      if (!state.settings.soundEnabled) return;
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(freq, ctx.currentTime);
+        gain.gain.setValueAtTime(0.15, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+        osc.connect(gain); gain.connect(ctx.destination);
+        osc.start(); osc.stop(ctx.currentTime + dur);
+      } catch (e) {}
+    }
+
+    function playFanfare() {
+      if (!state.settings.soundEnabled) return;
+      [659.25, 783.99, 1046.50].forEach((freq, i) => {
+        setTimeout(() => playTone(freq, 0.35), i * 140);
+      });
+    }
+  </script>
 </body>
 </html>
