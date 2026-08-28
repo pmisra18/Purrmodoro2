@@ -1,30 +1,26 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Dark Mode & Real-Time Animated Canvas Engine
+   PURRMODORO - Complete Engine & 60 FPS Procedural Biomes
    ------------------------------------------------------------- */
 
-// Medical Curriculum
+// Medical Curriculum with zero textbook requirements on OPP/OMM & CE
 const MEDICAL_CURRICULUM = {
   "🦴 OPP / OMM": {
     resources: [
       "OMM Lab & Practical Review",
-      "Technique Practice & Principles",
-      "Diagnostic Criteria & Landmarks",
       "General OPP Review"
     ]
   },
   "🩺 CE (Clinical Education)": {
     resources: [
-      "Physical Diagnosis / OSCE Prep",
-      "History Taking & SOAP Notes",
-      "Clinical Education Cases",
+      "Written Content Review",
       "Standardized Patient Practice"
     ]
   },
   "👥 PBL (Problem-Based Learning)": {
     resources: [
-      "PBL Weekly Case Learning Objectives",
-      "PBL Differentials & Diagnostic Workup",
-      "Clinical Wrap-Up & Pathophysiology"
+      "SOAP Note,
+      "Other Textbook",
+      "Exam Review"
     ]
   },
   "🫀 Pathology": {
@@ -144,7 +140,7 @@ let state = {
   }
 };
 
-const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 130;
+const CIRCLE_CIRCUMFERENCE = 2 * Math.PI * 140; // 879.64
 
 // --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -180,7 +176,7 @@ function loadLocalState() {
       const parsed = JSON.parse(raw);
       state = { ...state, ...parsed };
     } catch (e) {
-      console.warn('Error reading state.');
+      console.warn('Error reading saved state.');
     }
   }
   state.timer.timeLeft = state.settings.studyMin * 60;
@@ -206,7 +202,7 @@ function checkDateRollover() {
 
 // --- BIOME SWITCHER ---
 function initBiomeControls() {
-  const buttons = document.querySelectorAll('.btn-biome');
+  const buttons = document.querySelectorAll('.biome-btn');
 
   buttons.forEach(btn => {
     btn.classList.toggle('active', btn.dataset.biome === state.settings.currentBiome);
@@ -219,7 +215,7 @@ function initBiomeControls() {
   });
 }
 
-// --- PROCEDURAL ANIMATED CANVAS BACKGROUND ENGINE ---
+// --- PROCEDURAL ANIMATED CANVAS ENGINE (60 FPS) ---
 function initAnimatedBackground() {
   const canvas = document.getElementById('animated-bg-canvas');
   const ctx = canvas.getContext('2d');
@@ -232,9 +228,8 @@ function initAnimatedBackground() {
   window.addEventListener('resize', resize);
   resize();
 
-  // Create ambient elements
   let stars = [];
-  for (let i = 0; i < 45; i++) {
+  for (let i = 0; i < 50; i++) {
     stars.push({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight * 0.7,
@@ -245,7 +240,7 @@ function initAnimatedBackground() {
   }
 
   let particles = [];
-  for (let i = 0; i < 30; i++) {
+  for (let i = 0; i < 35; i++) {
     particles.push({
       x: Math.random() * window.innerWidth,
       y: Math.random() * window.innerHeight,
@@ -258,30 +253,30 @@ function initAnimatedBackground() {
 
   let auroraTime = 0;
 
-  function draw() {
+  function renderLoop() {
     ctx.clearRect(0, 0, width, height);
     const biome = state.settings.currentBiome;
 
-    // 1. Sky Gradient Base
-    let grad = ctx.createLinearGradient(0, 0, 0, height);
+    // 1. Base Sky Gradient
+    let sky = ctx.createLinearGradient(0, 0, 0, height);
     if (biome === 'sakura') {
-      grad.addColorStop(0, '#191122');
-      grad.addColorStop(0.7, '#2D182E');
-      grad.addColorStop(1, '#4A2338');
+      sky.addColorStop(0, '#150E1F');
+      sky.addColorStop(0.65, '#2A172B');
+      sky.addColorStop(1, '#4A2336');
     } else if (biome === 'taiga') {
-      grad.addColorStop(0, '#0F1A1B');
-      grad.addColorStop(0.7, '#152E28');
-      grad.addColorStop(1, '#1E4233');
+      sky.addColorStop(0, '#0C1717');
+      sky.addColorStop(0.65, '#122621');
+      sky.addColorStop(1, '#1A3B2E');
     } else if (biome === 'aurora') {
-      grad.addColorStop(0, '#0C1322');
-      grad.addColorStop(0.6, '#142338');
-      grad.addColorStop(1, '#1A334A');
+      sky.addColorStop(0, '#0A111E');
+      sky.addColorStop(0.65, '#101E30');
+      sky.addColorStop(1, '#162C40');
     } else { // twilight
-      grad.addColorStop(0, '#1C1226');
-      grad.addColorStop(0.5, '#3B1F38');
-      grad.addColorStop(1, '#5C2D3A');
+      sky.addColorStop(0, '#190F24');
+      sky.addColorStop(0.55, '#351B33');
+      sky.addColorStop(1, '#572736');
     }
-    ctx.fillStyle = grad;
+    ctx.fillStyle = sky;
     ctx.fillRect(0, 0, width, height);
 
     // 2. Stars
@@ -299,25 +294,25 @@ function initAnimatedBackground() {
       ctx.globalCompositeOperation = 'screen';
       for (let j = 0; j < 3; j++) {
         ctx.beginPath();
-        ctx.moveTo(0, height * 0.3);
+        ctx.moveTo(0, height * 0.35);
         for (let x = 0; x <= width; x += 30) {
-          let y = height * (0.28 + j * 0.05) + Math.sin(x * 0.005 + auroraTime + j) * 45 + Math.cos(x * 0.003 - auroraTime) * 30;
+          let y = height * (0.3 + j * 0.06) + Math.sin(x * 0.005 + auroraTime + j) * 45 + Math.cos(x * 0.003 - auroraTime) * 30;
           ctx.lineTo(x, y);
         }
         ctx.lineTo(width, 0);
         ctx.lineTo(0, 0);
-        ctx.fillStyle = j === 0 ? 'rgba(78, 220, 160, 0.18)' : j === 1 ? 'rgba(140, 100, 240, 0.15)' : 'rgba(232, 106, 130, 0.12)';
+        ctx.fillStyle = j === 0 ? 'rgba(78, 220, 160, 0.2)' : j === 1 ? 'rgba(140, 100, 240, 0.16)' : 'rgba(232, 93, 117, 0.14)';
         ctx.fill();
       }
       ctx.restore();
     }
 
-    // 4. Distant Voxel Mountains Silhouette
-    ctx.fillStyle = biome === 'taiga' ? '#0C1E17' : biome === 'aurora' ? '#0B1624' : '#1F1222';
+    // 4. Distant Voxel Mountain Ridge Silhouette
+    ctx.fillStyle = biome === 'taiga' ? '#091612' : biome === 'aurora' ? '#08111A' : '#140A18';
     ctx.beginPath();
     ctx.moveTo(0, height);
     for (let x = 0; x <= width; x += 60) {
-      let mY = height * 0.65 - ((x % 180 === 0) ? 60 : (x % 120 === 0) ? 35 : 10);
+      let mY = height * 0.65 - ((x % 180 === 0) ? 65 : (x % 120 === 0) ? 35 : 10);
       ctx.lineTo(x, mY);
       ctx.lineTo(x + 60, mY);
     }
@@ -336,28 +331,24 @@ function initAnimatedBackground() {
 
       ctx.beginPath();
       if (biome === 'sakura') {
-        // Floating Cherry Petals
-        ctx.fillStyle = `rgba(255, 175, 195, ${0.5 + Math.sin(p.pulse) * 0.3})`;
+        ctx.fillStyle = `rgba(255, 165, 185, ${0.55 + Math.sin(p.pulse) * 0.3})`;
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       } else if (biome === 'taiga') {
-        // Glowing Green Fireflies
-        ctx.fillStyle = `rgba(160, 245, 180, ${0.4 + Math.sin(p.pulse) * 0.4})`;
-        ctx.arc(p.x, p.y, p.size * 1.2, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(160, 245, 180, ${0.45 + Math.sin(p.pulse) * 0.4})`;
+        ctx.arc(p.x, p.y, p.size * 1.3, 0, Math.PI * 2);
       } else if (biome === 'aurora') {
-        // Soft Snow Crystals
-        ctx.fillStyle = `rgba(230, 245, 255, ${0.6 + Math.sin(p.pulse) * 0.2})`;
+        ctx.fillStyle = `rgba(230, 245, 255, ${0.65 + Math.sin(p.pulse) * 0.25})`;
         ctx.fillRect(p.x, p.y, p.size, p.size);
       } else {
-        // Twilight Embers
-        ctx.fillStyle = `rgba(255, 160, 120, ${0.5 + Math.sin(p.pulse) * 0.3})`;
+        ctx.fillStyle = `rgba(255, 160, 120, ${0.55 + Math.sin(p.pulse) * 0.35})`;
         ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
       }
       ctx.fill();
     });
 
-    requestAnimationFrame(draw);
+    requestAnimationFrame(renderLoop);
   }
-  draw();
+  renderLoop();
 }
 
 // --- CURRICULUM SELECTORS ---
@@ -402,11 +393,11 @@ function updateTaskBanner() {
 
 // --- NAVIGATION ---
 function initNavigation() {
-  const buttons = document.querySelectorAll('.nav-btn');
+  const buttons = document.querySelectorAll('.tab-btn');
   buttons.forEach(btn => {
     btn.addEventListener('click', () => {
       buttons.forEach(b => b.classList.remove('active'));
-      document.querySelectorAll('.view-panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
 
       btn.classList.add('active');
       const target = document.getElementById(btn.dataset.view);
@@ -417,13 +408,13 @@ function initNavigation() {
     });
   });
 
-  document.getElementById('melog-walker-box').addEventListener('click', () => {
-    setMelogSpeech("Purrr! Melog loves studying in dark mode with you! 🐾");
+  document.getElementById('melog-walker').addEventListener('click', () => {
+    setMelogSpeech("Purrr! Melog loves studying with you! 🐾");
     playChime(587.33, 0.3);
   });
 }
 
-// --- TIMER CORE ---
+// --- TIMER ENGINE ---
 function initTimer() {
   const btnStart = document.getElementById('btn-timer-start');
   const btnPause = document.getElementById('btn-timer-pause');
@@ -441,7 +432,7 @@ function startTimer() {
   state.timer.isRunning = true;
   document.getElementById('btn-timer-start').style.display = 'none';
   document.getElementById('btn-timer-pause').style.display = 'inline-block';
-  document.getElementById('melog-walker-box').classList.add('timer-running');
+  document.getElementById('melog-walker').classList.add('timer-running');
 
   setMelogSpeech("Trotting along your study wheel! Let's focus! 🐾");
 
@@ -461,7 +452,7 @@ function pauseTimer() {
   clearInterval(state.timer.intervalId);
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
-  document.getElementById('melog-walker-box').classList.remove('timer-running');
+  document.getElementById('melog-walker').classList.remove('timer-running');
   setMelogSpeech("Paused! Melog is taking a rest on the track. 🐾");
 }
 
@@ -470,7 +461,7 @@ function resetTimer() {
   state.timer.isRunning = false;
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
-  document.getElementById('melog-walker-box').classList.remove('timer-running');
+  document.getElementById('melog-walker').classList.remove('timer-running');
 
   if (state.timer.mode === 'study') {
     state.timer.totalDuration = state.settings.studyMin * 60;
@@ -490,7 +481,7 @@ function skipTimer() {
   state.timer.isRunning = false;
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
-  document.getElementById('melog-walker-box').classList.remove('timer-running');
+  document.getElementById('melog-walker').classList.remove('timer-running');
 
   if (state.timer.mode === 'study') setTimerMode('shortBreak');
   else setTimerMode('study');
@@ -501,7 +492,7 @@ function completeTimerBlock() {
   state.timer.isRunning = false;
   document.getElementById('btn-timer-start').style.display = 'inline-block';
   document.getElementById('btn-timer-pause').style.display = 'none';
-  document.getElementById('melog-walker-box').classList.remove('timer-running');
+  document.getElementById('melog-walker').classList.remove('timer-running');
 
   if (state.timer.mode === 'study') {
     state.game.todayPomodoros++;
@@ -554,7 +545,7 @@ function setTimerMode(mode) {
   if (mode === 'study') {
     state.timer.totalDuration = state.settings.studyMin * 60;
     tag.textContent = 'STUDY BLOCK';
-    tag.style.background = 'rgba(232, 106, 130, 0.2)';
+    tag.style.background = 'rgba(232, 93, 117, 0.18)';
     tag.style.color = 'var(--blush-glow)';
     setMelogSpeech("Ready to walk another high-yield study block!");
   } else if (mode === 'shortBreak') {
@@ -594,7 +585,7 @@ function renderTimer() {
   document.getElementById('wheel-progress-bar').style.strokeDashoffset = offset;
 
   const angleDeg = progressFraction * 360;
-  document.getElementById('wheel-orbit-arm').style.transform = `rotate(${angleDeg}deg)`;
+  document.getElementById('orbit-carriage').style.transform = `rotate(${angleDeg}deg)`;
 }
 
 // --- PLANNER ENGINE ---
@@ -716,10 +707,10 @@ function renderStats() {
     const done = (state.game.activeDays[dStr] || 0) > 0;
 
     const cell = document.createElement('div');
-    cell.className = 'week-day-cell';
+    cell.className = 'week-cell';
     cell.innerHTML = `
       <span>${days[d.getDay()]}</span>
-      <div class="week-day-dot ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
+      <div class="week-circle ${done ? 'done' : ''}">${done ? '✓' : ''}</div>
     `;
     row.appendChild(cell);
   }
@@ -727,14 +718,14 @@ function renderStats() {
   const list = document.getElementById('session-log-list');
   list.innerHTML = '';
   if (state.game.sessionLogs.length === 0) {
-    list.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-muted); font-size:0.85rem;">No study sessions logged today yet.</div>`;
+    list.innerHTML = `<div style="text-align:center; padding:1rem; color:var(--text-secondary); font-size:0.85rem;">No study sessions logged today yet.</div>`;
   } else {
     state.game.sessionLogs.slice(0, 10).forEach(log => {
       const item = document.createElement('div');
-      item.className = 'log-item';
+      item.className = 'log-row';
       item.innerHTML = `
         <div><strong>${escapeHTML(log.subject)}</strong> &mdash; ${escapeHTML(log.task)}</div>
-        <div style="color:var(--text-muted);">${log.time} (${log.minutes}m)</div>
+        <div style="color:var(--text-secondary);">${log.time} (${log.minutes}m)</div>
       `;
       list.appendChild(item);
     });
