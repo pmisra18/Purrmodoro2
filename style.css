@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Minecraft Voxel & Soft Melog Aesthetic
+   PURRMODORO - HD Minecraft Scenery & Sweet Aesthetic
    ------------------------------------------------------------- */
 :root {
   --bg-cream: #FDF7F4;
@@ -9,11 +9,6 @@
   --blush-300: #F7C6D2;
   --blush-primary: #E89BAA;
   --blush-dark: #D47B8D;
-  
-  --wood-bark: #624338;
-  --wood-deck: #DDB497;
-  --sage-accent: #C4DEC3;
-  --sage-dark: #375E36;
   
   --text-dark: #382A31;
   --text-muted: #7A6972;
@@ -170,20 +165,19 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ================= DETAILED MINECRAFT VOXEL VIEWPORT ================= */
+/* ================= MINECRAFT HD BIOME VIEWPORT ================= */
 .room-viewport {
   position: relative;
   border: 2px solid var(--border-soft);
   border-radius: var(--radius-lg);
-  padding: 3rem 1rem 0.75rem 1rem;
+  padding: 3.2rem 1rem 0.5rem 1rem;
   display: flex;
   flex-direction: column;
   align-items: center;
   box-shadow: var(--shadow-md);
   margin-bottom: 1.25rem;
   overflow: hidden;
-  min-height: 290px;
-  transition: background 0.4s ease;
+  min-height: 310px;
 }
 
 /* Biome Selector Toolbar */
@@ -194,12 +188,13 @@ body {
   display: flex;
   align-items: center;
   gap: 0.35rem;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(4px);
-  padding: 0.25rem 0.5rem;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(6px);
+  padding: 0.3rem 0.6rem;
   border-radius: var(--radius-pill);
-  border: 1px solid var(--border-soft);
-  z-index: 3;
+  border: 1.5px solid var(--border-soft);
+  box-shadow: var(--shadow-sm);
+  z-index: 4;
 }
 
 .biome-label {
@@ -213,176 +208,87 @@ body {
   border: none;
   font-size: 0.75rem;
   font-weight: 600;
-  padding: 0.2rem 0.5rem;
+  padding: 0.25rem 0.55rem;
   border-radius: var(--radius-pill);
   cursor: pointer;
   color: var(--text-dark);
+  transition: all 0.2s;
 }
 
 .btn-biome.active {
   background: var(--blush-primary);
   color: #FFFFFF;
+  box-shadow: 0 2px 6px rgba(232, 155, 170, 0.4);
 }
 
-/* Minecraft Multi-Layer World Scenery */
-.minecraft-world-layer {
+/* Minecraft High-Resolution Visual Backdrops */
+.scenery-backdrop {
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  pointer-events: none;
+  background-size: cover;
+  background-position: center bottom;
+  transition: background-image 0.5s ease-in-out;
   z-index: 0;
 }
 
-/* Square Pixel Sun */
-.voxel-sun-moon {
-  position: absolute;
-  top: 24px;
-  right: 65px;
-  width: 32px;
-  height: 32px;
-  background: #FFF5CC;
-  box-shadow: 0 0 0 4px #FFE28A, 0 0 16px rgba(255, 226, 138, 0.6);
+/* High-Quality Minecraft Shader Screenshots for each Biome */
+.biome-sakura .scenery-backdrop {
+  background-image: linear-gradient(180deg, rgba(253, 230, 236, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%), 
+                    url('https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=1200&q=80');
 }
 
-/* Pixel Clouds */
-.voxel-cloud {
-  position: absolute;
-  background: #FFFFFF;
-  opacity: 0.8;
-  box-shadow: 6px 6px 0 rgba(255, 255, 255, 0.5);
+.biome-forest .scenery-backdrop {
+  background-image: linear-gradient(180deg, rgba(212, 232, 218, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%), 
+                    url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1200&q=80');
 }
-.cloud-1 { top: 38px; left: 40px; width: 68px; height: 16px; }
-.cloud-1::after { content: ''; position: absolute; top: -8px; left: 14px; width: 38px; height: 8px; background: #FFFFFF; }
-.cloud-2 { top: 56px; right: 120px; width: 84px; height: 18px; }
-.cloud-2::after { content: ''; position: absolute; top: -10px; left: 18px; width: 44px; height: 10px; background: #FFFFFF; }
 
-/* Deck Platform */
-.voxel-deck {
+.biome-mountain .scenery-backdrop {
+  background-image: linear-gradient(180deg, rgba(211, 223, 238, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%), 
+                    url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&w=1200&q=80');
+}
+
+.biome-meadow .scenery-backdrop {
+  background-image: linear-gradient(180deg, rgba(252, 217, 196, 0.3) 0%, rgba(255, 255, 255, 0.15) 100%), 
+                    url('https://images.unsplash.com/photo-1500534314209-a25ddb2bd429?auto=format&fit=crop&w=1200&q=80');
+}
+
+/* Frosted Glass Horizon Overlay */
+.scenery-glass-floor {
   position: absolute;
   bottom: 0;
   left: 0;
   width: 100%;
-  height: 42px;
-  background: var(--wood-deck);
-  border-top: 4px solid var(--wood-bark);
-  box-shadow: inset 0 8px 0 rgba(98, 67, 56, 0.12);
+  height: 52px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.55) 0%, rgba(255, 243, 246, 0.95) 100%);
+  border-top: 1.5px solid rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(8px);
+  z-index: 1;
 }
 
-/* BIOME 1: Sakura Blossom Grove */
-.room-viewport.biome-sakura {
-  background: linear-gradient(180deg, #FDE6EC 0%, #FFF8FA 65%, #F5E8E5 100%);
-}
-.biome-sakura .voxel-trees-backdrop {
-  position: absolute;
-  bottom: 42px;
-  left: 0;
-  width: 100%;
-  height: 110px;
-  background: 
-    radial-gradient(circle at 15% 40%, #FFA8BB 35px, transparent 36px),
-    radial-gradient(circle at 85% 35%, #FFA8BB 42px, transparent 43px),
-    radial-gradient(circle at 50% 65%, #FFB7C5 28px, transparent 29px);
-}
-
-/* BIOME 2: Taiga Pine Forest */
-.room-viewport.biome-forest {
-  background: linear-gradient(180deg, #D4E8DA 0%, #EDF7F0 65%, #E3EFE5 100%);
-}
-.biome-forest .voxel-trees-backdrop {
-  position: absolute;
-  bottom: 42px;
-  left: 0;
-  width: 100%;
-  height: 120px;
-  background: 
-    linear-gradient(135deg, #3A6348 25%, transparent 25%) -24px 0,
-    linear-gradient(225deg, #3A6348 25%, transparent 25%) -24px 0,
-    linear-gradient(315deg, #4A7A5C 25%, transparent 25%),
-    linear-gradient(45deg, #4A7A5C 25%, transparent 25%);
-  background-size: 48px 48px;
-}
-
-/* BIOME 3: Misty Mountains */
-.room-viewport.biome-mountain {
-  background: linear-gradient(180deg, #D3DFEE 0%, #F0F4FA 65%, #E4EBF4 100%);
-}
-.biome-mountain .mountain-ridges {
-  position: absolute;
-  bottom: 42px;
-  left: 0;
-  width: 100%;
-  height: 130px;
-  background: 
-    linear-gradient(135deg, #7A8D9E 35%, transparent 35%) 0 0,
-    linear-gradient(225deg, #FFFFFF 15%, #92A3B3 16%, transparent 35%) 0 0;
-  background-size: 90px 130px;
-}
-
-/* BIOME 4: Sunset Meadow */
-.room-viewport.biome-meadow {
-  background: linear-gradient(180deg, #FCD9C4 0%, #FEECE1 55%, #FDE0D0 100%);
-}
-.biome-meadow .voxel-trees-backdrop {
-  position: absolute;
-  bottom: 42px;
-  left: 0;
-  width: 100%;
-  height: 90px;
-  background: 
-    radial-gradient(circle at 20% 50%, #76A562 32px, transparent 33px),
-    radial-gradient(circle at 80% 45%, #8EB97A 38px, transparent 39px);
-}
-
-/* Living Interactive Buttons */
-.room-interactive-layer {
-  position: absolute;
-  top: 0.75rem;
-  right: 0.75rem;
-  display: flex;
-  gap: 0.45rem;
-  z-index: 2;
-}
-
-.interactive-prop {
-  background: #FFFFFF;
-  border: 1.5px solid var(--border-soft);
-  border-radius: 10px;
-  width: 34px;
-  height: 34px;
-  font-size: 1rem;
-  cursor: pointer;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: transform 0.2s;
-}
-
-.interactive-prop:active { transform: scale(0.9); }
-
-/* Center Stage & Speech Bubble */
+/* Living Interactive Center Stage */
 .melog-center-stage {
   display: flex;
   flex-direction: column;
   align-items: center;
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .speech-bubble {
-  background: var(--blush-200);
+  background: #FFFFFF;
   color: var(--text-dark);
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 700;
   padding: 0.45rem 1.1rem;
   border-radius: 14px;
   border: 1.5px solid var(--border-soft);
-  box-shadow: var(--shadow-sm);
+  box-shadow: 0 4px 14px rgba(184, 133, 145, 0.12);
   text-align: center;
   max-width: 90%;
-  margin-bottom: 0.25rem;
+  margin-bottom: 0.2rem;
   position: relative;
 }
 
@@ -394,12 +300,12 @@ body {
   transform: translateX(-50%);
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: 6px solid var(--blush-200);
+  border-top: 6px solid #FFFFFF;
 }
 
 .cat-svg-wrapper {
-  width: 320px;
-  height: 215px;
+  width: 290px;
+  height: 235px;
   cursor: pointer;
 }
 
@@ -408,72 +314,41 @@ body {
   height: 100%;
 }
 
-/* ================= FLUID MELOG ANIMATIONS ================= */
+/* ================= CLEAN ANIMATIONS (NO BOUNCING EYES) ================= */
 .melog-figure {
-  transform-origin: 180px 180px;
-  animation: melogBreathe 4.2s ease-in-out infinite;
+  transform-origin: 160px 220px;
+  animation: melogBreathe 4.5s ease-in-out infinite;
 }
 
 /* Tail Swish */
-.melog-tail-joint {
-  transform-origin: 90px 165px;
-  animation: melogTailWag 4.5s ease-in-out infinite;
+.melog-tail-group {
+  transform-origin: 190px 175px;
+  animation: melogTailWag 4.2s ease-in-out infinite;
 }
 
-/* Ear Twitches */
-.melog-ear-left {
-  transform-origin: 140px 85px;
-  animation: earTwitchLeft 6s ease-in-out infinite;
-}
-
-.melog-ear-right {
-  transform-origin: 220px 85px;
-  animation: earTwitchRight 6s ease-in-out infinite 0.5s;
-}
-
-/* Natural Eye Blinking */
-.eyes-layer {
-  animation: eyeBlink 5s infinite;
+/* Eyes: Natural Blink Only */
+.melog-eyes-layer {
+  transform-origin: 160px 102px;
+  animation: naturalEyeBlink 4.8s infinite;
 }
 
 @keyframes melogBreathe {
   0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.018, 0.985); }
+  50% { transform: scale(1.012, 0.99); }
 }
 
 @keyframes melogTailWag {
   0%, 100% { transform: rotate(0deg); }
-  35% { transform: rotate(-8deg); }
-  70% { transform: rotate(4deg); }
+  40% { transform: rotate(-5deg); }
+  80% { transform: rotate(4deg); }
 }
 
-@keyframes earTwitchLeft {
-  0%, 90%, 100% { transform: rotate(0deg); }
-  92% { transform: rotate(-7deg); }
-  95% { transform: rotate(3deg); }
-}
-
-@keyframes earTwitchRight {
-  0%, 90%, 100% { transform: rotate(0deg); }
-  92% { transform: rotate(7deg); }
-  95% { transform: rotate(-3deg); }
-}
-
-@keyframes eyeBlink {
+@keyframes naturalEyeBlink {
   0%, 96%, 100% { transform: scaleY(1); }
-  98% { transform: scaleY(0.1); }
+  98% { transform: scaleY(0.08); }
 }
 
-.celebrating .melog-figure {
-  animation: melogBounce 0.5s ease infinite alternate;
-}
-
-@keyframes melogBounce {
-  from { transform: translateY(0); }
-  to { transform: translateY(-10px); }
-}
-
-/* Cards & Dashboards */
+/* Dashboard Cards & Layout */
 .study-control-card, .card-panel {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
@@ -597,8 +472,8 @@ label {
 .btn-primary:hover { background: var(--blush-dark); transform: translateY(-1px); }
 
 .btn-secondary {
-  background: var(--sage-accent);
-  color: var(--sage-dark);
+  background: #C4DEC3;
+  color: #375E36;
 }
 
 .btn-secondary:hover { background: #B3D1B2; }
@@ -664,20 +539,9 @@ label {
   background: #FAF8F6;
 }
 
-.wing-icon, .catalog-icon {
-  font-size: 2rem;
-}
-
-.wing-title, .catalog-title {
-  font-weight: 700;
-  font-size: 0.88rem;
-}
-
-.wing-req, .catalog-price {
-  font-size: 0.75rem;
-  color: var(--text-muted);
-  font-weight: 600;
-}
+.wing-icon, .catalog-icon { font-size: 2rem; }
+.wing-title, .catalog-title { font-weight: 700; font-size: 0.88rem; }
+.wing-req, .catalog-price { font-size: 0.75rem; color: var(--text-muted); font-weight: 600; }
 
 .section-title {
   font-family: var(--font-display);
@@ -720,9 +584,7 @@ label {
   margin-bottom: 1.25rem;
 }
 
-.streak-badge-flame {
-  font-size: 2.2rem;
-}
+.streak-badge-flame { font-size: 2.2rem; }
 
 .weekly-tracker-row {
   display: flex;
