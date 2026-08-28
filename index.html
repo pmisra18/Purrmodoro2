@@ -3,385 +3,306 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#0F0B15" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>Purrmodoro 🩺 Study with Melog</title>
+  <meta name="theme-color" content="#FFF7ED" />
+  <title>Purrmodoro 🐾 Study with Melog</title>
   
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=Quicksand:wght@600;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
-<body class="theme-dark">
-  <!-- Live Procedural Canvas Background -->
-  <canvas id="animated-bg-canvas"></canvas>
+<body>
+  <!-- Ambient Petal Canvas -->
+  <canvas id="ambient-canvas"></canvas>
 
-  <div class="app-shell">
+  <div class="pomofox-layout">
     
-    <!-- Top Header -->
-    <header class="app-header">
-      <div class="brand-cluster">
-        <span class="brand-icon">🩺</span>
-        <div class="brand-info">
-          <h1>Purrmodoro</h1>
-          <span class="level-tag" id="user-level-badge">Lvl 1 • Medical Scholar</span>
-        </div>
+    <!-- Top Header & Mini Stats -->
+    <header class="fox-header">
+      <div class="logo-badge">
+        <span class="logo-emoji">🩺</span>
+        <span class="logo-text">Purrmodoro</span>
       </div>
 
-      <!-- Quick Metrics -->
-      <div class="top-stats-row">
-        <div class="stat-pill" title="Paw Points">
-          <span class="pill-icon">🐾</span>
-          <span class="pill-val" id="val-paw-points">0</span>
-        </div>
-        <div class="stat-pill" title="Experience Points">
-          <span class="pill-icon">⭐</span>
-          <span class="pill-val" id="val-xp-count">0 XP</span>
-        </div>
-        <div class="stat-pill" title="Daily Streak">
-          <span class="pill-icon">🔥</span>
-          <span class="pill-val" id="val-streak-count">1 Day</span>
-        </div>
+      <div class="header-badges">
+        <div class="chip-badge" title="Paw Points">🐾 <strong id="val-paw-points">0</strong></div>
+        <div class="chip-badge" title="Daily Streak">🔥 <strong id="val-streak-count">1</strong></div>
+        <div class="chip-badge" id="level-badge">⭐ Lvl 1</div>
       </div>
-
-      <!-- Navigation Tabs -->
-      <nav class="nav-bar">
-        <button class="tab-btn active" data-view="view-study">⏱️ Study</button>
-        <button class="tab-btn" data-view="view-world">🏡 World</button>
-        <button class="tab-btn" data-view="view-planner">🩷 Planner</button>
-        <button class="tab-btn" data-view="view-stats">📊 Progress</button>
-        <button class="tab-btn" data-view="view-settings">⚙️ Settings</button>
-      </nav>
     </header>
 
-    <!-- Main Views -->
-    <main class="main-container">
+    <!-- Main PomoFox Central Block -->
+    <main class="fox-card main-timer-card">
       
-      <!-- ================= VIEW 1: POMOFOX STUDY WHEEL ================= -->
-      <section id="view-study" class="content-panel active">
-        <div class="timer-viewport">
+      <!-- Top Mode Selector Pills -->
+      <div class="mode-pill-bar">
+        <button class="mode-btn active" id="btn-mode-pomo" data-mode="study">Pomodoro</button>
+        <button class="mode-btn" id="btn-mode-short" data-mode="shortBreak">Short Break</button>
+        <button class="mode-btn" id="btn-mode-long" data-mode="longBreak">Long Break</button>
+      </div>
+
+      <!-- Subject / Task Bar -->
+      <div class="task-bar-wrap">
+        <select id="sel-subject" class="fox-select"></select>
+        <input type="text" id="ipt-chapter-task" class="fox-input" placeholder="What are you studying? (e.g. Ch. 4, Practical Prep)" />
+      </div>
+
+      <!-- Center Wheel Timer with Running Melog Inside -->
+      <div class="wheel-display-stage">
+        
+        <!-- Circular SVG Progress Bar -->
+        <svg class="progress-ring" viewBox="0 0 320 320">
+          <circle cx="160" cy="160" r="135" class="ring-bg" />
+          <circle cx="160" cy="160" r="135" class="ring-fill" id="ring-fill" />
+        </svg>
+
+        <!-- Center Stage Content -->
+        <div class="wheel-inner">
           
-          <!-- Biome Toolbar -->
-          <div class="biome-selector-bar">
-            <span class="bar-title">Biome:</span>
-            <button class="biome-btn active" data-biome="sakura">🌸 Sakura</button>
-            <button class="biome-btn" data-biome="taiga">🌲 Fireflies</button>
-            <button class="biome-btn" data-biome="aurora">🏔️ Aurora</button>
-            <button class="biome-btn" data-biome="twilight">🌅 Twilight</button>
-          </div>
-
-          <!-- Circular Orbit Stage -->
-          <div class="circular-wheel-stage">
-            <svg class="wheel-svg" viewBox="0 0 340 340">
+          <!-- Running Cat Sprite (Melog) -->
+          <div class="running-cat-stage" id="running-cat-stage">
+            <svg viewBox="0 0 160 120" class="melog-fox-sprite">
               <defs>
-                <linearGradient id="wheelGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#FF9EAF" />
-                  <stop offset="50%" stop-color="#E86A82" />
-                  <stop offset="100%" stop-color="#FF5C7A" />
-                </linearGradient>
-                <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
-                  <feGaussianBlur stdDeviation="4" result="glow" />
-                  <feMerge>
-                    <feMergeNode in="glow" />
-                    <feMergeNode in="SourceGraphic" />
-                  </feMerge>
-                </filter>
+                <radialGradient id="melogPeachFur" cx="50%" cy="40%" r="60%">
+                  <stop offset="0%" stop-color="#FFDFB8" />
+                  <stop offset="55%" stop-color="#F5C492" />
+                  <stop offset="100%" stop-color="#E0A46D" />
+                </radialGradient>
               </defs>
-              <circle cx="170" cy="170" r="140" class="wheel-track-bg" />
-              <circle cx="170" cy="170" r="140" class="wheel-track-fill" id="wheel-progress-bar" filter="url(#neonGlow)" />
-            </svg>
 
-            <!-- Center Clock Face -->
-            <div class="clock-hub">
-              <div class="cat-speech" id="melog-speech">Let's study medical school together! 🩺</div>
-              <div class="session-badge" id="timer-mode-tag">STUDY BLOCK</div>
-              <div class="timer-digits" id="timer-readout">25:00</div>
-              <div class="active-focus-task" id="task-active-label">Ready to study</div>
-            </div>
+              <g class="melog-running-group">
+                <!-- Tail -->
+                <g class="melog-tail">
+                  <path d="M125,65 C148,60 158,35 142,22 C132,14 118,26 126,38 C130,44 140,42 136,34" 
+                        fill="none" stroke="#F5C492" stroke-width="12" stroke-linecap="round"/>
+                  <path d="M136,32 Q144,38 146,45" fill="none" stroke="#C97F3E" stroke-width="3" stroke-linecap="round"/>
+                </g>
 
-            <!-- Orbit Track Carriage with Cute Smiling Melog -->
-            <div class="orbit-carriage" id="orbit-carriage">
-              <div class="melog-walker-sprite" id="melog-walker" title="Pet Melog">
-                <svg viewBox="0 0 160 140" class="melog-svg">
-                  <defs>
-                    <radialGradient id="softMelogPeach" cx="50%" cy="40%" r="65%">
-                      <stop offset="0%" stop-color="#FFDFB8" />
-                      <stop offset="55%" stop-color="#F5C492" />
-                      <stop offset="100%" stop-color="#E0A46D" />
-                    </radialGradient>
-                    <radialGradient id="softHazelIris" cx="45%" cy="40%" r="60%">
-                      <stop offset="0%" stop-color="#C5E06B" />
-                      <stop offset="65%" stop-color="#94B336" />
-                      <stop offset="100%" stop-color="#6F8723" />
-                    </radialGradient>
-                  </defs>
+                <!-- Back Left Leg -->
+                <path class="leg leg-bl" d="M102,68 Q108,96 98,102" stroke="#E0A46D" stroke-width="10" stroke-linecap="round" fill="none"/>
+                <!-- Front Left Leg -->
+                <path class="leg leg-fl" d="M64,68 Q58,96 52,102" stroke="#E0A46D" stroke-width="10" stroke-linecap="round" fill="none"/>
 
-                  <g class="melog-cat-group">
-                    <!-- Fluffy Tail -->
-                    <g class="melog-tail-joint">
-                      <path d="M125,78 C148,72 158,46 142,32 C132,22 118,34 126,48 C130,56 140,54 136,44" 
-                            fill="none" stroke="#F5C492" stroke-width="14" stroke-linecap="round"/>
-                      <path d="M136,42 Q144,48 146,55" fill="none" stroke="#BD7739" stroke-width="3" stroke-linecap="round"/>
-                      <path d="M126,62 Q136,68 138,75" fill="none" stroke="#BD7739" stroke-width="3" stroke-linecap="round"/>
+                <!-- Torso -->
+                <ellipse cx="84" cy="62" rx="34" ry="24" fill="url(#melogPeachFur)" stroke="#36220F" stroke-width="3.5"/>
+                <!-- Tabby Flank Stripes -->
+                <path d="M80,48 Q86,60 80,72" fill="none" stroke="#BD7739" stroke-width="2.6" stroke-linecap="round"/>
+                <path d="M94,50 Q98,62 92,72" fill="none" stroke="#BD7739" stroke-width="2.6" stroke-linecap="round"/>
+                <!-- White Chest -->
+                <path d="M52,52 Q64,74 74,62 Q62,48 52,52 Z" fill="#FFFBF5"/>
+
+                <!-- Back Right Leg -->
+                <path class="leg leg-br" d="M92,68 Q98,96 104,102" stroke="#FFDFB8" stroke-width="10" stroke-linecap="round" fill="none"/>
+                <!-- Front Right Leg -->
+                <path class="leg leg-fr" d="M52,68 Q54,96 62,102" stroke="#FFDFB8" stroke-width="10" stroke-linecap="round" fill="none"/>
+
+                <!-- Head -->
+                <g class="melog-head">
+                  <!-- Ears -->
+                  <path d="M38,26 C32,8 40,2 50,8 C54,11 56,18 54,28 Z" fill="#F5C492" stroke="#36220F" stroke-width="2.5"/>
+                  <path d="M40,22 C36,10 42,6 48,10 Z" fill="#FCAEBA"/>
+                  <path d="M78,26 C84,8 76,2 66,8 C62,11 60,18 62,28 Z" fill="#F5C492" stroke="#36220F" stroke-width="2.5"/>
+                  <path d="M76,22 C80,10 74,6 68,10 Z" fill="#FCAEBA"/>
+
+                  <!-- Head Round Base -->
+                  <circle cx="58" cy="38" r="24" fill="url(#melogPeachFur)" stroke="#36220F" stroke-width="3.5"/>
+
+                  <!-- Cheeks -->
+                  <ellipse cx="42" cy="45" rx="6" ry="3.5" fill="#FFAEC0"/>
+                  <ellipse cx="74" cy="45" rx="6" ry="3.5" fill="#FFAEC0"/>
+
+                  <!-- Eyes (Blinking) -->
+                  <g class="melog-eyes">
+                    <g class="eyes-open">
+                      <circle cx="48" cy="35" r="5" fill="#36220F"/>
+                      <circle cx="46" cy="33" r="1.5" fill="#FFFFFF"/>
+                      <circle cx="68" cy="35" r="5" fill="#36220F"/>
+                      <circle cx="66" cy="33" r="1.5" fill="#FFFFFF"/>
                     </g>
-
-                    <!-- Back Left Leg -->
-                    <path class="paw paw-bl" d="M106,80 Q112,108 102,114" stroke="#E0A46D" stroke-width="10" stroke-linecap="round" fill="none"/>
-                    <!-- Front Left Leg -->
-                    <path class="paw paw-fl" d="M68,80 Q62,108 56,114" stroke="#E0A46D" stroke-width="10" stroke-linecap="round" fill="none"/>
-
-                    <!-- Soft Rounded Torso -->
-                    <ellipse cx="86" cy="74" rx="34" ry="24" fill="url(#softMelogPeach)"/>
-                    <path d="M82,58 Q88,72 82,84" fill="none" stroke="#BD7739" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-                    <path d="M96,60 Q100,74 94,84" fill="none" stroke="#BD7739" stroke-width="2.5" stroke-linecap="round" opacity="0.8"/>
-
-                    <!-- Fluffy Chest Bib -->
-                    <path d="M54,64 Q68,86 78,74 Q66,58 54,64 Z" fill="#FFFBF5"/>
-
-                    <!-- Back Right Leg -->
-                    <path class="paw paw-br" d="M96,80 Q102,108 108,114" stroke="#FFDFB8" stroke-width="10" stroke-linecap="round" fill="none"/>
-                    <!-- Front Right Leg -->
-                    <path class="paw paw-fr" d="M56,80 Q58,108 66,114" stroke="#FFDFB8" stroke-width="10" stroke-linecap="round" fill="none"/>
-
-                    <!-- Head & Cute Smiling Face -->
-                    <g class="melog-head">
-                      <!-- Soft Rounded Ears with Pink Fluff -->
-                      <path d="M40,36 C34,18 42,12 52,18 C56,21 58,28 56,38 Z" fill="#F5C492"/>
-                      <path d="M42,32 C38,20 44,16 50,20 Z" fill="#FCAEBA"/>
-
-                      <path d="M80,36 C86,18 78,12 68,18 C64,21 62,28 64,38 Z" fill="#F5C492"/>
-                      <path d="M78,32 C82,20 76,16 70,20 Z" fill="#FCAEBA"/>
-
-                      <!-- Chubby Cheeks Head Base -->
-                      <circle cx="60" cy="48" r="25" fill="url(#softMelogPeach)"/>
-                      <path d="M54,28 L57,34 L60,30 L63,34 L66,28" fill="none" stroke="#BD7739" stroke-width="2" stroke-linecap="round"/>
-
-                      <!-- Cheerful Rosy Blush -->
-                      <ellipse cx="44" cy="55" rx="6.5" ry="4" fill="#FFAEC0" opacity="0.85"/>
-                      <ellipse cx="76" cy="55" rx="6.5" ry="4" fill="#FFAEC0" opacity="0.85"/>
-
-                      <!-- Big Cute Hazel Eyes (Natural Clean Blink) -->
-                      <g class="melog-eyes">
-                        <g class="eyes-open">
-                          <!-- Left Eye -->
-                          <circle cx="49" cy="45" r="7" fill="#2E1B22"/>
-                          <circle cx="49" cy="45" r="5.5" fill="url(#softHazelIris)"/>
-                          <circle cx="49" cy="45" r="3.2" fill="#1C1015"/>
-                          <circle cx="47" cy="43" r="1.8" fill="#FFFFFF"/>
-                          <circle cx="51" cy="47" r="0.9" fill="#FFFFFF"/>
-
-                          <!-- Right Eye -->
-                          <circle cx="71" cy="45" r="7" fill="#2E1B22"/>
-                          <circle cx="71" cy="45" r="5.5" fill="url(#softHazelIris)"/>
-                          <circle cx="71" cy="45" r="3.2" fill="#1C1015"/>
-                          <circle cx="69" cy="43" r="1.8" fill="#FFFFFF"/>
-                          <circle cx="73" cy="47" r="0.9" fill="#FFFFFF"/>
-                        </g>
-                        <g class="eyes-closed" style="display:none;">
-                          <path d="M43,46 Q49,52 55,46" fill="none" stroke="#2E1B22" stroke-width="3" stroke-linecap="round"/>
-                          <path d="M65,46 Q71,52 77,46" fill="none" stroke="#2E1B22" stroke-width="3" stroke-linecap="round"/>
-                        </g>
-                      </g>
-
-                      <!-- Sweet Pink Nose & Smiling :3 Mouth -->
-                      <polygon points="60,52 57,49 63,49" fill="#E88894"/>
-                      <path d="M54,54 Q57,58 60,54 Q63,58 66,54" fill="none" stroke="#3A2218" stroke-width="2.4" stroke-linecap="round"/>
-
-                      <!-- Whiskers -->
-                      <path d="M40,51 L26,49 M40,55 L26,57" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
-                      <path d="M80,51 L94,49 M80,55 L94,57" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+                    <g class="eyes-closed" style="display:none;">
+                      <path d="M43,36 Q48,42 53,36" fill="none" stroke="#36220F" stroke-width="3" stroke-linecap="round"/>
+                      <path d="M63,36 Q68,42 73,36" fill="none" stroke="#36220F" stroke-width="3" stroke-linecap="round"/>
                     </g>
                   </g>
-                </svg>
-              </div>
-            </div>
 
+                  <!-- Cute Smiling Mouth -->
+                  <polygon points="58,41 55,38 61,38" fill="#E88894"/>
+                  <path d="M52,43 Q55,47 58,43 Q61,47 64,43" fill="none" stroke="#36220F" stroke-width="2.4" stroke-linecap="round"/>
+                  <!-- Whiskers -->
+                  <path d="M38,41 L24,39 M38,45 L24,47" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+                  <path d="M78,41 L92,39 M78,45 L92,47" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
+                </g>
+              </g>
+            </svg>
           </div>
+
+          <!-- Countdown Digits -->
+          <div class="time-readout" id="timer-readout">25:00</div>
+          <div class="cat-message-bubble" id="melog-speech">Ready to study with Melog! 🐾</div>
         </div>
+      </div>
 
-        <!-- Task & Timer Controls -->
-        <div class="glass-card">
-          <div class="form-row-grid">
-            <div class="form-field flex-1">
-              <label for="sel-subject">Subject / Coursework</label>
-              <select id="sel-subject" class="styled-select"></select>
-            </div>
-            <div class="form-field flex-2">
-              <label for="ipt-chapter-task">Specific Chapter / Target</label>
-              <input type="text" id="ipt-chapter-task" class="styled-input" placeholder="e.g. Chapter 4, Practical Prep, or Robbins pp. 45-60" />
-            </div>
-          </div>
+      <!-- Action Buttons Block -->
+      <div class="action-btn-row">
+        <button type="button" class="fox-btn btn-main-start" id="btn-timer-start">START</button>
+        <button type="button" class="fox-btn btn-main-pause" id="btn-timer-pause" style="display:none;">PAUSE</button>
+        <button type="button" class="fox-btn btn-icon-subtle" id="btn-timer-skip" title="Skip Session">⏭️</button>
+        <button type="button" class="fox-btn btn-icon-subtle" id="btn-timer-reset" title="Reset Timer">🔄</button>
+        <button type="button" class="fox-btn btn-icon-subtle" id="btn-sound-toggle" title="Toggle Sound">🔔</button>
+      </div>
 
-          <div class="btn-cluster">
-            <button type="button" class="btn btn-primary" id="btn-timer-start">Start Study 🍅</button>
-            <button type="button" class="btn btn-secondary" id="btn-timer-pause" style="display:none;">Pause ⏸️</button>
-            <button type="button" class="btn btn-subtle" id="btn-timer-reset">Reset 🔄</button>
-            <button type="button" class="btn btn-subtle" id="btn-timer-skip">Skip ⏭️</button>
-          </div>
-
-          <div class="daily-meter-wrap">
-            <div class="meter-info">
-              <span>Today's Target</span>
-              <span id="txt-daily-progress">0 / 8 Pomodoros (0%)</span>
-            </div>
-            <div class="meter-track">
-              <div class="meter-bar" id="bar-daily-progress" style="width: 0%;"></div>
-            </div>
-          </div>
+      <!-- Daily Goal Progress -->
+      <div class="goal-progress-box">
+        <div class="goal-labels">
+          <span>Today's Study Goal</span>
+          <span id="txt-daily-progress">0 / 8 Pomodoros</span>
         </div>
-      </section>
-
-      <!-- VIEW 2: WORLD & ROOMS -->
-      <section id="view-world" class="content-panel">
-        <div class="glass-card">
-          <div class="card-title-group">
-            <h2>🏡 Melog's Medical World</h2>
-            <p>Unlock new hospital wings and cozy study gear using Paw Points 🐾</p>
-          </div>
-          <div class="world-grid" id="world-map-grid"></div>
-          <h3 class="sub-heading">🐾 Furniture &amp; Medical Gear Catalog</h3>
-          <div class="catalog-grid" id="furniture-catalog-grid"></div>
+        <div class="goal-track">
+          <div class="goal-fill" id="bar-daily-progress" style="width: 0%;"></div>
         </div>
-      </section>
-
-      <!-- VIEW 3: STUDY PLANNER -->
-      <section id="view-planner" class="content-panel">
-        <div class="glass-card">
-          <div class="card-title-group">
-            <h2>🩷 Medical Workload &amp; Exam Planner</h2>
-            <p>Calculate your daily quota and Pomodoros to comfortably finish before exam day.</p>
-          </div>
-          <div class="form-row-grid">
-            <div class="form-field">
-              <label for="plan-date">Exam / Deadline Date</label>
-              <input type="date" id="plan-date" class="styled-input" />
-            </div>
-            <div class="form-field">
-              <label for="plan-buffer">Buffer Days (Review / Rest)</label>
-              <input type="number" id="plan-buffer" class="styled-input" value="2" min="0" />
-            </div>
-            <div class="form-field">
-              <label for="plan-amount">Material Remaining</label>
-              <input type="number" id="plan-amount" class="styled-input" value="240" min="1" />
-            </div>
-            <div class="form-field">
-              <label for="plan-unit">Material Unit</label>
-              <select id="plan-unit" class="styled-select">
-                <option value="pages">Pages</option>
-                <option value="Anki cards">Anki Cards</option>
-                <option value="lectures">Lectures</option>
-                <option value="board questions">Board / UWorld Qs</option>
-                <option value="chapters">Chapters</option>
-              </select>
-            </div>
-            <div class="form-field">
-              <label for="plan-pace">Pace (Units per 25m Pomodoro)</label>
-              <input type="number" id="plan-pace" class="styled-input" value="6" min="1" />
-            </div>
-          </div>
-          <button type="button" class="btn btn-primary full-width" id="btn-calc-schedule" style="margin-top: 1.25rem;">
-            Generate Rx Study Plan 🩺
-          </button>
-          <div class="rx-box" id="rx-card" style="display: none;">
-            <div class="rx-top">
-              <span>🩺 Official Study Prescription</span>
-              <span id="rx-finish-date">Target Date</span>
-            </div>
-            <div class="rx-body" id="rx-content"></div>
-            <button type="button" class="btn btn-secondary" id="btn-apply-plan-goal" style="margin-top: 1rem;">Set as Daily Target</button>
-          </div>
-        </div>
-      </section>
-
-      <!-- VIEW 4: PROGRESS & ANALYTICS -->
-      <section id="view-stats" class="content-panel">
-        <div class="glass-card">
-          <div class="card-title-group">
-            <h2>📊 Study History &amp; Streaks</h2>
-            <p>Track your board prep consistency and session breakdown.</p>
-          </div>
-          <div class="streak-box">
-            <div class="streak-flame">🔥</div>
-            <div>
-              <h3 id="txt-stats-streak">1 Day Streak</h3>
-              <p>Melog is cheering you on through every chapter!</p>
-            </div>
-          </div>
-          <div class="weekly-row" id="weekly-tracker-row"></div>
-          <h3 class="sub-heading">Recent Study Sessions</h3>
-          <div class="log-list" id="session-log-list"></div>
-        </div>
-      </section>
-
-      <!-- VIEW 5: SETTINGS & CLOUD SYNC -->
-      <section id="view-settings" class="content-panel">
-        <div class="glass-card">
-          <div class="card-title-group">
-            <h2>⚙️ Timer &amp; Cloud Sync</h2>
-            <p>Customize your study experience and connect your free cloud sync database.</p>
-          </div>
-          <div class="sync-card">
-            <div class="sync-top">
-              <span>☁️ Multi-Device Cloud Sync (Supabase)</span>
-              <span class="status-pill" id="sync-status-badge">Local Mode</span>
-            </div>
-            <p class="helper-msg">Enter your free Supabase credentials to sync progress automatically across your Mac, PC, iPhone, and iPad.</p>
-            <div class="form-row-grid" style="margin-top: 0.85rem;">
-              <div class="form-field flex-1">
-                <label for="cfg-supa-url">Supabase Project URL</label>
-                <input type="text" id="cfg-supa-url" class="styled-input" placeholder="https://xyzcompany.supabase.co" />
-              </div>
-              <div class="form-field flex-1">
-                <label for="cfg-supa-key">Supabase Anon Key</label>
-                <input type="password" id="cfg-supa-key" class="styled-input" placeholder="eyJhbGciOiJIUzI1NiIsInR5c..." />
-              </div>
-            </div>
-            <div class="btn-cluster" style="margin-top: 0.85rem; justify-content: flex-start;">
-              <button type="button" class="btn btn-secondary" id="btn-save-cloud">Connect Cloud Sync</button>
-              <button type="button" class="btn btn-subtle" id="btn-force-sync">Sync Now 🔄</button>
-            </div>
-          </div>
-          <form id="settings-form" style="margin-top: 1.5rem;">
-            <div class="form-row-grid">
-              <div class="form-field">
-                <label for="cfg-study-min">Study Interval (Minutes)</label>
-                <input type="number" id="cfg-study-min" class="styled-input" value="25" min="1" max="90" />
-              </div>
-              <div class="form-field">
-                <label for="cfg-short-min">Short Break (Minutes)</label>
-                <input type="number" id="cfg-short-min" class="styled-input" value="5" min="1" max="30" />
-              </div>
-              <div class="form-field">
-                <label for="cfg-long-min">Long Break (Minutes)</label>
-                <input type="number" id="cfg-long-min" class="styled-input" value="20" min="5" max="60" />
-              </div>
-              <div class="form-field">
-                <label for="cfg-interval">Pomodoros per Long Break</label>
-                <input type="number" id="cfg-interval" class="styled-input" value="4" min="2" max="10" />
-              </div>
-              <div class="form-field">
-                <label for="cfg-sound">Audio Chimes</label>
-                <select id="cfg-sound" class="styled-select">
-                  <option value="true">Enabled (Soft Bell)</option>
-                  <option value="false">Muted</option>
-                </select>
-              </div>
-            </div>
-            <div class="btn-cluster" style="margin-top: 1.5rem; justify-content: flex-start;">
-              <button type="submit" class="btn btn-primary">Save Preferences</button>
-              <button type="button" class="btn btn-subtle" id="btn-clear-local" style="color: #FF7B88;">Reset Data</button>
-            </div>
-          </form>
-        </div>
-      </section>
-
+      </div>
     </main>
 
+    <!-- Navigation Drawer Modals / Tabs -->
+    <div class="bottom-tools-dock">
+      <button class="dock-btn" data-modal="modal-planner">🩷 Study Planner</button>
+      <button class="dock-btn" data-modal="modal-world">🏡 Melog's World</button>
+      <button class="dock-btn" data-modal="modal-stats">📊 Stats</button>
+      <button class="dock-btn" data-modal="modal-settings">⚙️ Settings</button>
+    </div>
+
+    <!-- MODAL 1: STUDY PLANNER -->
+    <div class="fox-modal" id="modal-planner">
+      <div class="fox-modal-content fox-card">
+        <div class="modal-header">
+          <h2>🩷 Medical Study Planner</h2>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="plan-date">Exam Date</label>
+            <input type="date" id="plan-date" class="fox-input" />
+          </div>
+          <div class="form-field">
+            <label for="plan-buffer">Buffer Days (Review)</label>
+            <input type="number" id="plan-buffer" class="fox-input" value="2" min="0" />
+          </div>
+          <div class="form-field">
+            <label for="plan-amount">Material Remaining</label>
+            <input type="number" id="plan-amount" class="fox-input" value="240" min="1" />
+          </div>
+          <div class="form-field">
+            <label for="plan-unit">Material Unit</label>
+            <select id="plan-unit" class="fox-select">
+              <option value="pages">Pages</option>
+              <option value="Anki cards">Anki Cards</option>
+              <option value="lectures">Lectures</option>
+              <option value="board questions">Board / UWorld Qs</option>
+              <option value="chapters">Chapters</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="plan-pace">Pace (Units per 25m Pomodoro)</label>
+            <input type="number" id="plan-pace" class="fox-input" value="6" min="1" />
+          </div>
+        </div>
+        <button type="button" class="fox-btn btn-main-start full-width" id="btn-calc-schedule" style="margin-top:1rem;">
+          Calculate Schedule 🩺
+        </button>
+        <div class="rx-box" id="rx-card" style="display: none; margin-top:1rem;">
+          <div class="rx-top"><span>Prescription</span><span id="rx-finish-date"></span></div>
+          <div id="rx-content" style="padding:0.75rem 0;"></div>
+          <button type="button" class="fox-btn btn-icon-subtle full-width" id="btn-apply-plan-goal">Set as Today's Goal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL 2: MELOG'S WORLD -->
+    <div class="fox-modal" id="modal-world">
+      <div class="fox-modal-content fox-card">
+        <div class="modal-header">
+          <h2>🏡 Melog's World &amp; Gear</h2>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="world-grid" id="world-map-grid"></div>
+        <h3 style="margin: 1.25rem 0 0.5rem 0; font-size:1.1rem;">🐾 Adopt Gear with Paw Points</h3>
+        <div class="catalog-grid" id="furniture-catalog-grid"></div>
+      </div>
+    </div>
+
+    <!-- MODAL 3: STATS -->
+    <div class="fox-modal" id="modal-stats">
+      <div class="fox-modal-content fox-card">
+        <div class="modal-header">
+          <h2>📊 Study Consistency</h2>
+          <button class="modal-close">&times;</button>
+        </div>
+        <div class="streak-box">
+          <span style="font-size:2rem;">🔥</span>
+          <div>
+            <h3 id="txt-stats-streak">1 Day Streak</h3>
+            <p style="font-size:0.85rem; color:#785A44;">Keep up the amazing focus!</p>
+          </div>
+        </div>
+        <div class="weekly-row" id="weekly-tracker-row"></div>
+        <h3 style="margin: 1.25rem 0 0.5rem 0; font-size:1.1rem;">Session Logs</h3>
+        <div class="log-list" id="session-log-list"></div>
+      </div>
+    </div>
+
+    <!-- MODAL 4: SETTINGS -->
+    <div class="fox-modal" id="modal-settings">
+      <div class="fox-modal-content fox-card">
+        <div class="modal-header">
+          <h2>⚙️ Timer &amp; Cloud Sync</h2>
+          <button class="modal-close">&times;</button>
+        </div>
+        <form id="settings-form">
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="cfg-study-min">Focus (Minutes)</label>
+              <input type="number" id="cfg-study-min" class="fox-input" value="25" min="1" max="90" />
+            </div>
+            <div class="form-field">
+              <label for="cfg-short-min">Short Break</label>
+              <input type="number" id="cfg-short-min" class="fox-input" value="5" min="1" max="30" />
+            </div>
+            <div class="form-field">
+              <label for="cfg-long-min">Long Break</label>
+              <input type="number" id="cfg-long-min" class="fox-input" value="20" min="5" max="60" />
+            </div>
+            <div class="form-field">
+              <label for="cfg-interval">Long Break Interval</label>
+              <input type="number" id="cfg-interval" class="fox-input" value="4" min="2" max="10" />
+            </div>
+          </div>
+          <button type="submit" class="fox-btn btn-main-start full-width" style="margin-top:1rem;">Save Settings</button>
+        </form>
+
+        <div style="margin-top: 1.5rem; border-top: 2px dashed #E0C9B6; padding-top: 1rem;">
+          <h3>☁️ Supabase Cloud Sync</h3>
+          <div class="form-grid" style="margin-top:0.5rem;">
+            <div class="form-field">
+              <label for="cfg-supa-url">Project URL</label>
+              <input type="text" id="cfg-supa-url" class="fox-input" placeholder="https://xyz.supabase.co" />
+            </div>
+            <div class="form-field">
+              <label for="cfg-supa-key">Anon Key</label>
+              <input type="password" id="cfg-supa-key" class="fox-input" placeholder="eyJhbGci..." />
+            </div>
+          </div>
+          <div style="display:flex; gap:0.5rem; margin-top:0.75rem;">
+            <button type="button" class="fox-btn btn-icon-subtle" id="btn-save-cloud" style="flex:1;">Connect Sync</button>
+            <button type="button" class="fox-btn btn-icon-subtle" id="btn-force-sync" style="flex:1;">Sync Now 🔄</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="app-footer">
-      <p>Purrmodoro 🩺 Built with 💖 for Medical School Prep • Featuring <strong>Melog</strong> 🐾</p>
+    <footer class="fox-footer">
+      <p>PomoFox-inspired Pomodoro • Dedicated to <strong>Melog</strong> 🐾</p>
     </footer>
   </div>
 
