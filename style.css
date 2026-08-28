@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Dark Mode Velvet & High-End Productivity Style
+   PURRMODORO - Dark Mode Velvet & Realistic Running Wheel
    ------------------------------------------------------------- */
 :root {
   --bg-deep: #0F0B15;
@@ -46,7 +46,6 @@ body {
   overflow-x: hidden;
 }
 
-/* Fullscreen Dynamic Canvas */
 #animated-bg-canvas {
   position: fixed;
   top: 0;
@@ -67,7 +66,7 @@ body {
   z-index: 1;
 }
 
-/* Header & Navigation */
+/* Header */
 .app-header {
   display: flex;
   flex-wrap: wrap;
@@ -159,9 +158,7 @@ body {
   box-shadow: 0 0 16px rgba(232, 93, 117, 0.55);
 }
 
-.content-panel {
-  display: none;
-}
+.content-panel { display: none; }
 
 .content-panel.active {
   display: block;
@@ -173,7 +170,7 @@ body {
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ================= VIEWPORT & POMOFOX WHEEL ================= */
+/* ================= WHEEL VIEWPORT ================= */
 .timer-viewport {
   position: relative;
   background: var(--bg-card);
@@ -260,7 +257,7 @@ body {
   stroke: url(#wheelGrad);
   stroke-width: 14;
   stroke-linecap: round;
-  stroke-dasharray: 879.64; /* 2 * PI * 140 */
+  stroke-dasharray: 879.64;
   stroke-dashoffset: 0;
   transition: stroke-dashoffset 0.5s ease;
 }
@@ -323,7 +320,7 @@ body {
   text-overflow: ellipsis;
 }
 
-/* Orbit Arm & Melog Sprite */
+/* Orbit Carriage */
 .orbit-carriage {
   position: absolute;
   top: 0;
@@ -336,11 +333,11 @@ body {
 
 .melog-walker-sprite {
   position: absolute;
-  top: -16px;
+  top: -18px;
   left: 50%;
   transform: translateX(-50%);
-  width: 76px;
-  height: 66px;
+  width: 82px;
+  height: 68px;
   pointer-events: auto;
   cursor: pointer;
 }
@@ -348,41 +345,60 @@ body {
 .melog-svg {
   width: 100%;
   height: 100%;
+  overflow: visible;
 }
 
-/* Trotting Paws Animation */
-.timer-running .paw-front-r,
-.timer-running .paw-back-l {
-  animation: trotA 0.4s infinite alternate ease-in-out;
+/* ================= 4-PAW RUNNING ANIMATIONS ================= */
+.timer-running .paw-fr {
+  animation: runPawFrontRight 0.35s infinite alternate ease-in-out;
+}
+.timer-running .paw-bl {
+  animation: runPawBackLeft 0.35s infinite alternate ease-in-out 0.05s;
+}
+.timer-running .paw-fl {
+  animation: runPawFrontLeft 0.35s infinite alternate ease-in-out 0.18s;
+}
+.timer-running .paw-br {
+  animation: runPawBackRight 0.35s infinite alternate ease-in-out 0.22s;
 }
 
-.timer-running .paw-front-l,
-.timer-running .paw-back-r {
-  animation: trotB 0.4s infinite alternate ease-in-out;
+.timer-running .melog-cat-group {
+  animation: catGallop 0.35s infinite alternate ease-in-out;
+}
+.timer-running .melog-tail-joint {
+  animation: catTailSway 0.5s infinite alternate ease-in-out;
 }
 
-.timer-running .melog-tail {
-  animation: wagTail 0.6s infinite alternate ease-in-out;
+@keyframes runPawFrontRight {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(6px, -6px) rotate(22deg); }
+}
+@keyframes runPawBackLeft {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  100% { transform: translate(8px, -5px) rotate(18deg); }
+}
+@keyframes runPawFrontLeft {
+  0% { transform: translate(6px, -6px) rotate(22deg); }
+  100% { transform: translate(-4px, 4px) rotate(-15deg); }
+}
+@keyframes runPawBackRight {
+  0% { transform: translate(8px, -5px) rotate(18deg); }
+  100% { transform: translate(-6px, 4px) rotate(-15deg); }
 }
 
-@keyframes trotA {
+@keyframes catGallop {
   0% { transform: translateY(0) rotate(0deg); }
-  100% { transform: translateY(-4px) rotate(12deg); }
+  100% { transform: translateY(-3px) rotate(2deg); }
 }
 
-@keyframes trotB {
-  0% { transform: translateY(-4px) rotate(-12deg); }
-  100% { transform: translateY(0) rotate(0deg); }
-}
-
-@keyframes wagTail {
+@keyframes catTailSway {
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(15deg); }
+  100% { transform: rotate(16deg); }
 }
 
 /* Eye Blinking */
 .melog-eyes {
-  transform-origin: 78px 54px;
+  transform-origin: 61px 44px;
   animation: eyeBlinkOnly 4.8s infinite;
 }
 
@@ -391,7 +407,7 @@ body {
   98% { transform: scaleY(0.08); }
 }
 
-/* Glass Cards & Forms */
+/* Glass Card & Forms */
 .glass-card {
   background: var(--bg-card);
   border-radius: var(--radius-lg);
@@ -492,7 +508,6 @@ label {
 
 .full-width { width: 100%; }
 
-/* Meter */
 .daily-meter-wrap {
   border-top: 1px solid var(--border-soft);
   padding-top: 1.1rem;
@@ -524,7 +539,7 @@ label {
   box-shadow: 0 0 10px rgba(232, 93, 117, 0.5);
 }
 
-/* Grids & Prescriptions */
+/* Grids & Cards */
 .world-grid, .catalog-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
