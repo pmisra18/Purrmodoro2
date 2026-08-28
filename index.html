@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#FDF3E3" />
   <title>Purrmodoro 🐾 Study with Melog</title>
   
-  <!-- Authentic Pixel & Rounded Fonts -->
+  <!-- Pixel & UI Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
@@ -19,10 +19,10 @@
       --pf-orange: #FFA785;
       --pf-orange-dark: #F28963;
       --pf-mint: #94D8A2;
-      --pf-blue: #96C5F7;
       --pf-cream: #FFF9F0;
       --pf-text: #3A2416;
       --pf-muted: #8E7361;
+      --pf-ring-bg: #F4E2D2;
       
       --shadow-block: 4px 4px 0px var(--pf-border);
       --shadow-block-lg: 6px 6px 0px var(--pf-border);
@@ -31,6 +31,20 @@
       --font-pixel: 'Silkscreen', 'VT323', monospace;
       --font-digits: 'VT323', monospace;
       --font-ui: 'Plus Jakarta Sans', system-ui, sans-serif;
+    }
+
+    /* Dark Mode Theme */
+    body.theme-dark {
+      --pf-bg: #1A130E;
+      --pf-border: #0A0604;
+      --pf-card-bg: #2B1E17;
+      --pf-orange: #FF8F66;
+      --pf-orange-dark: #E67245;
+      --pf-mint: #5EAA78;
+      --pf-cream: #38271E;
+      --pf-text: #FDF5ED;
+      --pf-muted: #BBA08E;
+      --pf-ring-bg: #3F2B20;
     }
 
     * {
@@ -50,6 +64,7 @@
       justify-content: center;
       position: relative;
       overflow-x: hidden;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
     /* Ambient Falling Pixel Canvas */
@@ -109,9 +124,10 @@
       display: flex;
       align-items: center;
       gap: 0.25rem;
+      cursor: pointer;
     }
 
-    /* Main PomoFox Chunky Block Card */
+    /* Main PomoFox Block Card */
     .pf-main-card {
       background: var(--pf-card-bg);
       border: 3.5px solid var(--pf-border);
@@ -124,7 +140,6 @@
       gap: 1.2rem;
     }
 
-    /* Tabs Views */
     .tab-view {
       display: none;
       width: 100%;
@@ -164,12 +179,12 @@
 
     .pf-mode-btn.active {
       background: var(--pf-orange);
-      color: var(--pf-text);
+      color: var(--pf-border);
       border: 2px solid var(--pf-border);
       box-shadow: 2px 2px 0px var(--pf-border);
     }
 
-    /* Medical Subject & Goal Input */
+    /* Medical Selectors */
     .pf-input-group {
       width: 100%;
       display: flex;
@@ -192,7 +207,6 @@
     }
 
     .pf-select:focus, .pf-input:focus {
-      background: #FFFFFF;
       border-color: var(--pf-orange-dark);
     }
 
@@ -218,7 +232,7 @@
 
     .pf-ring-bg {
       fill: none;
-      stroke: #F4E2D2;
+      stroke: var(--pf-ring-bg);
       stroke-width: 18;
     }
 
@@ -227,7 +241,7 @@
       stroke: var(--pf-orange);
       stroke-width: 18;
       stroke-linecap: square;
-      stroke-dasharray: 785.39; /* 2 * PI * 125 */
+      stroke-dasharray: 785.39;
       stroke-dashoffset: 0;
       transition: stroke-dashoffset 0.5s ease;
     }
@@ -241,10 +255,10 @@
       z-index: 2;
     }
 
-    /* Running Pixel Melog Model Stage */
+    /* Running Melog Stage */
     .pf-melog-stage {
-      width: 105px;
-      height: 85px;
+      width: 115px;
+      height: 90px;
       cursor: pointer;
     }
 
@@ -254,29 +268,29 @@
       overflow: visible;
     }
 
-    /* Pixel Art Running Animation Cycles */
-    .timer-running .paw-fr { animation: pixelRunA 0.3s infinite alternate ease-in-out; }
-    .timer-running .paw-bl { animation: pixelRunA 0.3s infinite alternate ease-in-out 0.06s; }
-    .timer-running .paw-fl { animation: pixelRunB 0.3s infinite alternate ease-in-out 0.15s; }
-    .timer-running .paw-br { animation: pixelRunB 0.3s infinite alternate ease-in-out 0.21s; }
-    .timer-running .melog-body-box { animation: pixelBob 0.3s infinite alternate ease-in-out; }
-    .timer-running .melog-tail-joint { animation: pixelTail 0.35s infinite alternate ease-in-out; }
+    /* Exact PomoFox 4-Leg Running Gait Cycle */
+    .timer-running .paw-fr { animation: runPomoFoxA 0.28s infinite alternate ease-in-out; }
+    .timer-running .paw-bl { animation: runPomoFoxA 0.28s infinite alternate ease-in-out 0.05s; }
+    .timer-running .paw-fl { animation: runPomoFoxB 0.28s infinite alternate ease-in-out 0.14s; }
+    .timer-running .paw-br { animation: runPomoFoxB 0.28s infinite alternate ease-in-out 0.19s; }
+    .timer-running .melog-rig { animation: runPomoFoxBob 0.28s infinite alternate ease-in-out; }
+    .timer-running .melog-tail { animation: runPomoFoxTail 0.35s infinite alternate ease-in-out; }
 
-    @keyframes pixelRunA {
-      0% { transform: translate(0, 0); }
-      100% { transform: translate(5px, -6px); }
+    @keyframes runPomoFoxA {
+      0% { transform: translate(0, 0) rotate(0deg); }
+      100% { transform: translate(8px, -7px) rotate(24deg); }
     }
-    @keyframes pixelRunB {
-      0% { transform: translate(5px, -6px); }
-      100% { transform: translate(-4px, 4px); }
+    @keyframes runPomoFoxB {
+      0% { transform: translate(8px, -7px) rotate(24deg); }
+      100% { transform: translate(-5px, 5px) rotate(-16deg); }
     }
-    @keyframes pixelBob {
+    @keyframes runPomoFoxBob {
       0% { transform: translateY(0); }
-      100% { transform: translateY(-4px); }
+      100% { transform: translateY(-5px); }
     }
-    @keyframes pixelTail {
+    @keyframes runPomoFoxTail {
       0% { transform: rotate(0deg); }
-      100% { transform: rotate(16deg); }
+      100% { transform: rotate(18deg); }
     }
 
     .pf-timer-readout {
@@ -296,7 +310,7 @@
       max-width: 180px;
     }
 
-    /* Chunky Pixel Action Controls */
+    /* Pixel Action Controls */
     .pf-action-row {
       display: flex;
       gap: 0.65rem;
@@ -325,7 +339,7 @@
 
     .btn-start-large {
       background: var(--pf-orange);
-      color: var(--pf-text);
+      color: var(--pf-border);
       font-size: 1.25rem;
       padding: 0.75rem 2.2rem;
       box-shadow: var(--shadow-block);
@@ -334,7 +348,7 @@
 
     .btn-pause-large {
       background: var(--pf-mint);
-      color: var(--pf-text);
+      color: var(--pf-border);
       font-size: 1.25rem;
       padding: 0.75rem 2.2rem;
       box-shadow: var(--shadow-block);
@@ -351,11 +365,15 @@
 
     .full-btn { width: 100%; }
 
-    /* Daily Goal Pixel Tracker */
+    /* Goal Section */
     .pf-goal-section {
       width: 100%;
       border-top: 3px dashed #E2CEBE;
       padding-top: 0.9rem;
+    }
+
+    body.theme-dark .pf-goal-section {
+      border-color: #3F2B20;
     }
 
     .pf-goal-labels {
@@ -383,7 +401,7 @@
       transition: width 0.4s ease;
     }
 
-    /* Grids for Planner, Sanctuary, Stats, Settings */
+    /* Grids & Panels */
     .pf-section-title {
       font-size: 1.2rem;
       margin-bottom: 0.5rem;
@@ -439,6 +457,7 @@
 
     .day-square.done {
       background: var(--pf-orange);
+      color: var(--pf-border);
       box-shadow: 2px 2px 0px var(--pf-border);
     }
 
@@ -462,7 +481,7 @@
       justify-content: space-between;
     }
 
-    /* Bottom Fixed Pixel Dock */
+    /* Fixed Bottom Dock */
     .pf-bottom-dock {
       position: fixed;
       bottom: 1rem;
@@ -501,7 +520,7 @@
 
     .pf-dock-btn.active {
       background: var(--pf-orange);
-      color: var(--pf-text);
+      color: var(--pf-border);
       border: 2px solid var(--pf-border);
       box-shadow: 2px 2px 0px var(--pf-border);
     }
@@ -522,6 +541,7 @@
         <span>Purrmodoro</span>
       </div>
       <div class="pf-stat-badges">
+        <div class="pf-badge" id="btn-theme-toggle" title="Toggle Dark/Light Mode">🌙</div>
         <div class="pf-badge" title="Paw Points">🐾 <strong id="val-paw-points">0</strong></div>
         <div class="pf-badge" title="Daily Streak">🔥 <strong id="val-streak-count">1</strong></div>
         <div class="pf-badge" id="level-badge">⭐ Lvl 1</div>
@@ -531,7 +551,7 @@
     <!-- Main Card Body -->
     <main class="pf-main-card">
       
-      <!-- ================= VIEW 1: TIMER ================= -->
+      <!-- VIEW 1: TIMER -->
       <section id="tab-timer" class="tab-view active">
         
         <!-- Mode Pills -->
@@ -547,7 +567,7 @@
           <input type="text" id="ipt-chapter-task" class="pf-input" placeholder="What are you studying? (e.g. Robbins Ch. 4, Practical Prep)" />
         </div>
 
-        <!-- Wheel Timer Stage with Pixel Melog -->
+        <!-- Wheel Timer Stage with Exact PomoFox Melog Rig -->
         <div class="pf-wheel-container">
           <svg class="pf-wheel-svg" viewBox="0 0 300 300">
             <circle cx="150" cy="150" r="125" class="pf-ring-bg" />
@@ -555,7 +575,7 @@
           </svg>
 
           <div class="pf-wheel-inner">
-            <!-- Pixel Art Melog -->
+            <!-- PomoFox Running Melog Rig -->
             <div class="pf-melog-stage" id="running-cat-stage">
               <svg viewBox="0 0 160 120" class="pf-melog-svg">
                 <defs>
@@ -566,91 +586,95 @@
                   </linearGradient>
                 </defs>
 
-                <g class="melog-body-box">
-                  <!-- Tail -->
-                  <g class="melog-tail-joint">
-                    <rect x="120" y="55" width="22" height="12" rx="4" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
-                    <rect x="134" y="38" width="14" height="20" rx="4" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
-                    <rect x="126" y="24" width="18" height="16" rx="4" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
-                    <!-- Ginger Tail Tip -->
-                    <rect x="128" y="26" width="6" height="6" fill="#BD7739"/>
+                <g class="melog-rig">
+                  <!-- PomoFox Style Fluffy Tail -->
+                  <g class="melog-tail">
+                    <path d="M118,62 C146,56 156,30 140,16 C128,6 114,20 122,34 C126,42 136,40 132,30" 
+                          fill="#F7C694" stroke="#3A2416" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                    <!-- Ginger Tabby Tail Rings -->
+                    <path d="M132,28 Q140,34 142,42" fill="none" stroke="#BD7739" stroke-width="3" stroke-linecap="round"/>
                   </g>
 
                   <!-- Back Left Leg -->
                   <g class="paw paw-bl">
-                    <rect x="98" y="70" width="12" height="26" rx="5" fill="#E2A66E" stroke="#3A2416" stroke-width="2.5"/>
-                    <rect x="94" y="90" width="16" height="8" rx="3" fill="#E2A66E" stroke="#3A2416" stroke-width="2.5"/>
+                    <path d="M98,64 Q106,94 96,102" stroke="#E2A66E" stroke-width="12" stroke-linecap="round" fill="none"/>
+                    <path d="M98,64 Q106,94 96,102" stroke="#3A2416" stroke-width="3" stroke-linecap="round" fill="none"/>
                   </g>
                   
                   <!-- Front Left Leg -->
                   <g class="paw paw-fl">
-                    <rect x="58" y="70" width="12" height="26" rx="5" fill="#E2A66E" stroke="#3A2416" stroke-width="2.5"/>
-                    <rect x="54" y="90" width="16" height="8" rx="3" fill="#E2A66E" stroke="#3A2416" stroke-width="2.5"/>
+                    <path d="M58,64 Q50,94 44,102" stroke="#E2A66E" stroke-width="12" stroke-linecap="round" fill="none"/>
+                    <path d="M58,64 Q50,94 44,102" stroke="#3A2416" stroke-width="3" stroke-linecap="round" fill="none"/>
                   </g>
 
-                  <!-- Torso Block -->
-                  <rect x="50" y="48" width="70" height="38" rx="14" fill="url(#melogPeach)" stroke="#3A2416" stroke-width="3.5"/>
+                  <!-- PomoFox Rounded Body -->
+                  <ellipse cx="80" cy="58" rx="36" ry="24" fill="url(#melogPeach)" stroke="#3A2416" stroke-width="3.5"/>
                   
-                  <!-- Flank Stripes -->
-                  <rect x="80" y="52" width="5" height="18" rx="2" fill="#BD7739"/>
-                  <rect x="94" y="52" width="5" height="18" rx="2" fill="#BD7739"/>
+                  <!-- Tabby Flank Stripes -->
+                  <path d="M76,42 Q82,54 76,68" fill="none" stroke="#BD7739" stroke-width="3" stroke-linecap="round"/>
+                  <path d="M90,44 Q94,56 88,68" fill="none" stroke="#BD7739" stroke-width="3" stroke-linecap="round"/>
 
-                  <!-- White Bib -->
-                  <polygon points="50,56 68,76 68,56" fill="#FFFBF5"/>
+                  <!-- Ivory Chest Bib -->
+                  <path d="M46,48 Q60,72 70,58 Q58,42 46,48 Z" fill="#FFFBF5"/>
 
                   <!-- Back Right Leg -->
                   <g class="paw paw-br">
-                    <rect x="90" y="70" width="12" height="26" rx="5" fill="#FFDEB8" stroke="#3A2416" stroke-width="2.5"/>
-                    <rect x="86" y="90" width="16" height="8" rx="3" fill="#FFDEB8" stroke="#3A2416" stroke-width="2.5"/>
+                    <path d="M88,64 Q96,94 104,102" stroke="#FFDEB8" stroke-width="12" stroke-linecap="round" fill="none"/>
+                    <path d="M88,64 Q96,94 104,102" stroke="#3A2416" stroke-width="3" stroke-linecap="round" fill="none"/>
                   </g>
 
                   <!-- Front Right Leg -->
                   <g class="paw paw-fr">
-                    <rect x="48" y="70" width="12" height="26" rx="5" fill="#FFDEB8" stroke="#3A2416" stroke-width="2.5"/>
-                    <rect x="44" y="90" width="16" height="8" rx="3" fill="#FFDEB8" stroke="#3A2416" stroke-width="2.5"/>
+                    <path d="M46,64 Q48,94 56,102" stroke="#FFDEB8" stroke-width="12" stroke-linecap="round" fill="none"/>
+                    <path d="M46,64 Q48,94 56,102" stroke="#3A2416" stroke-width="3" stroke-linecap="round" fill="none"/>
                   </g>
 
-                  <!-- Head Block -->
-                  <g class="melog-head-block">
-                    <!-- Ears -->
-                    <polygon points="34,24 24,6 44,12" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
-                    <polygon points="32,20 27,10 40,14" fill="#FCAEBA"/>
+                  <!-- PomoFox Head -->
+                  <g class="melog-head-unit">
+                    <!-- Feline Triangular Ears -->
+                    <polygon points="32,24 22,4 42,10" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
+                    <polygon points="30,20 25,8 38,12" fill="#FCAEBA"/>
                     
-                    <polygon points="76,24 86,6 66,12" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
-                    <polygon points="78,20 83,10 70,14" fill="#FCAEBA"/>
+                    <polygon points="72,24 82,4 62,10" fill="#F7C694" stroke="#3A2416" stroke-width="2.5"/>
+                    <polygon points="74,20 79,8 66,12" fill="#FCAEBA"/>
 
-                    <!-- Head Contour -->
-                    <rect x="32" y="18" width="48" height="42" rx="14" fill="url(#melogPeach)" stroke="#3A2416" stroke-width="3.5"/>
+                    <!-- Rounded Head -->
+                    <circle cx="52" cy="34" r="25" fill="url(#melogPeach)" stroke="#3A2416" stroke-width="3.5"/>
                     
-                    <!-- Forehead M -->
-                    <path d="M50,24 L53,29 L56,25 L59,29 L62,24" fill="none" stroke="#BD7739" stroke-width="2" stroke-linecap="square"/>
+                    <!-- Forehead Mark -->
+                    <path d="M46,18 L49,23 L52,19 L55,23 L58,18" fill="none" stroke="#BD7739" stroke-width="2" stroke-linecap="round"/>
 
-                    <!-- Cheeks -->
-                    <rect x="34" y="44" width="8" height="6" rx="2" fill="#FFAEC0"/>
-                    <rect x="70" y="44" width="8" height="6" rx="2" fill="#FFAEC0"/>
+                    <!-- Rosy Cheeks -->
+                    <ellipse cx="36" cy="42" rx="6" ry="3.5" fill="#FFAEC0"/>
+                    <ellipse cx="68" cy="42" rx="6" ry="3.5" fill="#FFAEC0"/>
 
-                    <!-- Hazel Pixel Eyes -->
+                    <!-- Big Cute Eyes (Natural Blink) -->
                     <g class="melog-eyes">
-                      <!-- Left Eye -->
-                      <rect x="44" y="34" width="8" height="8" rx="2" fill="#3A2416"/>
-                      <rect x="44" y="34" width="6" height="6" rx="1" fill="#9CBD38"/>
-                      <rect x="44" y="34" width="3" height="3" fill="#FFFFFF"/>
-
-                      <!-- Right Eye -->
-                      <rect x="60" y="34" width="8" height="8" rx="2" fill="#3A2416"/>
-                      <rect x="60" y="34" width="6" height="6" rx="1" fill="#9CBD38"/>
-                      <rect x="60" y="34" width="3" height="3" fill="#FFFFFF"/>
+                      <g class="eyes-open">
+                        <!-- Left Eye -->
+                        <circle cx="42" cy="32" r="5.5" fill="#3A2416"/>
+                        <circle cx="42" cy="32" r="4.2" fill="#9CBD38"/>
+                        <circle cx="40" cy="30" r="1.6" fill="#FFFFFF"/>
+                        <!-- Right Eye -->
+                        <circle cx="62" cy="32" r="5.5" fill="#3A2416"/>
+                        <circle cx="62" cy="32" r="4.2" fill="#9CBD38"/>
+                        <circle cx="60" cy="30" r="1.6" fill="#FFFFFF"/>
+                      </g>
+                      <g class="eyes-closed" style="display:none;">
+                        <path d="M37,33 Q42,39 47,33" fill="none" stroke="#3A2416" stroke-width="3" stroke-linecap="round"/>
+                        <path d="M57,33 Q62,39 67,33" fill="none" stroke="#3A2416" stroke-width="3" stroke-linecap="round"/>
+                      </g>
                     </g>
 
-                    <!-- Pink Nose & Smile -->
-                    <polygon points="56,44 53,41 59,41" fill="#E88894"/>
-                    <path d="M49,46 Q53,50 56,46 Q59,50 63,46" fill="none" stroke="#3A2416" stroke-width="2.2" stroke-linecap="round"/>
+                    <!-- Pink Nose & Smiling Mouth -->
+                    <polygon points="52,38 49,35 55,35" fill="#E88894"/>
+                    <path d="M46,40 Q49,44 52,40 Q55,44 58,40" fill="none" stroke="#3A2416" stroke-width="2.2" stroke-linecap="round"/>
 
                     <!-- Whiskers -->
-                    <line x1="32" y1="42" x2="20" y2="40" stroke="#FFFFFF" stroke-width="2"/>
-                    <line x1="32" y1="46" x2="20" y2="48" stroke="#FFFFFF" stroke-width="2"/>
-                    <line x1="80" y1="42" x2="92" y2="40" stroke="#FFFFFF" stroke-width="2"/>
-                    <line x1="80" y1="46" x2="92" y2="48" stroke="#FFFFFF" stroke-width="2"/>
+                    <line x1="32" y1="38" x2="18" y2="36" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="32" y1="42" x2="18" y2="44" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="72" y1="38" x2="86" y2="36" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
+                    <line x1="72" y1="42" x2="86" y2="44" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round"/>
                   </g>
                 </g>
               </svg>
@@ -684,7 +708,7 @@
 
       </section>
 
-      <!-- ================= VIEW 2: PLANNER ================= -->
+      <!-- VIEW 2: PLANNER -->
       <section id="tab-planner" class="tab-view">
         <h2 class="pf-section-title">🩷 Medical Study Planner</h2>
         <div class="form-stack">
@@ -729,7 +753,7 @@
         </div>
       </section>
 
-      <!-- ================= VIEW 3: SANCTUARY WORLD ================= -->
+      <!-- VIEW 3: SANCTUARY WORLD -->
       <section id="tab-world" class="tab-view">
         <h2 class="pf-section-title">🏡 Melog's Sanctuary</h2>
         <div class="grid-2" id="world-map-grid"></div>
@@ -738,7 +762,7 @@
         <div class="grid-2" id="furniture-catalog-grid"></div>
       </section>
 
-      <!-- ================= VIEW 4: STATS ================= -->
+      <!-- VIEW 4: STATS -->
       <section id="tab-stats" class="tab-view">
         <h2 class="pf-section-title">📊 Study Consistency</h2>
         <div class="pf-box-panel" style="display:flex; align-items:center; gap:0.75rem;">
@@ -755,7 +779,7 @@
         <div class="log-scroll-box" id="session-log-list"></div>
       </section>
 
-      <!-- ================= VIEW 5: SETTINGS ================= -->
+      <!-- VIEW 5: SETTINGS -->
       <section id="tab-settings" class="tab-view">
         <h2 class="pf-section-title">⚙️ Preferences</h2>
         <form id="settings-form">
@@ -806,9 +830,6 @@
   </div>
 
   <script>
-    /* -------------------------------------------------------------
-       PURRMODORO - Complete PomoFox Exact Rebuild Logic
-       ------------------------------------------------------------- */
     const MEDICAL_SUBJECTS = [
       "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
       "🦴 OPP / OMM",
@@ -846,15 +867,16 @@
     ];
 
     let state = {
-      settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true },
+      settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false },
       timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
       game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
     };
 
-    const RING_CIRCUMFERENCE = 2 * Math.PI * 125; // 785.39
+    const RING_CIRCUMFERENCE = 2 * Math.PI * 125;
 
     document.addEventListener('DOMContentLoaded', () => {
       loadState();
+      initTheme();
       initTabs();
       initUI();
       initTimer();
@@ -881,7 +903,25 @@
       state.timer.totalDuration = state.settings.studyMin * 60;
     }
 
-    /* Bottom Dock Tab Navigation */
+    /* Dark Mode Toggle */
+    function initTheme() {
+      const themeBtn = document.getElementById('btn-theme-toggle');
+      if (state.settings.darkMode) {
+        document.body.classList.add('theme-dark');
+        if (themeBtn) themeBtn.textContent = '☀️';
+      }
+
+      if (themeBtn) {
+        themeBtn.addEventListener('click', () => {
+          state.settings.darkMode = !state.settings.darkMode;
+          document.body.classList.toggle('theme-dark', state.settings.darkMode);
+          themeBtn.textContent = state.settings.darkMode ? '☀️' : '🌙';
+          saveState();
+        });
+      }
+    }
+
+    /* Tab Dock */
     function initTabs() {
       const dockBtns = document.querySelectorAll('.pf-dock-btn');
       dockBtns.forEach(btn => {
@@ -1231,7 +1271,7 @@
           p.x += p.vx; p.y += p.vy;
           if (p.y > h) { p.y = -10; p.x = Math.random() * w; }
           ctx.beginPath();
-          ctx.fillStyle = 'rgba(255, 167, 133, 0.25)';
+          ctx.fillStyle = state.settings.darkMode ? 'rgba(255, 143, 102, 0.15)' : 'rgba(255, 167, 133, 0.25)';
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           ctx.fill();
         });
