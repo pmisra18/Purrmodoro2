@@ -1,30 +1,30 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Complete Engine & Minecraft Biome Switcher
+   PURRMODORO - Complete Engine (Updated Subjects & Biomes)
    ------------------------------------------------------------- */
 
-// Distinct Medical School Subjects
+// Medical School Curriculum Architecture (No textbook restrictions on OPP/OMM & CE)
 const MEDICAL_CURRICULUM = {
-  "🦴 OPP (Osteopathic Principles & Practice)": {
+  "🦴 OPP / OMM": {
     resources: [
-      "Savarese OMT Review",
-      "Foundations of Osteopathic Medicine",
-      "Nicholas & Nicholas Atlas of Osteopathic Techniques",
-      "OPP Lab Practical & Diagnostic Criteria"
+      "OMM Lab & Practical Review",
+      "Technique Practice & Principles",
+      "Diagnostic Criteria & Landmarks",
+      "General OPP Review"
     ]
   },
   "🩺 CE (Clinical Education)": {
     resources: [
-      "Bates' Guide to Physical Examination and History Taking",
-      "Clinical Education Syllabus & OSCE Rubrics",
-      "Physical Diagnosis Case Files",
-      "Doctor-Patient Communication & SOAP Notes"
+      "Physical Diagnosis / OSCE Prep",
+      "History Taking & SOAP Notes",
+      "Clinical Education Cases",
+      "Standardized Patient Practice"
     ]
   },
   "👥 PBL (Problem-Based Learning)": {
     resources: [
-      "PBL Case Learning Objectives",
-      "PBL Weekly Case Vignettes & Differentials",
-      "Clinical Case Wrap-Up & Pathophysiology"
+      "PBL Weekly Case Learning Objectives",
+      "PBL Differentials & Diagnostic Workup",
+      "Clinical Wrap-Up & Pathophysiology"
     ]
   },
   "🫀 Pathology": {
@@ -206,7 +206,6 @@ function initBiomeControls() {
   const buttons = document.querySelectorAll('.btn-biome');
   const viewport = document.getElementById('room-viewport');
 
-  // Set saved biome
   if (state.settings.currentBiome) {
     viewport.className = `room-viewport ${state.settings.currentBiome}`;
     buttons.forEach(b => {
@@ -287,18 +286,6 @@ function initNavigation() {
     setMelogMood('purr', "Purrr! Melog loves studying medical school with you! 🐾");
     playChime(587.33, 0.3);
   });
-
-  document.getElementById('prop-lamp').addEventListener('click', () => {
-    setMelogSpeech("Toggled desk lamp! 💡");
-  });
-
-  document.getElementById('prop-plant').addEventListener('click', () => {
-    setMelogSpeech("Leaves rustle peacefully in the breeze. 🪴");
-  });
-
-  document.getElementById('prop-window').addEventListener('click', () => {
-    setMelogSpeech("Looking out across the blocky mountain horizon. 🏔️");
-  });
 }
 
 // --- TIMER CORE ---
@@ -320,7 +307,7 @@ function startTimer() {
   document.getElementById('btn-timer-start').style.display = 'none';
   document.getElementById('btn-timer-pause').style.display = 'inline-block';
 
-  setMelogMood('studying', "Melog is resting quietly beside your notes. 📚");
+  setMelogMood('studying', "Melog is studying peacefully with you. 📚");
 
   state.timer.intervalId = setInterval(() => {
     if (state.timer.timeLeft > 0) {
@@ -448,12 +435,10 @@ function setMelogSpeech(msg) {
 
 function setMelogMood(mood, speech) {
   if (speech) setMelogSpeech(speech);
-  const wrapper = document.querySelector('.melog-vector');
   const eyesOpen = document.querySelector('.eyes-open');
   const eyesClosed = document.querySelector('.eyes-closed');
   const mouthCelebrate = document.getElementById('mouth-celebrate');
 
-  wrapper.classList.remove('celebrating');
   eyesOpen.style.display = 'block';
   eyesClosed.style.display = 'none';
   mouthCelebrate.style.display = 'none';
@@ -462,7 +447,6 @@ function setMelogMood(mood, speech) {
     eyesOpen.style.display = 'none';
     eyesClosed.style.display = 'block';
   } else if (mood === 'celebrating') {
-    wrapper.classList.add('celebrating');
     mouthCelebrate.style.display = 'block';
   }
 }
@@ -677,13 +661,13 @@ function initAmbientCanvas() {
   window.addEventListener('resize', resize);
   resize();
 
-  for (let i = 0; i < 28; i++) {
+  for (let i = 0; i < 24; i++) {
     particles.push({
       x: Math.random() * canvas.width,
       y: Math.random() * canvas.height,
-      radius: Math.random() * 4 + 2,
-      speedX: Math.random() * 1 - 0.2,
-      speedY: Math.random() * 0.8 + 0.3,
+      radius: Math.random() * 3.5 + 2,
+      speedX: Math.random() * 0.8 - 0.2,
+      speedY: Math.random() * 0.7 + 0.3,
       angle: Math.random() * Math.PI * 2
     });
   }
@@ -696,15 +680,14 @@ function initAmbientCanvas() {
       particles.forEach(p => {
         p.x += p.speedX;
         p.y += p.speedY;
-        p.angle += 0.02;
 
         if (p.y > canvas.height) p.y = -10;
         if (p.x > canvas.width) p.x = 0;
 
         ctx.beginPath();
-        if (season === 'spring') ctx.fillStyle = 'rgba(247, 196, 208, 0.45)';
-        else if (season === 'fall') ctx.fillStyle = 'rgba(232, 165, 120, 0.4)';
-        else ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+        if (season === 'spring') ctx.fillStyle = 'rgba(252, 182, 196, 0.5)';
+        else if (season === 'fall') ctx.fillStyle = 'rgba(235, 168, 122, 0.45)';
+        else ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
 
         ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
         ctx.fill();
