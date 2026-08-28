@@ -62,7 +62,6 @@
       overflow: hidden;
     }
 
-    /* 60 FPS Procedural Background */
     #pixel-bg-canvas {
       position: fixed;
       top: 0;
@@ -84,7 +83,7 @@
       padding: 0.75rem 1rem 5.5rem 1rem;
     }
 
-    /* Floating Glass Card */
+    /* Centerpiece Frosted Card */
     .pomofox-glass-card {
       width: 100%;
       background: var(--card-glass);
@@ -112,7 +111,6 @@
       gap: 0.85rem;
     }
 
-    /* Top Controls Row */
     .top-controls-bar {
       display: flex;
       gap: 0.65rem;
@@ -148,7 +146,6 @@
       box-shadow: 0 4px 0px var(--btn-dark-shadow);
     }
 
-    /* Subject & Task Selectors */
     .medical-select-wrap {
       width: 100%;
       display: flex;
@@ -177,7 +174,6 @@
       border-color: rgba(255, 255, 255, 0.12);
     }
 
-    /* Biome Bar */
     .biome-tag-bar {
       display: flex;
       gap: 0.35rem;
@@ -210,7 +206,7 @@
       color: #FFFFFF;
     }
 
-    /* Central Circle Wheel */
+    /* Enlarged Central Circle Wheel */
     .timer-circle-stage {
       position: relative;
       width: 300px;
@@ -270,7 +266,6 @@
       transition: transform 0.5s ease;
     }
 
-    /* Melog Sprite Box */
     .melog-sprite-box {
       position: absolute;
       top: -24px;
@@ -289,81 +284,72 @@
       shape-rendering: crispEdges;
     }
 
-    /* ================= NATURAL HOPPING & RUNNING PHYSICS (NO DETACHING) ================= */
-    /* Root Melog Hopping Body Cycle */
-    .timer-running .px-rig {
-      animation: melogHopMotion 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 8px 12px;
+    /* ================= SEAMLESS PIXEL TROT (ZERO LEG DETACHMENT) ================= */
+    .timer-running .px-cat-master {
+      animation: catHopBounding 0.52s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 8px 11px;
     }
 
-    /* Natural Leg Rotations (Anchored firmly at the hip and shoulder joints) */
     .timer-running .px-leg-fl {
-      animation: frontLeftStride 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 8px 9px;
+      animation: strideFrontLeft 0.52s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 8px 8px;
     }
     .timer-running .px-leg-fr {
-      animation: frontRightStride 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 8px 9px;
+      animation: strideFrontRight 0.52s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 8px 8px;
     }
     .timer-running .px-leg-bl {
-      animation: backLeftStride 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 4px 9px;
+      animation: strideBackLeft 0.52s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 4px 8px;
     }
     .timer-running .px-leg-br {
-      animation: backRightStride 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 4px 9px;
+      animation: strideBackRight 0.52s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      transform-origin: 4px 8px;
     }
 
-    /* Tail Bounce */
-    .timer-running .px-tail-group {
-      animation: melogTailWave 0.54s infinite ease-in-out;
+    .timer-running .px-tail {
+      animation: tailSwayPhysics 0.52s infinite ease-in-out;
       transform-origin: 3px 6px;
     }
 
-    /* Body Compression & Stretch during hops */
-    @keyframes melogHopMotion {
+    @keyframes catHopBounding {
       0% { transform: translateY(0) rotate(0deg); }
-      20% { transform: translateY(-3.5px) rotate(4deg); } /* Upward bound */
-      45% { transform: translateY(-4.5px) rotate(1deg); } /* Apex of the jump */
-      70% { transform: translateY(-1px) rotate(-3deg); } /* Paws descending */
-      85% { transform: translateY(0.5px) scaleY(0.95); } /* Soft ground contact cushion */
+      22% { transform: translateY(-3.5px) rotate(4deg); }
+      48% { transform: translateY(-4.2px) rotate(1deg); }
+      75% { transform: translateY(-1px) rotate(-3deg); }
+      88% { transform: translateY(0.4px) scaleY(0.96); }
       100% { transform: translateY(0) rotate(0deg); }
     }
 
-    /* Front Limbs Gait */
-    @keyframes frontLeftStride {
-      0% { transform: rotate(-18deg); }
-      35% { transform: rotate(26deg); }
-      65% { transform: rotate(-8deg); }
-      100% { transform: rotate(-18deg); }
-    }
-    @keyframes frontRightStride {
-      0% { transform: rotate(24deg); }
-      35% { transform: rotate(-16deg); }
-      65% { transform: rotate(14deg); }
-      100% { transform: rotate(24deg); }
-    }
-
-    /* Back Limbs Gait */
-    @keyframes backLeftStride {
-      0% { transform: rotate(22deg); }
-      35% { transform: rotate(-18deg); }
-      65% { transform: rotate(10deg); }
-      100% { transform: rotate(22deg); }
-    }
-    @keyframes backRightStride {
+    @keyframes strideFrontLeft {
       0% { transform: rotate(-16deg); }
       35% { transform: rotate(24deg); }
-      65% { transform: rotate(-6deg); }
+      70% { transform: rotate(-6deg); }
       100% { transform: rotate(-16deg); }
     }
-
-    /* Tail Natural Resonance */
-    @keyframes melogTailWave {
-      0% { transform: rotate(-4deg); }
-      40% { transform: rotate(14deg); }
-      75% { transform: rotate(-1deg); }
-      100% { transform: rotate(-4deg); }
+    @keyframes strideFrontRight {
+      0% { transform: rotate(22deg); }
+      35% { transform: rotate(-14deg); }
+      70% { transform: rotate(12deg); }
+      100% { transform: rotate(22deg); }
+    }
+    @keyframes strideBackLeft {
+      0% { transform: rotate(20deg); }
+      35% { transform: rotate(-16deg); }
+      70% { transform: rotate(8deg); }
+      100% { transform: rotate(20deg); }
+    }
+    @keyframes strideBackRight {
+      0% { transform: rotate(-14deg); }
+      35% { transform: rotate(22deg); }
+      70% { transform: rotate(-4deg); }
+      100% { transform: rotate(-14deg); }
+    }
+    @keyframes tailSwayPhysics {
+      0% { transform: rotate(-3deg); }
+      45% { transform: rotate(15deg); }
+      80% { transform: rotate(-1deg); }
+      100% { transform: rotate(-3deg); }
     }
 
     /* Bottom Cycle Pill */
@@ -403,7 +389,6 @@
 
     .tomato-dot.active { background: #EAA064; }
 
-    /* Other Views */
     .section-heading {
       font-size: 1.15rem;
       margin-bottom: 0.4rem;
@@ -548,7 +533,6 @@
       border-color: rgba(255, 255, 255, 0.1);
     }
 
-    /* Fixed Bottom Dock Navigation */
     .pf-bottom-dock {
       position: fixed;
       bottom: 1rem;
@@ -599,18 +583,14 @@
   </style>
 </head>
 <body>
-  <!-- 60 FPS Procedural Pixel Canvas Background -->
   <canvas id="pixel-bg-canvas"></canvas>
 
   <div class="app-shell">
-    
-    <!-- Floating Glass Center Card -->
     <main class="pomofox-glass-card">
       
       <!-- ================= TAB 1: TIMER ================= -->
       <section id="tab-timer" class="view-panel active">
         
-        <!-- Top Controls Row -->
         <div class="top-controls-bar">
           <button type="button" class="pf-btn-icon btn-orange" id="btn-timer-toggle" title="Start / Pause">▶</button>
           <button type="button" class="pf-btn-icon btn-dark" id="btn-timer-reset" title="Reset Timer">🔄</button>
@@ -618,60 +598,60 @@
           <button type="button" class="pf-btn-icon btn-dark" id="btn-theme-toggle" title="Dark Mode Toggle">🌙</button>
         </div>
 
-        <!-- Biome Selector -->
+        <!-- 4 Distinct Biomes -->
         <div class="biome-tag-bar">
           <button type="button" class="biome-btn active" data-biome="sakura">🌸 Sakura</button>
           <button type="button" class="biome-btn" data-biome="taiga">🌲 Firefly</button>
-          <button type="button" class="biome-btn" data-biome="aurora">🏔️ Aurora</button>
-          <button type="button" class="biome-btn" data-biome="twilight">🌅 Twilight</button>
+          <button type="button" class="biome-btn" data-biome="mountain">🏔️ Snow</button>
+          <button type="button" class="biome-btn" data-biome="autumn">🍂 Fall</button>
         </div>
 
-        <!-- Medical Subject Dropdown -->
         <div class="medical-select-wrap">
           <select id="sel-subject" class="med-select"></select>
           <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
         </div>
 
-        <!-- Enlarged Wheel Timer Stage with Melog on Track -->
+        <!-- Timer Circle Stage -->
         <div class="timer-circle-stage">
           <svg class="circle-svg" viewBox="0 0 300 300">
             <circle cx="150" cy="150" r="138" class="circle-bg-ring" />
             <circle cx="150" cy="150" r="138" class="circle-progress-ring" id="circle-progress-ring" />
           </svg>
 
-          <!-- Countdown Digits -->
           <div class="timer-digits-text" id="timer-readout">25:00</div>
 
-          <!-- Orbit Arm Carrying Pixel Melog Around the Circle Track -->
+          <!-- Orbit Arm -->
           <div class="orbit-arm" id="orbit-arm">
             <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
               
-              <!-- 100% PURE 16x16 PIXEL RIG (SEAMLESS JOINTS) -->
+              <!-- 100% PURE 16x16 PIXEL ART WITH FUSED ROTATION ANCHORS -->
               <svg viewBox="0 0 16 16" class="pixel-melog-svg">
-                <g class="px-rig">
+                <g class="px-cat-master">
                   
                   <!-- Tail -->
-                  <g class="px-tail-group">
+                  <g class="px-tail">
                     <rect x="0" y="3" width="2" height="2" fill="#FFFFFF" />
                     <rect x="1" y="4" width="2" height="2" fill="#F4C28D" />
                     <rect x="2" y="5" width="2" height="2" fill="#D9965B" />
                     <rect x="3" y="6" width="2" height="2" fill="#2C1E16" />
                   </g>
 
-                  <!-- Back Left Leg (Anchored at 4, 9) -->
+                  <!-- Back Left Leg (Pivot: 4, 8) -->
                   <g class="px-leg-bl">
-                    <rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" />
-                    <rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" />
+                    <rect x="3" y="7" width="2" height="2" fill="#D9965B" />
+                    <rect x="3" y="9" width="2" height="3" fill="#D9965B" />
+                    <rect x="2.5" y="11" width="2.5" height="1" fill="#2C1E16" />
                   </g>
 
-                  <!-- Front Left Leg (Anchored at 8, 9) -->
+                  <!-- Front Left Leg (Pivot: 8, 8) -->
                   <g class="px-leg-fl">
-                    <rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" />
-                    <rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" />
+                    <rect x="7" y="7" width="2" height="2" fill="#D9965B" />
+                    <rect x="7" y="9" width="2" height="3" fill="#D9965B" />
+                    <rect x="6.5" y="11" width="2.5" height="1" fill="#2C1E16" />
                   </g>
 
-                  <!-- Main Torso Block -->
-                  <g class="px-body-group">
+                  <!-- Fused Main Torso Grid -->
+                  <g class="px-torso">
                     <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
                     <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
                     <rect x="10" y="7" width="1" height="3" fill="#2C1E16" />
@@ -680,24 +660,26 @@
                     <rect x="3" y="7" width="5" height="3" fill="#F4C28D" />
                     <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
                     
-                    <!-- White Bib -->
+                    <!-- Solid Ivory Chest Bib -->
                     <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
                   </g>
 
-                  <!-- Back Right Leg (Anchored at 4, 9) -->
+                  <!-- Back Right Leg (Pivot: 4, 8) -->
                   <g class="px-leg-br">
-                    <rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" />
-                    <rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" />
+                    <rect x="4" y="7" width="2" height="2" fill="#F4C28D" />
+                    <rect x="4" y="9" width="2" height="3" fill="#F4C28D" />
+                    <rect x="3.5" y="11" width="2.5" height="1" fill="#2C1E16" />
                   </g>
 
-                  <!-- Front Right Leg (Anchored at 8, 9) -->
+                  <!-- Front Right Leg (Pivot: 8, 8) -->
                   <g class="px-leg-fr">
-                    <rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" />
-                    <rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" />
+                    <rect x="8" y="7" width="2" height="2" fill="#F4C28D" />
+                    <rect x="8" y="9" width="2" height="3" fill="#F4C28D" />
+                    <rect x="7.5" y="11" width="2.5" height="1" fill="#2C1E16" />
                   </g>
 
                   <!-- Head & Feline Ears -->
-                  <g class="px-head-group">
+                  <g class="px-head">
                     <rect x="7" y="1" width="2" height="1" fill="#2C1E16" />
                     <rect x="7" y="2" width="2" height="2" fill="#F4C28D" />
                     <rect x="8" y="2" width="1" height="1" fill="#FCAEBA" />
@@ -727,7 +709,7 @@
           </div>
         </div>
 
-        <!-- Bottom Cycle Tracker -->
+        <!-- Cycle Tracker -->
         <div class="bottom-cycle-pill">
           <span>cycle: <strong id="val-cycle-count">1</strong></span>
           <div class="tomatoes-row">
@@ -861,7 +843,7 @@
 
   <script>
     /* -------------------------------------------------------------
-       PURRMODORO - Seamless Pixel Rig & 60 FPS Canvas Engine
+       PURRMODORO - Dedicated Pixel Landscape Engine & Rig
        ------------------------------------------------------------- */
     const MEDICAL_SUBJECTS = [
       "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -924,11 +906,11 @@
     }
 
     function saveState() {
-      localStorage.setItem('purrmodoro_pf_seamless_rig', JSON.stringify(state));
+      localStorage.setItem('purrmodoro_pf_master_v3', JSON.stringify(state));
     }
 
     function loadState() {
-      const raw = localStorage.getItem('purrmodoro_pf_seamless_rig');
+      const raw = localStorage.getItem('purrmodoro_pf_master_v3');
       if (raw) {
         try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
       }
@@ -1137,7 +1119,6 @@
         ringFill.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - progress);
       }
 
-      // Smooth circular tracking
       const orbitArm = document.getElementById('orbit-arm');
       if (orbitArm) {
         orbitArm.style.transform = `rotate(${progress * 360}deg)`;
@@ -1263,12 +1244,15 @@
       }
     }
 
-    /* 60 FPS Procedural Biome Canvas */
+    /* -------------------------------------------------------------
+       4 TRULY UNIQUE PROCEDURAL PIXEL BIOME ENGINE
+       ------------------------------------------------------------- */
     function initCanvas() {
       const canvas = document.getElementById('pixel-bg-canvas');
       if (!canvas) return;
       const ctx = canvas.getContext('2d');
       let w, h;
+      let tick = 0;
 
       const resize = () => {
         w = canvas.width = window.innerWidth;
@@ -1277,102 +1261,219 @@
       window.addEventListener('resize', resize);
       resize();
 
-      let particles = Array.from({ length: 32 }, () => ({
+      // Dynamic Particle Pools for Biomes
+      let particles = Array.from({ length: 45 }, () => ({
         x: Math.random() * window.innerWidth,
         y: Math.random() * window.innerHeight,
         size: Math.random() * 3 + 2,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: Math.random() * 0.4 + 0.2
+        vx: (Math.random() - 0.5) * 0.8,
+        vy: Math.random() * 0.6 + 0.4,
+        pulse: Math.random() * Math.PI * 2,
+        rot: Math.random() * Math.PI
       }));
 
-      function drawPixelPineTree(x, y, scale, dark) {
-        ctx.fillStyle = dark ? '#15241C' : '#3E271E';
-        ctx.fillRect(x, y, 6 * scale, 32 * scale);
-
-        const pineDark = dark ? '#0E291C' : '#1C4A32';
-        const pineLight = dark ? '#1A4230' : '#2D6B48';
+      // 🌸 Sakura Swaying Tree
+      function drawSwayingSakura(x, y, scale, sway) {
+        ctx.fillStyle = '#4A2A20';
+        ctx.fillRect(x, y, 8 * scale, 34 * scale); // Trunk
+        
+        // Swaying Pixel Canopy
+        const blossomDark = '#E58A9F';
+        const blossomLight = '#FFB5C5';
+        const shift = Math.sin(sway) * 4 * scale;
 
         for (let i = 0; i < 4; i++) {
-          let tierW = (28 - i * 5) * scale;
-          let tierH = 9 * scale;
-          let tierY = y - i * 8 * scale - 4 * scale;
-          ctx.fillStyle = pineDark;
-          ctx.fillRect(x - tierW / 2 + 3 * scale, tierY, tierW, tierH);
-          ctx.fillStyle = pineLight;
-          ctx.fillRect(x - tierW / 2 + 5 * scale, tierY, tierW - 4 * scale, 3 * scale);
+          let bW = (32 - i * 6) * scale;
+          let bH = 12 * scale;
+          let bY = y - i * 8 * scale - 6 * scale;
+          let bX = x - bW / 2 + 4 * scale + shift * (i * 0.3);
+          ctx.fillStyle = blossomDark;
+          ctx.fillRect(bX, bY, bW, bH);
+          ctx.fillStyle = blossomLight;
+          ctx.fillRect(bX + 2 * scale, bY + 2 * scale, bW - 4 * scale, bH - 4 * scale);
         }
       }
 
-      function drawPixelCloud(x, y, width, height, alpha) {
-        ctx.fillStyle = `rgba(255, 255, 255, ${alpha})`;
-        ctx.fillRect(x, y, width, height);
-        ctx.fillRect(x + 12, y - 8, width - 24, 8);
-        ctx.fillRect(x + 24, y - 14, width - 48, 6);
+      // 🌲 Pine Evergreen Tree
+      function drawPineTree(x, y, scale, dark) {
+        ctx.fillStyle = dark ? '#16231A' : '#3D251D';
+        ctx.fillRect(x, y, 6 * scale, 32 * scale);
+
+        const pineDark = dark ? '#0E281C' : '#1C4931';
+        const pineLight = dark ? '#183D2D' : '#2D6B48';
+
+        for (let i = 0; i < 4; i++) {
+          let tW = (28 - i * 5) * scale;
+          let tH = 9 * scale;
+          let tY = y - i * 8 * scale - 4 * scale;
+          ctx.fillStyle = pineDark;
+          ctx.fillRect(x - tW / 2 + 3 * scale, tY, tW, tH);
+          ctx.fillStyle = pineLight;
+          ctx.fillRect(x - tW / 2 + 5 * scale, tY, tW - 4 * scale, 3 * scale);
+        }
       }
 
-      function renderScenery() {
+      // 🏔️ Snow-Capped Mountain Peak
+      function drawSnowPeak(x, y, width, height) {
+        ctx.fillStyle = '#3E506B';
+        ctx.beginPath();
+        ctx.moveTo(x, y);
+        ctx.lineTo(x + width / 2, y - height);
+        ctx.lineTo(x + width, y);
+        ctx.fill();
+
+        // Pixel Snow Cap
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.moveTo(x + width * 0.35, y - height * 0.5);
+        ctx.lineTo(x + width / 2, y - height);
+        ctx.lineTo(x + width * 0.65, y - height * 0.5);
+        ctx.lineTo(x + width * 0.5, y - height * 0.4);
+        ctx.fill();
+      }
+
+      // 🍂 Autumn Maple Tree
+      function drawAutumnMaple(x, y, scale, sway) {
+        ctx.fillStyle = '#362217';
+        ctx.fillRect(x, y, 7 * scale, 32 * scale);
+
+        const mapleAmber = '#D95D22';
+        const mapleGold = '#F4A228';
+        const shift = Math.sin(sway) * 3 * scale;
+
+        for (let i = 0; i < 4; i++) {
+          let mW = (30 - i * 5) * scale;
+          let mH = 10 * scale;
+          let mY = y - i * 8 * scale - 5 * scale;
+          let mX = x - mW / 2 + 3.5 * scale + shift * (i * 0.35);
+          ctx.fillStyle = mapleAmber;
+          ctx.fillRect(mX, mY, mW, mH);
+          ctx.fillStyle = mapleGold;
+          ctx.fillRect(mX + 3 * scale, mY + 2 * scale, mW - 6 * scale, mH - 4 * scale);
+        }
+      }
+
+      function renderFrame() {
         ctx.clearRect(0, 0, w, h);
+        tick += 0.025;
         const dark = state.settings.darkMode;
         const biome = state.settings.currentBiome;
 
-        let sky = ctx.createLinearGradient(0, 0, 0, h);
-        if (dark) {
-          sky.addColorStop(0, '#0B101B');
-          sky.addColorStop(0.65, '#172236');
-          sky.addColorStop(1, '#233852');
-        } else if (biome === 'sakura') {
-          sky.addColorStop(0, '#FEE5ED');
-          sky.addColorStop(0.6, '#F8CAD9');
-          sky.addColorStop(1, '#D8EAE4');
-        } else if (biome === 'taiga') {
-          sky.addColorStop(0, '#98C9DC');
-          sky.addColorStop(0.6, '#BCE0EC');
-          sky.addColorStop(1, '#DCEEF4');
-        } else if (biome === 'aurora') {
-          sky.addColorStop(0, '#0C182A');
-          sky.addColorStop(0.6, '#183656');
-          sky.addColorStop(1, '#285573');
-        } else {
-          sky.addColorStop(0, '#FBC3A8');
-          sky.addColorStop(0.55, '#F8A897');
-          sky.addColorStop(1, '#F39288');
-        }
-        ctx.fillStyle = sky;
-        ctx.fillRect(0, 0, w, h);
+        // ================= BIOME 1: 🌸 SAKURA BLOSSOM VALLEY =================
+        if (biome === 'sakura') {
+          let sky = ctx.createLinearGradient(0, 0, 0, h);
+          sky.addColorStop(0, dark ? '#100D1A' : '#FDE8EE');
+          sky.addColorStop(0.55, dark ? '#22162B' : '#F9D1DE');
+          sky.addColorStop(1, dark ? '#341A38' : '#E8EEEC');
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, w, h);
 
-        drawPixelCloud(w * 0.08, h * 0.12, 110, 24, dark ? 0.2 : 0.65);
-        drawPixelCloud(w * 0.68, h * 0.08, 140, 28, dark ? 0.2 : 0.75);
+          // Rolling Hill Silhouette
+          ctx.fillStyle = dark ? '#1A1426' : '#E0B5C6';
+          ctx.beginPath();
+          ctx.arc(w * 0.25, h * 0.8, w * 0.45, 0, Math.PI * 2);
+          ctx.arc(w * 0.8, h * 0.85, w * 0.5, 0, Math.PI * 2);
+          ctx.fill();
 
-        ctx.fillStyle = dark ? '#0E1724' : biome === 'sakura' ? '#D49CB3' : '#6A92AF';
-        ctx.beginPath();
-        ctx.moveTo(0, h * 0.48);
-        for (let x = 0; x <= w; x += 36) {
-          let my = h * 0.48 - ((x % 144 === 0) ? 90 : (x % 72 === 0) ? 50 : 20);
-          ctx.lineTo(x, my);
-          ctx.lineTo(x + 36, my);
-        }
-        ctx.lineTo(w, h);
-        ctx.lineTo(0, h);
-        ctx.fill();
+          // Swaying Sakura Trees
+          drawSwayingSakura(w * 0.12, h * 0.65, 1.4, tick);
+          drawSwayingSakura(w * 0.82, h * 0.68, 1.35, tick + 1);
 
-        for (let x = -10; x < w * 0.32; x += 28) {
-          drawPixelPineTree(x, h * 0.64 + (Math.abs(x) % 3) * 10, 1.35, dark);
-        }
-        for (let x = w * 0.68; x < w + 20; x += 28) {
-          drawPixelPineTree(x, h * 0.64 + (Math.abs(x) % 3) * 10, 1.35, dark);
+          // Drifting Sakura Petals
+          particles.forEach(p => {
+            p.x += Math.cos(tick + p.pulse) * 0.7 + 0.8;
+            p.y += p.vy * 0.85;
+            if (p.y > h) { p.y = -10; p.x = Math.random() * w; }
+            if (p.x > w) p.x = 0;
+            ctx.fillStyle = dark ? 'rgba(255, 175, 200, 0.55)' : 'rgba(235, 125, 160, 0.75)';
+            ctx.fillRect(p.x, p.y, p.size, p.size * 0.8);
+          });
         }
 
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.y > h) { p.y = -10; p.x = Math.random() * w; }
-          ctx.fillStyle = dark ? 'rgba(255,255,255,0.45)' : biome === 'sakura' ? 'rgba(255,160,180,0.5)' : 'rgba(255,255,255,0.65)';
-          ctx.fillRect(p.x, p.y, p.size, p.size);
-        });
+        // ================= BIOME 2: 🌲 TAIGA FIREFLY FOREST =================
+        else if (biome === 'taiga') {
+          let sky = ctx.createLinearGradient(0, 0, 0, h);
+          sky.addColorStop(0, dark ? '#080E14' : '#8CBCCE');
+          sky.addColorStop(0.65, dark ? '#102220' : '#B8D8E4');
+          sky.addColorStop(1, dark ? '#183830' : '#DBEEF4');
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, w, h);
 
-        requestAnimationFrame(renderScenery);
+          // Deep Pine Layers
+          for (let x = -20; x < w * 0.35; x += 32) {
+            drawPineTree(x, h * 0.64 + (Math.abs(x) % 3) * 12, 1.4, dark);
+          }
+          for (let x = w * 0.65; x < w + 20; x += 32) {
+            drawPineTree(x, h * 0.64 + (Math.abs(x) % 3) * 12, 1.4, dark);
+          }
+
+          // Glowing Hovering Fireflies
+          particles.forEach(p => {
+            p.x += Math.sin(tick * 1.5 + p.pulse) * 0.8;
+            p.y += Math.cos(tick * 1.2 + p.pulse) * 0.6;
+            let glow = 0.5 + Math.sin(tick * 3 + p.pulse) * 0.45;
+            ctx.fillStyle = `rgba(160, 245, 140, ${glow})`;
+            ctx.fillRect(p.x, p.y, p.size * 1.2, p.size * 1.2);
+          });
+        }
+
+        // ================= BIOME 3: 🏔️ ALPINE SNOW MOUNTAINS =================
+        else if (biome === 'mountain') {
+          let sky = ctx.createLinearGradient(0, 0, 0, h);
+          sky.addColorStop(0, dark ? '#0A1220' : '#6898B8');
+          sky.addColorStop(0.6, dark ? '#162842' : '#9DC2DA');
+          sky.addColorStop(1, dark ? '#264264' : '#D6EAF5');
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, w, h);
+
+          // Giant Snow Peaks
+          drawSnowPeak(w * 0.05, h * 0.6, 220, 140);
+          drawSnowPeak(w * 0.45, h * 0.62, 280, 170);
+
+          // Heavy Pixel Snowstorm
+          particles.forEach(p => {
+            p.x += (p.vx - 1.2);
+            p.y += p.vy * 1.6;
+            if (p.y > h) { p.y = -10; p.x = Math.random() * w + 50; }
+            if (p.x < 0) p.x = w;
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(p.x, p.y, p.size, p.size);
+          });
+        }
+
+        // ================= BIOME 4: 🍂 AUTUMN SUNSET RIDGE =================
+        else {
+          let sky = ctx.createLinearGradient(0, 0, 0, h);
+          sky.addColorStop(0, dark ? '#1A0C16' : '#F6A882');
+          sky.addColorStop(0.55, dark ? '#2D1620' : '#F78D74');
+          sky.addColorStop(1, dark ? '#452026' : '#EE6E60');
+          ctx.fillStyle = sky;
+          ctx.fillRect(0, 0, w, h);
+
+          // Golden Autumn Foothills
+          ctx.fillStyle = dark ? '#241416' : '#BD5838';
+          ctx.beginPath();
+          ctx.arc(w * 0.2, h * 0.85, w * 0.45, 0, Math.PI * 2);
+          ctx.arc(w * 0.75, h * 0.88, w * 0.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Amber Maple Trees
+          drawAutumnMaple(w * 0.1, h * 0.65, 1.4, tick);
+          drawAutumnMaple(w * 0.84, h * 0.68, 1.35, tick + 1.5);
+
+          // Tumbling Autumn Leaves
+          particles.forEach(p => {
+            p.x += Math.sin(tick + p.pulse) * 1.1 + 0.6;
+            p.y += p.vy * 0.95;
+            if (p.y > h) { p.y = -10; p.x = Math.random() * w; }
+            ctx.fillStyle = (Math.floor(p.pulse) % 2 === 0) ? '#D9521E' : '#F2A426';
+            ctx.fillRect(p.x, p.y, p.size, p.size * 0.7);
+          });
+        }
+
+        requestAnimationFrame(renderFrame);
       }
-      renderScenery();
+      renderFrame();
     }
 
     function playTone(freq, dur) {
