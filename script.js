@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Complete Engine & Supabase Sync
+   PURRMODORO - High-End 16-Bit Pixel Engine & Parallax Backgrounds
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -62,14 +62,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_final_v8', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v9', JSON.stringify(state));
   if (state.settings.supaUrl && state.settings.supaKey) {
     syncWithSupabase();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_final_v8');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v9');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -146,19 +146,6 @@ function initUI() {
   if (melogSprite) {
     melogSprite.addEventListener('click', () => {
       playTone(587.33, 0.3);
-    });
-  }
-
-  const settingsForm = document.getElementById('settings-form');
-  if (settingsForm) {
-    settingsForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      state.settings.studyMin = parseInt(document.getElementById('cfg-study-min').value, 10);
-      state.settings.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10);
-      state.settings.longMin = parseInt(document.getElementById('cfg-long-min').value, 10);
-      saveState();
-      alert('Settings saved! 🩺');
-      document.querySelector('.pf-dock-btn[data-tab="tab-timer"]').click();
     });
   }
 
@@ -471,11 +458,13 @@ async function syncWithSupabase() {
   }
 }
 
+/* 60 FPS High-Definition Pixel Art Landscape Engine matching Official PomoFox Game Scenes */
 function initCanvas() {
   const canvas = document.getElementById('pixel-bg-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
   let w, h;
+  let cloudOffset = 0;
 
   const resize = () => {
     w = canvas.width = window.innerWidth;
@@ -484,7 +473,7 @@ function initCanvas() {
   window.addEventListener('resize', resize);
   resize();
 
-  let particles = Array.from({ length: 30 }, () => ({
+  let particles = Array.from({ length: 35 }, () => ({
     x: Math.random() * window.innerWidth,
     y: Math.random() * window.innerHeight,
     size: Math.random() * 3 + 2,
@@ -492,131 +481,138 @@ function initCanvas() {
     vy: Math.random() * 0.4 + 0.2
   }));
 
-  function drawDetailedPine(x, y, scale, dark) {
-    ctx.fillStyle = dark ? '#112218' : '#321D16';
-    ctx.fillRect(x, y, 6 * scale, 42 * scale);
-
-    const pDark = dark ? '#0E291C' : '#234731';
-    const pMed = dark ? '#153A26' : '#316345';
-    const pLight = dark ? '#1D4F35' : '#45855B';
-
-    for (let i = 0; i < 5; i++) {
-      let tw = (32 - i * 5) * scale;
+  function drawPixelForestCanopy(x, y, scale, dark) {
+    ctx.fillStyle = dark ? '#0F1E16' : '#28442E';
+    ctx.fillRect(x, y, 8 * scale, 50 * scale);
+    
+    // Detailed layered pixel pine clusters matching official game art
+    const c1 = dark ? '#0B1710' : '#1B3422';
+    const c2 = dark ? '#132C1F' : '#335C3E';
+    
+    for (let i = 0; i < 6; i++) {
+      let tw = (36 - i * 5) * scale;
       let th = 8 * scale;
-      let ty = y - i * 7 * scale - 4 * scale;
-      ctx.fillStyle = pDark;
-      ctx.fillRect(x - tw / 2 + 3 * scale, ty, tw, th);
-      ctx.fillStyle = pMed;
-      ctx.fillRect(x - tw / 2 + 5 * scale, ty, tw - 4 * scale, th - 3 * scale);
-      ctx.fillStyle = pLight;
-      ctx.fillRect(x - tw / 2 + 8 * scale, ty, tw - 10 * scale, 2 * scale);
+      let ty = y - i * 7 * scale - 2 * scale;
+      ctx.fillStyle = c1;
+      ctx.fillRect(x - tw / 2 + 4 * scale, ty, tw, th);
+      ctx.fillStyle = c2;
+      ctx.fillRect(x - tw / 2 + 7 * scale, ty, tw - 6 * scale, 3 * scale);
     }
   }
 
-  function drawDetailedMountain(x, y, width, height, dark) {
-    ctx.fillStyle = dark ? '#182C48' : '#6A92AF';
+  function drawMajesticMountain(x, y, width, height, dark) {
+    // Rocky Cliff Face
+    ctx.fillStyle = dark ? '#142236' : '#587D9E';
     ctx.beginPath();
     ctx.moveTo(x, y);
     ctx.lineTo(x + width / 2, y - height);
     ctx.lineTo(x + width, y);
     ctx.fill();
 
-    ctx.fillStyle = dark ? '#243D60' : '#88AFD2';
+    // Crevice shadow shading
+    ctx.fillStyle = dark ? '#1C3150' : '#7298B8';
     ctx.beginPath();
-    ctx.moveTo(x + width * 0.3, y - height * 0.6);
+    ctx.moveTo(x + width * 0.32, y - height * 0.55);
     ctx.lineTo(x + width / 2, y - height);
-    ctx.lineTo(x + width * 0.45, y);
+    ctx.lineTo(x + width * 0.48, y);
     ctx.fill();
 
+    // Authentic jagged pixel snow cap
     ctx.fillStyle = '#FFFFFF';
     ctx.beginPath();
-    ctx.moveTo(x + width * 0.38, y - height * 0.62);
+    ctx.moveTo(x + width * 0.36, y - height * 0.62);
     ctx.lineTo(x + width / 2, y - height);
-    ctx.lineTo(x + width * 0.62, y - height * 0.62);
-    ctx.lineTo(x + width * 0.5, y - height * 0.48);
+    ctx.lineTo(x + width * 0.64, y - height * 0.62);
+    ctx.lineTo(x + width * 0.5, y - height * 0.46);
     ctx.fill();
   }
 
-  function drawSunsetCloud(x, y, w_val, h_val) {
-    ctx.fillStyle = '#F8AD9D';
-    ctx.fillRect(x, y, w_val, h_val);
-    ctx.fillStyle = '#FBC4AB';
-    ctx.fillRect(x + 10, y - 8, w_val - 20, 10);
-    ctx.fillStyle = '#FFE5D9';
-    ctx.fillRect(x + 25, y - 14, w_val - 50, 8);
+  function drawVolumetricCloud(x, y, cw, ch) {
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+    ctx.fillRect(x, y, cw, ch);
+    ctx.fillRect(x + 16, y - 10, cw - 32, 12);
+    ctx.fillRect(x + 32, y - 20, cw - 64, 10);
   }
 
   function renderScenery() {
     ctx.clearRect(0, 0, w, h);
     const dark = state.settings.darkMode;
     const biome = state.settings.currentBiome;
+    cloudOffset += 0.2;
+    if (cloudOffset > w) cloudOffset = 0;
 
+    // 1. High-Definition 16-Bit Sky Gradients
     let sky = ctx.createLinearGradient(0, 0, 0, h);
     if (dark) {
-      sky.addColorStop(0, '#0B101B');
-      sky.addColorStop(0.65, '#172236');
-      sky.addColorStop(1, '#233852');
+      sky.addColorStop(0, '#090D14');
+      sky.addColorStop(0.65, '#141D2E');
+      sky.addColorStop(1, '#1E2D44');
     } else if (biome === 'forest') {
-      sky.addColorStop(0, '#5899C5');
-      sky.addColorStop(0.55, '#89BFE0');
-      sky.addColorStop(1, '#C2E3F1');
+      sky.addColorStop(0, '#4688B8');
+      sky.addColorStop(0.55, '#7CB3D8');
+      sky.addColorStop(1, '#B5DCEB');
     } else if (biome === 'mountain') {
-      sky.addColorStop(0, '#3A74B3');
-      sky.addColorStop(0.6, '#649ACF');
-      sky.addColorStop(1, '#B3D4EE');
+      sky.addColorStop(0, '#295E9A');
+      sky.addColorStop(0.6, '#5283B7');
+      sky.addColorStop(1, '#A4CBE6');
     } else if (biome === 'sunset') {
-      sky.addColorStop(0, '#3F376B');
-      sky.addColorStop(0.5, '#735E8E');
-      sky.addColorStop(1, '#D8A4BE');
+      sky.addColorStop(0, '#322C5C');
+      sky.addColorStop(0.5, '#685182');
+      sky.addColorStop(1, '#C98EA7');
     } else {
-      sky.addColorStop(0, '#FEE5ED');
-      sky.addColorStop(0.6, '#F8CAD9');
-      sky.addColorStop(1, '#D8EAE4');
+      sky.addColorStop(0, '#FCDCE6');
+      sky.addColorStop(0.6, '#F3B8CD');
+      sky.addColorStop(1, '#CDE2DC');
     }
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
+    // 2. Distinct Biome Environments
     if (biome === 'forest') {
-      drawSunsetCloud(w * 0.05, h * 0.08, 140, 26, dark ? 0.2 : 0.85);
-      drawSunsetCloud(w * 0.55, h * 0.05, 180, 32, dark ? 0.2 : 0.9);
+      // Drifting clouds
+      drawVolumetricCloud((w * 0.05 + cloudOffset) % (w + 200) - 100, h * 0.12, 160, 30);
+      drawVolumetricCloud((w * 0.55 + cloudOffset * 0.8) % (w + 220) - 110, h * 0.06, 200, 36);
 
-      ctx.fillStyle = '#8AB07A';
-      ctx.fillRect(0, h * 0.38, w, 70);
-      ctx.fillStyle = '#5A8850';
-      ctx.fillRect(0, h * 0.44, w, 60);
+      // Mid-ground rolling pine hills
+      ctx.fillStyle = dark ? '#10221A' : '#4E7A53';
+      ctx.fillRect(0, h * 0.42, w, 80);
 
-      for (let x = -15; x < w * 0.38; x += 24) {
-        drawDetailedPine(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.45, dark);
+      // Foreground crisp pixel pine forest (matching official art)
+      for (let x = -20; x < w * 0.38; x += 28) {
+        drawPixelForestCanopy(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.5, dark);
       }
-      for (let x = w * 0.62; x < w + 20; x += 24) {
-        drawDetailedPine(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.45, dark);
+      for (let x = w * 0.62; x < w + 30; x += 28) {
+        drawPixelForestCanopy(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.5, dark);
       }
     } 
     else if (biome === 'mountain') {
-      drawDetailedMountain(w * 0.15, h * 0.62, 340, 220, dark);
-
-      ctx.fillStyle = 'rgba(255,255,255,0.75)';
-      ctx.fillRect(0, h * 0.58, w, 35);
+      drawMajesticMountain(w * 0.1, h * 0.64, 380, 250, dark);
+      
+      // Low mountain mist bank
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+      ctx.fillRect(0, h * 0.6, w, 40);
     }
     else if (biome === 'sunset') {
-      drawSunsetCloud(w * 0.1, h * 0.2, 220, 60);
-      drawSunsetCloud(w * 0.45, h * 0.45, 260, 70);
+      drawVolumetricCloud((w * 0.1 + cloudOffset * 0.9) % (w + 240) - 120, h * 0.22, 240, 50);
+      drawVolumetricCloud((w * 0.45 + cloudOffset * 0.7) % (w + 260) - 130, h * 0.45, 280, 55);
 
-      ctx.fillStyle = '#2C1E2B';
-      ctx.fillRect(0, h * 0.72, w, h * 0.3);
+      ctx.fillStyle = dark ? '#1E1420' : '#4A2A38';
+      ctx.fillRect(0, h * 0.74, w, h * 0.3);
     }
     else {
-      ctx.fillStyle = dark ? '#1A1426' : '#E0B5C6';
+      // Sakura
+      ctx.fillStyle = dark ? '#1A1426' : '#D49CB3';
       ctx.beginPath();
-      ctx.arc(w * 0.3, h * 0.75, w * 0.5, 0, Math.PI * 2);
+      ctx.arc(w * 0.3, h * 0.78, w * 0.5, 0, Math.PI * 2);
       ctx.fill();
     }
 
+    // Ambient floating particles
     particles.forEach(p => {
       p.x += p.vx;
       p.y += p.vy;
       if (p.y > h) { p.y = -10; p.x = Math.random() * w; }
-      ctx.fillStyle = dark ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.75)';
+      ctx.fillStyle = dark ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.8)';
       ctx.fillRect(p.x, p.y, p.size, p.size);
     });
 
