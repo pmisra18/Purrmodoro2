@@ -1,1514 +1,230 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-  <meta name="theme-color" content="#A6CFE2" />
-  <title>Purrmodoro 🐾 Study with Melog</title>
-  
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet" />
-
-  <style>
-    :root {
-      --card-glass: rgba(255, 255, 255, 0.78);
-      --card-glass-border: rgba(255, 255, 255, 0.95);
-      --btn-orange: #D9733E;
-      --btn-orange-shadow: #A84E20;
-      --btn-dark: #4A4A4A;
-      --btn-dark-shadow: #2C2C2C;
-      --text-digits: #2B1E16;
-      --ring-white: #FFFFFF;
-      --ring-shadow: rgba(0, 0, 0, 0.14);
-      --dock-bg: rgba(255, 255, 255, 0.92);
-      --dock-border: rgba(0, 0, 0, 0.12);
-      
-      --font-digital: 'VT323', monospace;
-      --font-pixel: 'Silkscreen', monospace;
-      --font-ui: 'Plus Jakarta Sans', system-ui, sans-serif;
-    }
-
-    body.theme-dark {
-      --card-glass: rgba(26, 20, 34, 0.82);
-      --card-glass-border: rgba(255, 255, 255, 0.15);
-      --btn-orange: #E06F38;
-      --btn-orange-shadow: #8A3714;
-      --btn-dark: #32283D;
-      --btn-dark-shadow: #1A1422;
-      --text-digits: #FFFFFF;
-      --ring-white: #2C2238;
-      --ring-shadow: rgba(0, 0, 0, 0.55);
-      --dock-bg: rgba(26, 20, 34, 0.92);
-      --dock-border: rgba(255, 255, 255, 0.14);
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      -webkit-tap-highlight-color: transparent;
-      image-rendering: pixelated;
-    }
-
-    body {
-      font-family: var(--font-pixel);
-      color: #2B1E16;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      position: relative;
-      overflow-y: auto;
-    }
-
-    #pixel-bg-canvas {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      z-index: 0;
-    }
-
-    .app-shell {
-      position: relative;
-      z-index: 10;
-      width: 100%;
-      max-width: 440px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      padding: 1.5rem 1rem 6.5rem 1rem;
-      min-height: 100vh;
-    }
-
-    .pomofox-glass-card {
-      width: 100%;
-      background: var(--card-glass);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 2.5px solid var(--card-glass-border);
-      border-radius: 36px;
-      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
-      padding: 1.25rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      margin-bottom: auto;
-    }
-
-    .view-panel {
-      display: none;
-      width: 100%;
-    }
-
-    .view-panel.active {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-    }
-
-    .top-controls-bar {
-      display: flex;
-      gap: 0.65rem;
-      align-items: center;
-    }
-
-    .pf-btn-icon {
-      width: 46px;
-      height: 46px;
-      border-radius: 14px;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.25rem;
-      color: #FFFFFF;
-      transition: transform 0.1s ease, box-shadow 0.1s ease;
-    }
-
-    .pf-btn-icon:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0px rgba(0,0,0,0.3) !important;
-    }
-
-    .btn-orange {
-      background: var(--btn-orange);
-      box-shadow: 0 4px 0px var(--btn-orange-shadow);
-    }
-
-    .btn-dark {
-      background: var(--btn-dark);
-      box-shadow: 0 4px 0px var(--btn-dark-shadow);
-    }
-
-    .medical-select-wrap {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0.35rem;
-    }
-
-    .med-select, .med-input {
-      width: 100%;
-      background: rgba(255, 255, 255, 0.88);
-      border: 2px solid rgba(0, 0, 0, 0.08);
-      border-radius: 12px;
-      padding: 0.45rem 0.75rem;
-      font-family: var(--font-ui);
-      font-size: 0.82rem;
-      font-weight: 700;
-      color: #313131;
-      outline: none;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    }
-
-    body.theme-dark .med-select,
-    body.theme-dark .med-input {
-      background: rgba(18, 14, 24, 0.88);
-      color: #FFFFFF;
-      border-color: rgba(255, 255, 255, 0.12);
-    }
-
-    .biome-tag-bar {
-      display: flex;
-      gap: 0.35rem;
-      background: rgba(255, 255, 255, 0.6);
-      border-radius: 999px;
-      padding: 0.2rem 0.45rem;
-      border: 1.5px solid rgba(0, 0, 0, 0.05);
-    }
-
-    body.theme-dark .biome-tag-bar {
-      background: rgba(0, 0, 0, 0.3);
-      border-color: rgba(255, 255, 255, 0.08);
-    }
-
-    .biome-btn {
-      background: transparent;
-      border: none;
-      font-family: var(--font-pixel);
-      font-size: 0.65rem;
-      padding: 0.2rem 0.5rem;
-      border-radius: 999px;
-      cursor: pointer;
-      color: #555;
-    }
-
-    body.theme-dark .biome-btn { color: #BBB; }
-
-    .biome-btn.active {
-      background: var(--btn-orange);
-      color: #FFFFFF;
-    }
-
-    /* Central Wheel Timer */
-    .timer-circle-stage {
-      position: relative;
-      width: 290px;
-      height: 290px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin: 0.1rem 0;
-    }
-
-    .circle-svg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      transform: rotate(-90deg);
-    }
-
-    .circle-bg-ring {
-      fill: none;
-      stroke: var(--ring-white);
-      stroke-width: 26;
-      filter: drop-shadow(0px 6px 12px var(--ring-shadow));
-    }
-
-    .circle-progress-ring {
-      fill: none;
-      stroke: #EAA064;
-      stroke-width: 8;
-      stroke-linecap: round;
-      stroke-dasharray: 835.66;
-      stroke-dashoffset: 0;
-      transition: stroke-dashoffset 0.5s ease;
-    }
-
-    .timer-digits-text {
-      font-family: var(--font-digital);
-      font-size: 7rem;
-      font-weight: 700;
-      color: var(--text-digits);
-      line-height: 1;
-      letter-spacing: -2px;
-      z-index: 2;
-      user-select: none;
-    }
-
-    .orbit-arm {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      pointer-events: none;
-      z-index: 5;
-      transition: transform 0.5s ease;
-    }
-
-    .melog-sprite-box {
-      position: absolute;
-      top: -24px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 52px;
-      height: 52px;
-      pointer-events: auto;
-      cursor: pointer;
-    }
-
-    .pixel-melog-svg {
-      width: 100%;
-      height: 100%;
-      overflow: visible;
-      shape-rendering: crispEdges;
-    }
-
-    /* ================= FLUID TROT & ATTACHED TAIL/EARS ================= */
-    .timer-running .px-cat-master {
-      animation: catHopBounding 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 8px 11px;
-    }
-
-    .timer-running .px-leg-fl {
-      animation: strideFrontLeft 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 8px 8px;
-    }
-    .timer-running .px-leg-fr {
-      animation: strideFrontRight 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 8px 8px;
-    }
-    .timer-running .px-leg-bl {
-      animation: strideBackLeft 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 4px 8px;
-    }
-    .timer-running .px-leg-br {
-      animation: strideBackRight 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: 4px 8px;
-    }
-
-    .timer-running .px-attached-tail {
-      animation: attachedTailSway 0.54s infinite ease-in-out;
-      transform-origin: 2px 7px;
-    }
-
-    @keyframes catHopBounding {
-      0% { transform: translateY(0) rotate(0deg); }
-      22% { transform: translateY(-3.5px) rotate(4deg); }
-      48% { transform: translateY(-4.2px) rotate(1deg); }
-      75% { transform: translateY(-1px) rotate(-3deg); }
-      88% { transform: translateY(0.4px) scaleY(0.96); }
-      100% { transform: translateY(0) rotate(0deg); }
-    }
-
-    @keyframes strideFrontLeft {
-      0% { transform: rotate(-16deg); }
-      35% { transform: rotate(24deg); }
-      70% { transform: rotate(-6deg); }
-      100% { transform: rotate(-16deg); }
-    }
-    @keyframes strideFrontRight {
-      0% { transform: rotate(22deg); }
-      35% { transform: rotate(-14deg); }
-      70% { transform: rotate(12deg); }
-      100% { transform: rotate(22deg); }
-    }
-    @keyframes strideBackLeft {
-      0% { transform: rotate(20deg); }
-      35% { transform: rotate(-16deg); }
-      70% { transform: rotate(8deg); }
-      100% { transform: rotate(20deg); }
-    }
-    @keyframes strideBackRight {
-      0% { transform: rotate(-16deg); }
-      35% { transform: rotate(24deg); }
-      70% { transform: rotate(-6deg); }
-      100% { transform: rotate(-16deg); }
-    }
-    @keyframes attachedTailSway {
-      0% { transform: rotate(-4deg); }
-      40% { transform: rotate(14deg); }
-      75% { transform: rotate(-1deg); }
-      100% { transform: rotate(-4deg); }
-    }
-
-    .bottom-cycle-pill {
-      background: rgba(255, 255, 255, 0.88);
-      border: 2px solid rgba(0, 0, 0, 0.06);
-      border-radius: 999px;
-      padding: 0.35rem 1.15rem;
-      display: flex;
-      align-items: center;
-      gap: 0.65rem;
-      font-size: 0.8rem;
-      font-weight: 700;
-      color: #4A4A4A;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-    }
-
-    body.theme-dark .bottom-cycle-pill {
-      background: rgba(20, 16, 26, 0.88);
-      color: #E0E0E0;
-      border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .tomatoes-row {
-      display: flex;
-      gap: 0.3rem;
-      align-items: center;
-    }
-
-    .tomato-dot {
-      width: 13px;
-      height: 13px;
-      border-radius: 50%;
-      background: #D1D1D1;
-      display: inline-block;
-    }
-
-    .tomato-dot.active { background: #EAA064; }
-
-    .section-heading {
-      font-size: 1.15rem;
-      margin-bottom: 0.4rem;
-      text-transform: uppercase;
-      text-align: center;
-    }
-
-    body.theme-dark .section-heading { color: #FFFFFF; }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.65rem;
-      width: 100%;
-    }
-
-    .pf-item-box {
-      background: rgba(255, 255, 255, 0.85);
-      border: 2px solid rgba(0, 0, 0, 0.08);
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-      border-radius: 14px;
-      padding: 0.85rem 0.65rem;
-      text-align: center;
-    }
-
-    body.theme-dark .pf-item-box {
-      background: rgba(20, 16, 26, 0.85);
-      color: #FFFFFF;
-      border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .pf-item-box.locked { opacity: 0.45; border-style: dashed; }
-
-    .btn-adopt {
-      background: var(--btn-orange);
-      color: #FFFFFF;
-      border: none;
-      padding: 0.35rem 0.8rem;
-      border-radius: 8px;
-      font-family: var(--font-pixel);
-      font-size: 0.72rem;
-      margin-top: 0.4rem;
-      cursor: pointer;
-    }
-
-    .form-col {
-      display: flex;
-      flex-direction: column;
-      gap: 0.55rem;
-      width: 100%;
-    }
-
-    .form-item {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-
-    .form-item label {
-      font-size: 0.72rem;
-      font-weight: 800;
-      color: #666;
-      text-transform: uppercase;
-    }
-
-    body.theme-dark .form-item label { color: #AAA; }
-
-    .btn-action-wide {
-      background: var(--btn-orange);
-      box-shadow: 0 4px 0px var(--btn-orange-shadow);
-      color: #FFFFFF;
-      border: none;
-      padding: 0.75rem;
-      border-radius: 14px;
-      font-family: var(--font-pixel);
-      font-size: 0.88rem;
-      cursor: pointer;
-      width: 100%;
-    }
-
-    .btn-action-wide:active {
-      transform: translateY(2px);
-      box-shadow: 0 1px 0px var(--btn-orange-shadow);
-    }
-
-    .week-row-dots {
-      display: flex;
-      justify-content: space-between;
-      width: 100%;
-      margin: 0.5rem 0;
-    }
-
-    .day-square {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      background: rgba(255, 255, 255, 0.8);
-      border: 2px solid rgba(0, 0, 0, 0.1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 0.82rem;
-    }
-
-    body.theme-dark .day-square {
-      background: rgba(20, 16, 26, 0.8);
-      color: #FFF;
-      border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .day-square.done {
-      background: var(--btn-orange);
-      color: #FFF;
-      border-color: var(--btn-orange-shadow);
-    }
-
-    .log-scroll-area {
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-      max-height: 180px;
-      overflow-y: auto;
-      width: 100%;
-    }
-
-    .log-item-pill {
-      background: rgba(255, 255, 255, 0.85);
-      border: 1.5px solid rgba(0, 0, 0, 0.08);
-      border-radius: 10px;
-      padding: 0.5rem 0.75rem;
-      font-size: 0.78rem;
-      font-family: var(--font-ui);
-      font-weight: 700;
-      display: flex;
-      justify-content: space-between;
-    }
-
-    body.theme-dark .log-item-pill {
-      background: rgba(20, 16, 26, 0.85);
-      color: #FFF;
-      border-color: rgba(255, 255, 255, 0.1);
-    }
-
-    .pf-bottom-dock {
-      position: fixed;
-      bottom: 1rem;
-      left: 50%;
-      transform: translateX(-50%);
-      width: calc(100% - 2rem);
-      max-width: 440px;
-      background: var(--dock-bg);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border: 2.5px solid var(--dock-border);
-      border-radius: 20px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-      padding: 0.35rem;
-      display: flex;
-      justify-content: space-between;
-      z-index: 50;
-    }
-
-    .pf-dock-btn {
-      flex: 1;
-      background: transparent;
-      border: none;
-      font-family: var(--font-pixel);
-      font-weight: 700;
-      font-size: 0.65rem;
-      color: #666;
-      padding: 0.5rem 0.2rem;
-      border-radius: 12px;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 0.2rem;
-      text-transform: uppercase;
-      transition: all 0.1s ease;
-    }
-
-    body.theme-dark .pf-dock-btn { color: #AAA; }
-
-    .pf-dock-btn.active {
-      background: var(--btn-orange);
-      color: #FFFFFF;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-    }
-
-    .dock-ico { font-size: 1.15rem; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#A6CFE2">
+    <title>Purrmodoro 🐾 Study with Melog</title>
+    
+    <!-- Preconnect for faster Google Fonts loading -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    
+    <!-- Link to external high-quality stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <canvas id="pixel-bg-canvas"></canvas>
+    <!-- High-performance canvas background -->
+    <canvas id="pixel-bg-canvas"></canvas>
 
-  <div class="app-shell">
-    <main class="pomofox-glass-card">
-      
-      <!-- ================= TAB 1: TIMER ================= -->
-      <section id="tab-timer" class="view-panel active">
-        
-        <div class="top-controls-bar">
-          <button type="button" class="pf-btn-icon btn-orange" id="btn-timer-toggle" title="Start / Pause">▶</button>
-          <button type="button" class="pf-btn-icon btn-dark" id="btn-timer-reset" title="Reset Timer">🔄</button>
-          <button type="button" class="pf-btn-icon btn-orange" id="btn-sound-toggle" title="Mute / Unmute">🔊</button>
-          <button type="button" class="pf-btn-icon btn-dark" id="btn-theme-toggle" title="Dark Mode Toggle">🌙</button>
-        </div>
+    <div class="app-shell">
+        <main class="pomofox-glass-card">
+            
+            <!-- ================= TAB 1: TIMER ================= -->
+            <section id="tab-timer" class="view-panel active">
+                
+                <div class="top-controls-bar">
+                    <button type="button" class="pf-btn-icon btn-orange" id="btn-timer-toggle" title="Start / Pause">▶</button>
+                    <button type="button" class="pf-btn-icon btn-dark" id="btn-timer-reset" title="Reset Timer">🔄</button>
+                    <button type="button" class="pf-btn-icon btn-orange" id="btn-sound-toggle" title="Mute / Unmute">🔊</button>
+                    <button type="button" class="pf-btn-icon btn-dark" id="btn-theme-toggle" title="Dark Mode Toggle">🌙</button>
+                </div>
 
-        <div class="biome-tag-bar">
-          <button type="button" class="biome-btn active" data-biome="forest">🌲 Forest</button>
-          <button type="button" class="biome-btn" data-biome="mountain">🏔️ Peak</button>
-          <button type="button" class="biome-btn" data-biome="sunset">🌅 Sunset</button>
-          <button type="button" class="biome-btn" data-biome="sakura">🌸 Sakura</button>
-        </div>
+                <div class="biome-tag-bar">
+                    <button type="button" class="biome-btn active" data-biome="forest">🌲 Forest</button>
+                    <button type="button" class="biome-btn" data-biome="mountain">🏔️ Peak</button>
+                    <button type="button" class="biome-btn" data-biome="sunset">🌅 Sunset</button>
+                    <button type="button" class="biome-btn" data-biome="sakura">🌸 Sakura</button>
+                </div>
 
-        <div class="medical-select-wrap">
-          <select id="sel-subject" class="med-select"></select>
-          <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
-        </div>
+                <div class="medical-select-wrap">
+                    <select id="sel-subject" class="med-select"></select>
+                    <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
+                </div>
 
-        <!-- Timer Circle Stage -->
-        <div class="timer-circle-stage">
-          <svg class="circle-svg" viewBox="0 0 300 300">
-            <circle cx="150" cy="150" r="133" class="circle-bg-ring" />
-            <circle cx="150" cy="150" r="133" class="circle-progress-ring" id="circle-progress-ring" />
-          </svg>
+                <!-- Timer Circle Stage -->
+                <div class="timer-circle-stage">
+                    <svg class="circle-svg" viewBox="0 0 300 300">
+                        <circle cx="150" cy="150" r="133" class="circle-bg-ring" />
+                        <circle cx="150" cy="150" r="133" class="circle-progress-ring" id="circle-progress-ring" />
+                    </svg>
 
-          <div class="timer-digits-text" id="timer-readout">25:00</div>
+                    <div class="timer-digits-text" id="timer-readout">25:00</div>
 
-          <!-- Orbit Arm -->
-          <div class="orbit-arm" id="orbit-arm">
-            <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
-              
-              <!-- 100% PURE 16x16 PIXEL RIG: ATTACHED TAIL & SHARP POINTED EARS -->
-              <svg viewBox="0 0 16 16" class="pixel-melog-svg">
-                <g class="px-cat-master">
-                  
-                  <!-- Perfectly Attached Natural Cat Tail (Anchored at rear body 2, 7) -->
-                  <g class="px-balanced-tail">
-                    <rect x="2" y="6" width="2" height="2" fill="#2C1E16" />
-                    <rect x="1" y="5" width="2" height="2" fill="#F4C28D" />
-                    <rect x="0" y="3" width="2" height="2" fill="#D9965B" />
-                    <rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" />
-                  </g>
+                    <!-- Orbit Arm -->
+                    <div class="orbit-arm" id="orbit-arm">
+                        <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
+                            
+                            <!-- Melog Pixel Art (Embedded SVG for quality scaling) -->
+                            <svg viewBox="0 0 16 16" class="pixel-melog-svg">
+                                <g class="px-cat-master">
+                                    <g class="px-balanced-tail">
+                                        <rect x="2" y="6" width="2" height="2" fill="#2C1E16" />
+                                        <rect x="1" y="5" width="2" height="2" fill="#F4C28D" />
+                                        <rect x="0" y="3" width="2" height="2" fill="#D9965B" />
+                                        <rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" />
+                                    </g>
+                                    <g class="px-leg-bl">
+                                        <rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" />
+                                        <rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" />
+                                    </g>
+                                    <g class="px-leg-fl">
+                                        <rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" />
+                                        <rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" />
+                                    </g>
+                                    <g class="px-torso">
+                                        <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
+                                        <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
+                                        <rect x="10" y="7" width="1" height="3" fill="#2C1E16" />
+                                        <rect x="3" y="10" width="7" height="1" fill="#2C1E16" />
+                                        <rect x="3" y="7" width="5" height="3" fill="#F4C28D" />
+                                        <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
+                                        <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
+                                    </g>
+                                    <g class="px-leg-br">
+                                        <rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" />
+                                        <rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" />
+                                    </g>
+                                    <g class="px-leg-fr">
+                                        <rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" />
+                                        <rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" />
+                                    </g>
+                                    <g class="px-head">
+                                        <polygon points="7,4 4,0 8,3" fill="#2C1E16" />
+                                        <polygon points="7,3 5,1 7,3" fill="#F4C28D" />
+                                        <polygon points="7,3 6,2 7,3" fill="#FCAEBA" />
+                                        <polygon points="10,4 13,0 9,3" fill="#2C1E16" />
+                                        <polygon points="10,3 12,1 10,3" fill="#F4C28D" />
+                                        <polygon points="10,3 11,2 10,3" fill="#FCAEBA" />
+                                        <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
+                                        <rect x="6" y="4" width="1" height="4" fill="#2C1E16" />
+                                        <rect x="13" y="5" width="1" height="3" fill="#2C1E16" />
+                                        <rect x="8" y="3" width="4" height="1" fill="#2C1E16" />
+                                        <rect x="7" y="8" width="5" height="1" fill="#2C1E16" />
+                                        <rect x="9" y="4" width="1" height="1" fill="#D9965B" />
+                                        <rect x="10" y="5" width="1" height="1" fill="#2C1E16" />
+                                        <rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
+                                        <rect x="11" y="6" width="2" height="2" fill="#FFFFFF" />
+                                        <rect x="12" y="6" width="1" height="1" fill="#E88894" />
+                                    </g>
+                                </g>
+                            </svg>
+                        </div>
+                    </div>
+                </div>
 
-                  <!-- Back Left Leg -->
-                  <g class="px-leg-bl">
-                    <rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" />
-                    <rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" />
-                  </g>
+                <div class="bottom-cycle-pill">
+                    <span>cycle: <strong id="val-cycle-count">1</strong></span>
+                    <div class="tomatoes-row">
+                        <span class="tomato-dot active" id="dot-1"></span>
+                        <span class="tomato-dot" id="dot-2"></span>
+                        <span class="tomato-dot" id="dot-3"></span>
+                        <span class="tomato-dot" id="dot-4"></span>
+                    </div>
+                </div>
+            </section>
 
-                  <!-- Front Left Leg -->
-                  <g class="px-leg-fl">
-                    <rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" />
-                    <rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" />
-                  </g>
-
-                  <!-- Main Torso (Fully Fused) -->
-                  <g class="px-torso">
-                    <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
-                    <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
-                    <rect x="10" y="7" width="1" height="3" fill="#2C1E16" />
-                    <rect x="3" y="10" width="7" height="1" fill="#2C1E16" />
+            <!-- ================= TAB 2: PLANNER ================= -->
+            <section id="tab-planner" class="view-panel">
+                <h2 class="section-heading">🩷 Study Planner</h2>
+                <div class="form-col">
+                    <div class="form-item">
+                        <label for="plan-date">Exam Date</label>
+                        <input type="date" id="plan-date" class="med-input" />
+                    </div>
+                    <div class="form-item">
+                        <label for="plan-buffer">Buffer Days (Review)</label>
+                        <input type="number" id="plan-buffer" class="med-input" value="2" min="0" />
+                    </div>
                     
-                    <rect x="3" y="7" width="5" height="3" fill="#F4C28D" />
-                    <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
-                    
-                    <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
-                  </g>
-
-                  <!-- Back Right Leg -->
-                  <g class="px-leg-br">
-                    <rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" />
-                    <rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" />
-                  </g>
-
-                  <!-- Front Right Leg -->
-                  <g class="px-leg-fr">
-                    <rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" />
-                    <rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" />
-                  </g>
-
-                  <!-- Head with Sharp Pointed Cat Ears -->
-                  <g class="px-head">
-                    <!-- Left Pointed Cat Ear -->
-                    <polygon points="7,4 4,0 8,3" fill="#2C1E16" />
-                    <polygon points="7,3 5,1 7,3" fill="#F4C28D" />
-                    <polygon points="7,3 6,2 7,3" fill="#FCAEBA" />
-
-                    <!-- Right Pointed Cat Ear -->
-                    <polygon points="10,4 13,0 9,3" fill="#2C1E16" />
-                    <polygon points="10,3 12,1 10,3" fill="#F4C28D" />
-                    <polygon points="10,3 11,2 10,3" fill="#FCAEBA" />
-
-                    <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
-                    <rect x="6" y="4" width="1" height="4" fill="#2C1E16" />
-                    <rect x="13" y="5" width="1" height="3" fill="#2C1E16" />
-                    <rect x="8" y="3" width="4" height="1" fill="#2C1E16" />
-                    <rect x="7" y="8" width="5" height="1" fill="#2C1E16" />
-
-                    <rect x="9" y="4" width="1" height="1" fill="#D9965B" />
-                    <rect x="10" y="5" width="1" height="1" fill="#2C1E16" />
-                    <rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
-
-                    <rect x="11" y="6" width="2" height="2" fill="#FFFFFF" />
-                    <rect x="12" y="6" width="1" height="1" fill="#E88894" />
-                  </g>
-
-                </g>
-              </svg>
-
-            </div>
-          </div>
-        </div>
-
-        <div class="bottom-cycle-pill">
-          <span>cycle: <strong id="val-cycle-count">1</strong></span>
-          <div class="tomatoes-row">
-            <span class="tomato-dot active" id="dot-1"></span>
-            <span class="tomato-dot" id="dot-2"></span>
-            <span class="tomato-dot" id="dot-3"></span>
-            <span class="tomato-dot" id="dot-4"></span>
-          </div>
-        </div>
-
-      </section>
-
-      <!-- ================= TAB 2: PLANNER ================= -->
-      <section id="tab-planner" class="view-panel">
-        <h2 class="section-heading">🩷 Study Planner</h2>
-        <div class="form-col">
-          <div class="form-item">
-            <label for="plan-date">Exam Date</label>
-            <input type="date" id="plan-date" class="med-input" />
-          </div>
-          <div class="form-item">
-            <label for="plan-buffer">Buffer Days (Review)</label>
-            <input type="number" id="plan-buffer" class="med-input" value="2" min="0" />
-          </div>
-          <div class="form-item">
-            <label for="plan-amount">Material Remaining</label>
-            <input type="number" id="plan-amount" class="med-input" value="240" min="1" />
-          </div>
-          <div class="form-item">
-            <label for="plan-unit">Material Unit</label>
-            <select id="plan-unit" class="med-select">
-              <option value="pages and anki cards">Pages &amp; Anki Cards</option>
-              <option value="pages">Pages Only</option>
-              <option value="Anki cards">Anki Cards Only</option>
-              <option value="lectures">Lectures</option>
-              <option value="board questions">Board / UWorld Qs</option>
-              <option value="chapters">Chapters</option>
-            </select>
-          </div>
-          <div class="form-item">
-            <label for="plan-pace">Pace (Units per 25m Pomodoro)</label>
-            <input type="number" id="plan-pace" class="med-input" value="6" min="1" />
-          </div>
-          <button type="button" class="btn-action-wide" id="btn-calc-schedule" style="margin-top:0.35rem;">
-            Generate Schedule 🩺
-          </button>
-        </div>
-
-        <div class="pf-item-box" id="rx-card" style="display: none; width:100%; text-align:left;">
-          <div style="font-weight: 800; border-bottom: 2px dashed rgba(0,0,0,0.15); padding-bottom: 0.35rem; display: flex; justify-content: space-between;">
-            <span>Rx Prescription</span>
-            <span id="rx-finish-date"></span>
-          </div>
-          <div id="rx-content" style="padding: 0.65rem 0; font-family: var(--font-ui); font-size: 0.85rem;"></div>
-          <button type="button" class="btn-action-wide" id="btn-apply-plan-goal" style="padding:0.5rem; font-size:0.75rem;">Set as Daily Target</button>
-        </div>
-      </section>
-
-      <!-- ================= TAB 3: SANCTUARY & STORE ================= -->
-      <section id="tab-world" class="view-panel">
-        <h2 class="section-heading">🏡 Sanctuary &amp; Gear</h2>
-        <div class="grid-2" id="world-map-grid"></div>
-
-        <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">🐾 Adopt Gear with Paw Points</h3>
-        <div class="grid-2" id="furniture-catalog-grid"></div>
-      </section>
-
-      <!-- ================= TAB 4: STATS ================= -->
-      <section id="tab-stats" class="view-panel">
-        <h2 class="section-heading">📊 Progress &amp; Streaks</h2>
-        <div class="pf-item-box" style="display:flex; align-items:center; gap:0.75rem; width:100%;">
-          <span style="font-size: 2.2rem;">🔥</span>
-          <div style="text-align:left;">
-            <h3 id="txt-stats-streak">1 Day Streak</h3>
-            <p style="font-size: 0.78rem; opacity: 0.8;">Melog is cheering you on!</p>
-          </div>
-        </div>
-
-        <div class="week-row-dots" id="weekly-tracker-row"></div>
-
-        <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">Session History</h3>
-        <div class="log-scroll-area" id="session-log-list"></div>
-      </section>
-
-      <!-- ================= TAB 5: SETTINGS & SUPABASE CLOUD SYNC ================= -->
-      <section id="tab-settings" class="view-panel">
-        <h2 class="section-heading">⚙️ Preferences &amp; API Sync</h2>
-        
-        <!-- Supabase Cloud Sync Configuration Box -->
-        <div class="pf-item-box" style="width:100%; text-align:left; margin-bottom:0.5rem;">
-          <div style="font-weight: 800; font-size: 0.85rem; margin-bottom: 0.35rem; display:flex; justify-content:space-between; align-items:center;">
-            <span>☁️ Supabase Cloud Sync</span>
-            <span id="sync-status-badge" style="font-size:0.65rem; background:var(--btn-orange); color:#fff; padding:0.15rem 0.4rem; border-radius:6px;">Local Mode</span>
-          </div>
-          <p style="font-size: 0.72rem; color:var(--pf-muted, #666); margin-bottom:0.5rem;">Enter your Supabase API credentials to sync your stats across devices.</p>
-          <div class="form-col">
-            <div class="form-item">
-              <label for="cfg-supa-url">Project URL</label>
-              <input type="text" id="cfg-supa-url" class="med-input" placeholder="https://xyz.supabase.co" />
-            </div>
-            <div class="form-item">
-              <label for="cfg-supa-key">Anon API Key</label>
-              <input type="password" id="cfg-supa-key" class="med-input" placeholder="eyJhbGciOi..." />
-            </div>
-            <button type="button" class="btn-action-wide" id="btn-save-cloud" style="padding:0.5rem; font-size:0.75rem; margin-top:0.25rem;">Connect &amp; Sync Now 🔄</button>
-          </div>
-        </div>
-
-        <form id="settings-form" class="form-col">
-          <div class="form-item">
-            <label for="cfg-study-min">Focus Duration (Minutes)</label>
-            <input type="number" id="cfg-study-min" class="med-input" value="25" min="1" max="90" />
-          </div>
-          <div class="form-item">
-            <label for="cfg-short-min">Short Break</label>
-            <input type="number" id="cfg-short-min" class="med-input" value="5" min="1" max="30" />
-          </div>
-          <div class="form-item">
-            <label for="cfg-long-min">Long Break</label>
-            <input type="number" id="cfg-long-min" class="med-input" value="20" min="5" max="60" />
-          </div>
-          <button type="submit" class="btn-action-wide" style="margin-top:0.4rem;">Save Settings</button>
-        </form>
-      </section>
-
-    </main>
-
-    <!-- Bottom Dock Navigation -->
-    <nav class="pf-bottom-dock">
-      <button type="button" class="pf-dock-btn active" data-tab="tab-timer">
-        <span class="dock-ico">⏱️</span>
-        <span>Timer</span>
-      </button>
-      <button type="button" class="pf-dock-btn" data-tab="tab-planner">
-        <span class="dock-ico">🩷</span>
-        <span>Planner</span>
-      </button>
-      <button type="button" class="pf-dock-btn" data-tab="tab-world">
-        <span class="dock-ico">🏡</span>
-        <span>Store</span>
-      </button>
-      <button type="button" class="pf-dock-btn" data-tab="tab-stats">
-        <span class="dock-ico">📊</span>
-        <span>Stats</span>
-      </button>
-      <button type="button" class="pf-dock-btn" data-tab="tab-settings">
-        <span class="dock-ico">⚙️</span>
-        <span>Settings</span>
-      </button>
-    </nav>
-
-  </div>
-
-  <script>
-    /* -------------------------------------------------------------
-       PURRMODORO - Complete 16-Bit Pixel Engine & Supabase Sync
-       ------------------------------------------------------------- */
-    const MEDICAL_SUBJECTS = [
-      "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
-      "🦴 OPP / OMM Practical & Written",
-      "🩺 CE (Clinical Education) OSCE & Notes",
-      "👥 PBL (Problem-Based Learning)",
-      "🫀 Robbins Pathology",
-      "⚡ Guyton Physiology",
-      "💊 Katzung Pharmacology",
-      "🔬 Murray Microbiology",
-      "🧬 Abbas Immunology",
-      "💀 Moore's Anatomy",
-      "🧪 Marks' Biochemistry & Genetics",
-      "🧠 Anki Spaced Repetition",
-      "✏️ Custom Focus Session"
-    ];
-
-    const WORLD_WINGS = [
-      { name: "Melog's Bedroom", icon: '🛏️', reqLevel: 1 },
-      { name: "Medical Library", icon: '📚', reqLevel: 5 },
-      { name: "Cozy Anatomy Café", icon: '☕', reqLevel: 10 },
-      { name: "Pharmacology Green", icon: '🌿', reqLevel: 20 },
-      { name: "The Whisker Clinic", icon: '🩺', reqLevel: 35 },
-      { name: "Simulation Suite", icon: '🫀', reqLevel: 50 },
-      { name: "Stargazer Lounge", icon: '🌙', reqLevel: 75 },
-      { name: "Teaching Hospital", icon: '🏥', reqLevel: 100 }
-    ];
-
-    const CATALOG_ITEMS = [
-      { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false },
-      { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 50, purchased: false },
-      { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 100, purchased: false },
-      { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false },
-      { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false },
-      { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1000, purchased: false }
-    ];
-
-    let state = {
-      settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false, currentBiome: 'forest', supaUrl: '', supaKey: '' },
-      timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
-      game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, cycleCount: 1, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
-    };
-
-    const RING_CIRCUMFERENCE = 2 * Math.PI * 133; // 835.66
-
-    document.addEventListener('DOMContentLoaded', () => {
-      loadState();
-      initTheme();
-      initTabs();
-      initUI();
-      initTimer();
-      initPlanner();
-      initCanvas();
-      renderAll();
-    });
-
-    function getTodayDateString() {
-      const d = new Date();
-      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-    }
-
-    function saveState() {
-      localStorage.setItem('purrmodoro_pf_final_v7', JSON.stringify(state));
-      if (state.settings.supaUrl && state.settings.supaKey) {
-        syncWithSupabase();
-      }
-    }
-
-    function loadState() {
-      const raw = localStorage.getItem('purrmodoro_pf_final_v7');
-      if (raw) {
-        try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
-      }
-      state.timer.timeLeft = state.settings.studyMin * 60;
-      state.timer.totalDuration = state.settings.studyMin * 60;
-    }
-
-    function initTheme() {
-      const themeBtn = document.getElementById('btn-theme-toggle');
-      document.body.classList.toggle('theme-dark', state.settings.darkMode);
-      if (themeBtn) themeBtn.textContent = state.settings.darkMode ? '☀️' : '🌙';
-
-      if (themeBtn) {
-        themeBtn.addEventListener('click', () => {
-          state.settings.darkMode = !state.settings.darkMode;
-          document.body.classList.toggle('theme-dark', state.settings.darkMode);
-          themeBtn.textContent = state.settings.darkMode ? '☀️' : '🌙';
-          saveState();
-        });
-      }
-    }
-
-    function initTabs() {
-      const dockBtns = document.querySelectorAll('.pf-dock-btn');
-      dockBtns.forEach(btn => {
-        btn.addEventListener('click', () => {
-          dockBtns.forEach(b => b.classList.remove('active'));
-          document.querySelectorAll('.view-panel').forEach(v => v.classList.remove('active'));
-
-          btn.classList.add('active');
-          const target = document.getElementById(btn.dataset.tab);
-          if (target) {
-            target.classList.add('active');
-            if (btn.dataset.tab === 'tab-world') renderWorld();
-            if (btn.dataset.tab === 'tab-stats') renderStats();
-          }
-        });
-      });
-    }
-
-    function initUI() {
-      const subSelect = document.getElementById('sel-subject');
-      if (subSelect) {
-        subSelect.innerHTML = '';
-        MEDICAL_SUBJECTS.forEach(s => {
-          const opt = document.createElement('option');
-          opt.value = s;
-          opt.textContent = s;
-          subSelect.appendChild(opt);
-        });
-      }
-
-      document.querySelectorAll('.biome-btn').forEach(btn => {
-        btn.classList.toggle('active', btn.dataset.biome === state.settings.currentBiome);
-        btn.addEventListener('click', () => {
-          document.querySelectorAll('.biome-btn').forEach(b => b.classList.remove('active'));
-          btn.classList.add('active');
-          state.settings.currentBiome = btn.dataset.biome;
-          saveState();
-        });
-      });
-
-      const soundBtn = document.getElementById('btn-sound-toggle');
-      if (soundBtn) {
-        soundBtn.textContent = state.settings.soundEnabled ? '🔊' : '🔇';
-        soundBtn.addEventListener('click', () => {
-          state.settings.soundEnabled = !state.settings.soundEnabled;
-          soundBtn.textContent = state.settings.soundEnabled ? '🔊' : '🔇';
-          saveState();
-        });
-      }
-
-      const melogSprite = document.getElementById('melog-sprite');
-      if (melogSprite) {
-        melogSprite.addEventListener('click', () => {
-          playTone(587.33, 0.3);
-        });
-      }
-
-      const settingsForm = document.getElementById('settings-form');
-      if (settingsForm) {
-        settingsForm.addEventListener('submit', (e) => {
-          e.preventDefault();
-          state.settings.studyMin = parseInt(document.getElementById('cfg-study-min').value, 10);
-          state.settings.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10);
-          state.settings.longMin = parseInt(document.getElementById('cfg-long-min').value, 10);
-          saveState();
-          alert('Settings saved! 🩺');
-          document.querySelector('.pf-dock-btn[data-tab="tab-timer"]').click();
-        });
-      }
-
-      const btnSaveCloud = document.getElementById('btn-save-cloud');
-      const supaUrlInput = document.getElementById('cfg-supa-url');
-      const supaKeyInput = document.getElementById('cfg-supa-key');
-      if (supaUrlInput) supaUrlInput.value = state.settings.supaUrl || '';
-      if (supaKeyInput) supaKeyInput.value = state.settings.supaKey || '';
-
-      if (btnSaveCloud) {
-        btnSaveCloud.addEventListener('click', () => {
-          state.settings.supaUrl = supaUrlInput.value.trim();
-          state.settings.supaKey = supaKeyInput.value.trim();
-          saveState();
-          syncWithSupabase();
-        });
-      }
-    }
-
-    function initTimer() {
-      const toggleBtn = document.getElementById('btn-timer-toggle');
-      const resetBtn = document.getElementById('btn-timer-reset');
-
-      if (toggleBtn) toggleBtn.addEventListener('click', toggleTimer);
-      if (resetBtn) resetBtn.addEventListener('click', resetTimer);
-    }
-
-    function toggleTimer() {
-      if (state.timer.isRunning) {
-        pauseTimer();
-      } else {
-        startTimer();
-      }
-    }
-
-    function startTimer() {
-      state.timer.isRunning = true;
-      document.getElementById('btn-timer-toggle').textContent = '⏸';
-      
-      const sprite = document.getElementById('melog-sprite');
-      if (sprite) sprite.classList.add('timer-running');
-
-      state.timer.intervalId = setInterval(() => {
-        if (state.timer.timeLeft > 0) {
-          state.timer.timeLeft--;
-          renderTimer();
-        } else {
-          completeBlock();
-        }
-      }, 1000);
-    }
-
-    function pauseTimer() {
-      state.timer.isRunning = false;
-      clearInterval(state.timer.intervalId);
-      document.getElementById('btn-timer-toggle').textContent = '▶';
-
-      const sprite = document.getElementById('melog-sprite');
-      if (sprite) sprite.classList.remove('timer-running');
-    }
-
-    function resetTimer() {
-      clearInterval(state.timer.intervalId);
-      state.timer.isRunning = false;
-      document.getElementById('btn-timer-toggle').textContent = '▶';
-
-      const sprite = document.getElementById('melog-sprite');
-      if (sprite) sprite.classList.remove('timer-running');
-
-      state.timer.totalDuration = (state.timer.mode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
-      state.timer.timeLeft = state.timer.totalDuration;
-      renderTimer();
-    }
-
-    function completeBlock() {
-      clearInterval(state.timer.intervalId);
-      state.timer.isRunning = false;
-      document.getElementById('btn-timer-toggle').textContent = '▶';
-
-      const sprite = document.getElementById('melog-sprite');
-      if (sprite) sprite.classList.remove('timer-running');
-
-      playFanfare();
-
-      if (state.timer.mode === 'study') {
-        state.timer.mode = 'shortBreak';
-        state.timer.totalDuration = state.settings.shortMin * 60;
-        state.timer.timeLeft = state.timer.totalDuration;
-        
-        state.game.todayPomodoros++;
-        state.game.totalPomodoros++;
-        state.game.todayMinutes += state.settings.studyMin;
-        state.game.pawPoints += 10;
-        state.game.xp += 25;
-        state.game.cycleCount++;
-
-        const newLevel = Math.floor(state.game.xp / 100) + 1;
-        if (newLevel > state.game.level) state.game.level = newLevel;
-
-        const today = getTodayDateString();
-        state.game.activeDays[today] = (state.game.activeDays[today] || 0) + 1;
-
-        const sub = document.getElementById('sel-subject').value;
-        const task = document.getElementById('ipt-chapter-task').value || 'Focus Session';
-        state.game.sessionLogs.unshift({
-          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-          subject: sub,
-          task: task,
-          minutes: state.settings.studyMin
-        });
-      } else {
-        state.timer.mode = 'study';
-        state.timer.totalDuration = state.settings.studyMin * 60;
-        state.timer.timeLeft = state.timer.totalDuration;
-      }
-      saveState();
-      renderAll();
-    }
-
-    function renderTimer() {
-      const m = Math.floor(state.timer.timeLeft / 60);
-      const s = state.timer.timeLeft % 60;
-      const str = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-      
-      const readout = document.getElementById('timer-readout');
-      if (readout) readout.textContent = str;
-      document.title = `${str} 🐾 Purrmodoro`;
-
-      const progress = (state.timer.totalDuration - state.timer.timeLeft) / state.timer.totalDuration;
-      const ringFill = document.getElementById('circle-progress-ring');
-      if (ringFill) {
-        ringFill.style.strokeDashoffset = RING_CIRCUMFERENCE * (1 - progress);
-      }
-
-      const orbitArm = document.getElementById('orbit-arm');
-      if (orbitArm) {
-        orbitArm.style.transform = `rotate(${progress * 360}deg)`;
-      }
-    }
-
-    function renderAll() {
-      renderTimer();
-      
-      const activeDot = (state.game.cycleCount - 1) % 4;
-      for (let i = 1; i <= 4; i++) {
-        const dot = document.getElementById(`dot-${i}`);
-        if (dot) dot.classList.toggle('active', i - 1 <= activeDot);
-      }
-    }
-
-    function renderWorld() {
-      const map = document.getElementById('world-map-grid');
-      if (map) {
-        map.innerHTML = '';
-        WORLD_WINGS.forEach(w => {
-          const unlocked = state.game.level >= w.reqLevel;
-          const div = document.createElement('div');
-          div.className = `pf-item-box ${unlocked ? '' : 'locked'}`;
-          div.innerHTML = `<div style="font-size:1.6rem;">${w.icon}</div><div style="font-weight:700; font-size:0.75rem; margin-top:0.2rem;">${w.name}</div><div style="font-size:0.65rem; opacity:0.8;">${unlocked ? '✨ Unlocked' : `Req. Lvl ${w.reqLevel}`}</div>`;
-          map.appendChild(div);
-        });
-      }
-
-      const cat = document.getElementById('furniture-catalog-grid');
-      if (cat) {
-        cat.innerHTML = '';
-        state.game.catalog.forEach(item => {
-          const div = document.createElement('div');
-          div.className = `pf-item-box ${item.purchased ? '' : 'locked'}`;
-          div.innerHTML = `<div style="font-size:1.6rem;">${item.icon}</div><div style="font-weight:700; font-size:0.75rem;">${item.name}</div><div style="font-size:0.75rem; font-weight:800; color:var(--btn-orange);">${item.purchased ? 'Owned 🎀' : `${item.cost} 🐾`}</div>${!item.purchased ? `<button type="button" class="btn-adopt">Adopt</button>` : ''}`;
-          if (!item.purchased) {
-            div.querySelector('button').addEventListener('click', () => {
-              if (state.game.pawPoints >= item.cost) {
-                state.game.pawPoints -= item.cost;
-                item.purchased = true;
-                saveState();
-                renderWorld();
-                alert(`Adopted ${item.name}! Melog loves it! ✨`);
-              } else alert(`Need ${item.cost - state.game.pawPoints} more 🐾 Paw Points!`);
-            });
-          }
-          cat.appendChild(div);
-        });
-      }
-    }
-
-    function renderStats() {
-      const streakHeader = document.getElementById('txt-stats-streak');
-      if (streakHeader) streakHeader.textContent = `${state.game.streak} Day Streak`;
-
-      const row = document.getElementById('weekly-tracker-row');
-      if (row) {
-        row.innerHTML = '';
-        const days = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
-        const today = new Date();
-        for (let i = 6; i >= 0; i--) {
-          const d = new Date();
-          d.setDate(today.getDate() - i);
-          const dStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
-          const done = (state.game.activeDays[dStr] || 0) > 0;
-          const div = document.createElement('div');
-          div.style.display = 'flex';
-          div.style.flexDirection = 'column';
-          div.style.alignItems = 'center';
-          div.style.gap = '0.25rem';
-          div.innerHTML = `<span style="font-size:0.7rem; font-weight:700;">${days[d.getDay()]}</span><div class="day-square ${done ? 'done' : ''}">${done ? '✓' : ''}</div>`;
-          row.appendChild(div);
-        }
-      }
-
-      const list = document.getElementById('session-log-list');
-      if (list) {
-        list.innerHTML = '';
-        if (state.game.sessionLogs.length === 0) {
-          list.innerHTML = `<div style="text-align:center; padding:0.8rem; font-size:0.75rem; opacity:0.7;">No study sessions logged today yet.</div>`;
-        } else {
-          state.game.sessionLogs.slice(0, 8).forEach(log => {
-            const item = document.createElement('div');
-            item.className = 'log-item-pill';
-            item.innerHTML = `<div><strong>${escapeHTML(log.subject)}</strong> &mdash; ${escapeHTML(log.task)}</div><div>${log.time} (${log.minutes}m)</div>`;
-            list.appendChild(item);
-          });
-        }
-      }
-    }
-
-    function initPlanner() {
-      const calc = document.getElementById('btn-calc-schedule');
-      if (calc) {
-        calc.addEventListener('click', () => {
-          const dateVal = document.getElementById('plan-date').value;
-          const buffer = parseInt(document.getElementById('plan-buffer').value, 10) || 0;
-          const amount = parseFloat(document.getElementById('plan-amount').value) || 0;
-          const unit = document.getElementById('plan-unit').value;
-          const pace = parseFloat(document.getElementById('plan-pace').value) || 1;
-
-          if (!dateVal) return alert('Please enter an exam date.');
-
-          const diffDays = Math.ceil((new Date(dateVal) - new Date()) / (1000 * 60 * 60 * 24));
-          const studyDays = Math.max(diffDays - buffer, 1);
-          const dailyUnits = Math.ceil(amount / studyDays);
-          const dailyPomos = Math.ceil(dailyUnits / pace);
-
-          document.getElementById('rx-content').innerHTML = `<p>📚 <strong>Remaining:</strong> ${amount} ${unit}</p><p>🗓️ <strong>Study Days:</strong> ${studyDays} days (${buffer} buffer days)</p><p>🎀 <strong>Daily Target:</strong> <strong>${dailyUnits} ${unit}/day</strong></p><p>🐱 <strong>Focus Blocks:</strong> <strong>${dailyPomos} Pomodoros/day</strong></p>`;
-          document.getElementById('rx-card').style.display = 'block';
-
-          const applyBtn = document.getElementById('btn-apply-plan-goal');
-          if (applyBtn) {
-            applyBtn.onclick = () => {
-              state.settings.dailyTarget = dailyPomos;
-              saveState();
-              alert(`Daily goal updated to ${dailyPomos} Pomodoros! 🌸`);
-              document.querySelector('.pf-dock-btn[data-tab="tab-timer"]').click();
-            };
-          }
-        });
-      }
-    }
-
-    async function syncWithSupabase() {
-      const { supaUrl, supaKey } = state.settings;
-      if (!supaUrl || !supaKey) return alert('Please enter your Supabase Project URL and Anon Key first.');
-
-      const badge = document.getElementById('sync-status-badge');
-      if (badge) badge.textContent = 'Syncing...';
-
-      try {
-        const res = await fetch(`${supaUrl}/rest/v1/purrmodoro_sync?id=eq.melog_user`, {
-          headers: { 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}` }
-        });
-
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.length > 0) {
-            const cloudData = data[0].state_payload;
-            if (cloudData.game && cloudData.game.totalPomodoros > state.game.totalPomodoros) {
-              state.game = cloudData.game;
-            }
-          }
-
-          await fetch(`${supaUrl}/rest/v1/purrmodoro_sync`, {
-            method: 'POST',
-            headers: {
-              'apikey': supaKey,
-              'Authorization': `Bearer ${supaKey}`,
-              'Content-Type': 'application/json',
-              'Prefer': 'resolution=merge-duplicates'
-            },
-            body: JSON.stringify({
-              id: 'melog_user',
-              state_payload: { game: state.game },
-              updated_at: new Date().toISOString()
-            })
-          });
-
-          if (badge) {
-            badge.textContent = 'Cloud Active';
-            badge.style.background = '#5EAA78';
-          }
-          saveState();
-          renderAll();
-          alert('Successfully synced with Supabase! ☁️');
-        } else {
-          if (badge) badge.textContent = 'Auth Error';
-        }
-      } catch (err) {
-        if (badge) badge.textContent = 'Offline';
-        alert('Supabase sync failed. Check your network or credentials.');
-      }
-    }
-
-    /* 60 FPS Procedural Pixel Canvas matching your exact reference landscape images */
-    function initCanvas() {
-      const canvas = document.getElementById('pixel-bg-canvas');
-      if (!canvas) return;
-      const ctx = canvas.getContext('2d');
-      let w, h;
-
-      const resize = () => {
-        w = canvas.width = window.innerWidth;
-        h = canvas.height = window.innerHeight;
-      };
-      window.addEventListener('resize', resize);
-      resize();
-
-      let particles = Array.from({ length: 30 }, () => ({
-        x: Math.random() * window.innerWidth,
-        y: Math.random() * window.innerHeight,
-        size: Math.random() * 3 + 2,
-        vx: (Math.random() - 0.5) * 0.4,
-        vy: Math.random() * 0.4 + 0.2
-      }));
-
-      function drawDetailedPine(x, y, scale, dark) {
-        ctx.fillStyle = dark ? '#112218' : '#321D16';
-        ctx.fillRect(x, y, 6 * scale, 42 * scale);
-
-        const pDark = dark ? '#0E291C' : '#234731';
-        const pMed = dark ? '#153A26' : '#316345';
-        const pLight = dark ? '#1D4F35' : '#45855B';
-
-        for (let i = 0; i < 5; i++) {
-          let tw = (32 - i * 5) * scale;
-          let th = 8 * scale;
-          let ty = y - i * 7 * scale - 4 * scale;
-          ctx.fillStyle = pDark;
-          ctx.fillRect(x - tw / 2 + 3 * scale, ty, tw, th);
-          ctx.fillStyle = pMed;
-          ctx.fillRect(x - tw / 2 + 5 * scale, ty, tw - 4 * scale, th - 3 * scale);
-          ctx.fillStyle = pLight;
-          ctx.fillRect(x - tw / 2 + 8 * scale, ty, tw - 10 * scale, 2 * scale);
-        }
-      }
-
-      function drawDetailedMountain(x, y, width, height, dark) {
-        ctx.fillStyle = dark ? '#182C48' : '#6A92AF';
-        ctx.beginPath();
-        ctx.moveTo(x, y);
-        ctx.lineTo(x + width / 2, y - height);
-        ctx.lineTo(x + width, y);
-        ctx.fill();
-
-        ctx.fillStyle = dark ? '#243D60' : '#88AFD2';
-        ctx.beginPath();
-        ctx.moveTo(x + width * 0.3, y - height * 0.6);
-        ctx.lineTo(x + width / 2, y - height);
-        ctx.lineTo(x + width * 0.45, y);
-        ctx.fill();
-
-        ctx.fillStyle = '#FFFFFF';
-        ctx.beginPath();
-        ctx.moveTo(x + width * 0.38, y - height * 0.62);
-        ctx.lineTo(x + width / 2, y - height);
-        ctx.lineTo(x + width * 0.62, y - height * 0.62);
-        ctx.lineTo(x + width * 0.5, y - height * 0.48);
-        ctx.fill();
-      }
-
-      function drawSunsetCloud(x, y, w_val, h_val) {
-        ctx.fillStyle = '#F8AD9D';
-        ctx.fillRect(x, y, w_val, h_val);
-        ctx.fillStyle = '#FBC4AB';
-        ctx.fillRect(x + 10, y - 8, w_val - 20, 10);
-        ctx.fillStyle = '#FFE5D9';
-        ctx.fillRect(x + 25, y - 14, w_val - 50, 8);
-      }
-
-      function renderScenery() {
-        ctx.clearRect(0, 0, w, h);
-        const dark = state.settings.darkMode;
-        const biome = state.settings.currentBiome;
-
-        let sky = ctx.createLinearGradient(0, 0, 0, h);
-        if (dark) {
-          sky.addColorStop(0, '#0B101B');
-          sky.addColorStop(0.65, '#172236');
-          sky.addColorStop(1, '#233852');
-        } else if (biome === 'forest') {
-          sky.addColorStop(0, '#5899C5');
-          sky.addColorStop(0.55, '#89BFE0');
-          sky.addColorStop(1, '#C2E3F1');
-        } else if (biome === 'mountain') {
-          sky.addColorStop(0, '#3A74B3');
-          sky.addColorStop(0.6, '#649ACF');
-          sky.addColorStop(1, '#B3D4EE');
-        } else if (biome === 'sunset') {
-          sky.addColorStop(0, '#3F376B');
-          sky.addColorStop(0.5, '#735E8E');
-          sky.addColorStop(1, '#D8A4BE');
-        } else {
-          sky.addColorStop(0, '#FEE5ED');
-          sky.addColorStop(0.6, '#F8CAD9');
-          sky.addColorStop(1, '#D8EAE4');
-        }
-        ctx.fillStyle = sky;
-        ctx.fillRect(0, 0, w, h);
-
-        if (biome === 'forest') {
-          drawSunsetCloud(w * 0.05, h * 0.08, 140, 26, dark ? 0.2 : 0.85);
-          drawSunsetCloud(w * 0.55, h * 0.05, 180, 32, dark ? 0.2 : 0.9);
-
-          ctx.fillStyle = '#8AB07A';
-          ctx.fillRect(0, h * 0.38, w, 70);
-          ctx.fillStyle = '#5A8850';
-          ctx.fillRect(0, h * 0.44, w, 60);
-
-          for (let x = -15; x < w * 0.38; x += 24) {
-            drawDetailedPine(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.45, dark);
-          }
-          for (let x = w * 0.62; x < w + 20; x += 24) {
-            drawDetailedPine(x, h * 0.52 + (Math.abs(x) % 3) * 10, 1.45, dark);
-          }
-        } 
-        else if (biome === 'mountain') {
-          drawDetailedMountain(w * 0.15, h * 0.62, 340, 220, dark);
-
-          ctx.fillStyle = 'rgba(255,255,255,0.75)';
-          ctx.fillRect(0, h * 0.58, w, 35);
-        }
-        else if (biome === 'sunset') {
-          drawSunsetCloud(w * 0.1, h * 0.2, 220, 60);
-          drawSunsetCloud(w * 0.45, h * 0.45, 260, 70);
-
-          ctx.fillStyle = '#2C1E2B';
-          ctx.fillRect(0, h * 0.72, w, h * 0.3);
-        }
-        else {
-          ctx.fillStyle = dark ? '#1A1426' : '#E0B5C6';
-          ctx.beginPath();
-          ctx.arc(w * 0.3, h * 0.75, w * 0.5, 0, Math.PI * 2);
-          ctx.fill();
-        }
-
-        particles.forEach(p => {
-          p.x += p.vx;
-          p.y += p.vy;
-          if (p.y > h) { p.y = -10; p.x = Math.random() * w; }
-          ctx.fillStyle = dark ? 'rgba(255,255,255,0.45)' : 'rgba(255,255,255,0.75)';
-          ctx.fillRect(p.x, p.y, p.size, p.size);
-        });
-
-        requestAnimationFrame(renderScenery);
-      }
-      renderScenery();
-    }
-
-    function playTone(freq, dur) {
-      if (!state.settings.soundEnabled) return;
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        osc.type = 'sine';
-        osc.frequency.setValueAtTime(freq, ctx.currentTime);
-        gain.gain.setValueAtTime(0.15, ctx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
-        osc.connect(gain); gain.connect(ctx.destination);
-        osc.start(); osc.stop(ctx.currentTime + dur);
-      } catch (e) {}
-    }
-
-    function playFanfare() {
-      if (!state.settings.soundEnabled) return;
-      [587.33, 783.99, 1046.50].forEach((freq, i) => {
-        setTimeout(() => playTone(freq, 0.3), i * 130);
-      });
-    }
-
-    function escapeHTML(str) {
-      return str.replace(/[&<>'"]/g, t => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[t] || t));
-    }
-  </script>
-</body>
-</html>
+                    <!-- UPDATED SECTION FOR DUAL TRACKING -->
+                    <div class="grid-2">
+                        <div class="form-item">
+                            <label for="plan-amount-pages">Pages Left</label>
+                            <input type="number" id="plan-amount-pages" class="med-input" value="0" min="0" />
+                        </div>
+                        <div class="form-item">
+                            <label for="plan-amount-anki">Anki Cards Left</label>
+                            <input type="number" id="plan-amount-anki" class="med-input" value="0" min="0" />
+                        </div>
+                    </div>
+                    <!-- END UPDATED SECTION -->
+
+                    <div class="grid-2">
+                        <div class="form-item">
+                            <label for="plan-pace-pages">Pages / Pomo</label>
+                            <input type="number" id="plan-pace-pages" class="med-input" value="5" min="1" />
+                        </div>
+                        <div class="form-item">
+                            <label for="plan-pace-anki">Anki / Pomo</label>
+                            <input type="number" id="plan-pace-anki" class="med-input" value="25" min="1" />
+                        </div>
+                    </div>
+
+                    <button type="button" class="btn-action-wide" id="btn-calc-schedule" style="margin-top:0.35rem;">
+                        Generate Schedule 🩺
+                    </button>
+                </div>
+
+                <div class="pf-item-box" id="rx-card" style="display: none; width:100%; text-align:left;">
+                    <div style="font-weight: 800; border-bottom: 2px dashed rgba(0,0,0,0.15); padding-bottom: 0.35rem; display: flex; justify-content: space-between;">
+                        <span>Rx Prescription</span>
+                        <span id="rx-finish-date"></span>
+                    </div>
+                    <div id="rx-content" style="padding: 0.65rem 0; font-family: var(--font-ui); font-size: 0.85rem;"></div>
+                </div>
+            </section>
+
+            <!-- ================= TAB 3: SANCTUARY & STORE ================= -->
+            <section id="tab-world" class="view-panel">
+                <h2 class="section-heading">🏡 Sanctuary &amp; Gear</h2>
+                <div class="grid-2" id="world-map-grid"></div>
+
+                <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">🐾 Adopt Gear with Paw Points</h3>
+                <div class="grid-2" id="furniture-catalog-grid"></div>
+            </section>
+
+            <!-- ================= TAB 4: STATS ================= -->
+            <section id="tab-stats" class="view-panel">
+                <h2 class="section-heading">📊 Progress &amp; Streaks</h2>
+                <div class="pf-item-box" style="display:flex; align-items:center; gap:0.75rem; width:100%;">
+                    <span style="font-size: 2.2rem;">🔥</span>
+                    <div style="text-align:left;">
+                        <h3 id="txt-stats-streak">1 Day Streak</h3>
+                        <p style="font-size: 0.78rem; opacity: 0.8;">Melog is cheering you on!</p>
+                    </div>
+                </div>
+
+                <div class="week-row-dots" id="weekly-tracker-row"></div>
+
+                <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">Session History</h3>
+                <div class="log-scroll-area" id="session-log-list"></div>
+            </section>
+
+            <!-- ================= TAB 5: SETTINGS & SUPABASE CLOUD SYNC ================= -->
+            <section id="tab-settings" class="view-panel">
+                <h2 class="section-heading">⚙️ Preferences &amp; API Sync</h2>
+                
+                <div class="pf-item-box" style="width:100%; text-align:left; margin-bottom:0.5rem;">
+                    <div style="font-weight: 800; font-size: 0.85rem; margin-bottom: 0.35rem; display:flex; justify-content:space-between; align-items:center;">
+                        <span>☁️ Supabase Cloud Sync</span>
+                        <span id="sync-status-badge" style="font-size:0.65rem; background:var(--btn-orange); color:#fff; padding:0.15rem 0.4rem; border-radius:6px;">Local Mode</span>
+                    </div>
+                    <p style="font-size: 0.72rem; color:var(--pf-muted, #666); margin-bottom:0.5rem;">Enter your Supabase API credentials to sync your stats across devices.</p>
+                    <div class="form-col">
+                        <div class="form-item">
+                            <label for="cfg-supa-url">Project URL</label>
+                            <input type="text" id="cfg-supa-url" class="med-input" placeholder="https://xyz.supabase.co" />
+                        </div>
+                        <div class="form-item">
+                            <label for="cfg-supa-key">Anon API Key</label>
+                            <input type="password" id="cfg-supa-key" class="med-input" placeholder="eyJhbGciOi..." />
+                        </div>
+                        <button type="button" class="btn-action-wide" id="btn-save-cloud" style="padding:0.5rem; font-size:0.75rem; margin-top:0.25rem;">Connect &amp; Sync Now 🔄</button>
+                    </div>
+                </div>
+
+                <form id="settings-form" class="form-col">
+                    <div class="form-item">
+                        <label for="cfg
