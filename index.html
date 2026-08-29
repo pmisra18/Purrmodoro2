@@ -13,14 +13,30 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Parallax Background Container (Z-Index 0) -->
-    <div class="parallax-bg-container" id="parallax-bg-container">
-        <!-- Canvas renders background animation layers -->
-        <canvas id="pixel-bg-canvas"></canvas>
+    <!-- Parallax Background Container -->
+    <div class="parallax-bg-container" id="parallax-container">
+        <div class="sky-layer"></div>
+        <div class="clouds-layer"></div>
+        <div class="mountains-layer"></div>
+        <div class="trees-layer"></div>
     </div>
 
-    <!-- App Shell Container (Z-Index 10 - Floats on top) -->
+    <!-- App Shell Container -->
     <div class="app-shell">
+        
+        <!-- ================= GAMIFIED LEVEL & PAW POINTS BAR ================= -->
+        <div class="user-status-bar">
+            <div class="status-pill">
+               <span>⭐ Lvl <strong id="val-level">1</strong></span>
+            </div>
+            <div class="status-pill">
+               <span>🐾 <strong id="val-paws">0</strong> Paws</span>
+            </div>
+            <div class="status-pill" style="flex: 1;">
+               <div class="mini-xp-bar"><div id="mini-xp-fill" style="width: 0%;"></div></div>
+            </div>
+        </div>
+
         <main class="pomofox-glass-card">
             
             <!-- ================= TAB 1: TIMER ================= -->
@@ -166,10 +182,16 @@
 
             <!-- ================= TAB 3: SANCTUARY & STORE ================= -->
             <section id="tab-world" class="view-panel">
-                <h2 class="section-heading">🏡 Sanctuary &amp; Gear</h2>
-                <div class="grid-2" id="world-map-grid"></div>
+                <h2 class="section-heading">🏡 Melog's Sanctuary</h2>
+                <p style="font-size:0.75rem; text-align:center; opacity:0.8; margin-bottom:0.5rem;">Adopt items with Paw Points to decorate your study room!</p>
+                
+                <!-- Interactive Sanctuary Room Display Box -->
+                <div class="sanctuary-room-stage" id="sanctuary-stage">
+                    <div class="sanctuary-pet">🐱</div>
+                    <div id="sanctuary-placed-items" class="sanctuary-items-container"></div>
+                </div>
 
-                <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">🐾 Adopt Gear with Paw Points</h3>
+                <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">🐾 Sanctuary Store</h3>
                 <div class="grid-2" id="furniture-catalog-grid"></div>
             </section>
 
@@ -190,26 +212,26 @@
                 <div class="log-scroll-area" id="session-log-list"></div>
             </section>
 
-            <!-- ================= TAB 5: SETTINGS & SUPABASE CLOUD SYNC ================= -->
+            <!-- ================= TAB 5: SETTINGS & JSONBIN SYNC ================= -->
             <section id="tab-settings" class="view-panel">
-                <h2 class="section-heading">⚙️ Preferences &amp; API Sync</h2>
+                <h2 class="section-heading">⚙️ Preferences &amp; Sync</h2>
                 
                 <div class="pf-item-box" style="width:100%; text-align:left; margin-bottom:0.5rem;">
                     <div style="font-weight: 800; font-size: 0.85rem; margin-bottom: 0.35rem; display:flex; justify-content:space-between; align-items:center;">
-                        <span>☁️ Supabase Cloud Sync</span>
+                        <span>📦 JSONBin Cloud Sync</span>
                         <span id="sync-status-badge" style="font-size:0.65rem; background:var(--btn-orange); color:#fff; padding:0.15rem 0.4rem; border-radius:6px;">Local Mode</span>
                     </div>
-                    <p style="font-size: 0.72rem; color:var(--pf-muted, #666); margin-bottom:0.5rem;">Enter your Supabase API credentials to sync your stats across devices.</p>
+                    <p style="font-size: 0.72rem; color:var(--pf-muted, #666); margin-bottom:0.5rem;">Enter your JSONBin Master Key and Bin ID to sync across Windows, iPhone &amp; iPad.</p>
                     <div class="form-col">
                         <div class="form-item">
-                            <label for="cfg-supa-url">Project URL</label>
-                            <input type="text" id="cfg-supa-url" class="med-input" placeholder="https://xyz.supabase.co" />
+                            <label for="cfg-jsonbin-key">Master Key ($2a$10$...)</label>
+                            <input type="password" id="cfg-jsonbin-key" class="med-input" placeholder="Enter Master Key" />
                         </div>
                         <div class="form-item">
-                            <label for="cfg-supa-key">Anon API Key</label>
-                            <input type="password" id="cfg-supa-key" class="med-input" placeholder="eyJhbGciOi..." />
+                            <label for="cfg-jsonbin-id">Bin ID</label>
+                            <input type="text" id="cfg-jsonbin-id" class="med-input" placeholder="Enter Bin ID" />
                         </div>
-                        <button type="button" class="btn-action-wide" id="btn-save-cloud" style="padding:0.5rem; font-size:0.75rem; margin-top:0.25rem;">Connect &amp; Sync Now 🔄</button>
+                        <button type="button" class="btn-action-wide" id="btn-save-cloud" style="padding:0.5rem; font-size:0.75rem; margin-top:0.25rem;">Sync with JSONBin 🔄</button>
                     </div>
                 </div>
 
