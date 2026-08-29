@@ -13,10 +13,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <!-- Master Indie Game Illustrated Environment Canvas -->
     <canvas id="pixel-bg-canvas"></canvas>
 
     <div class="app-shell">
         
+        <!-- Gamified Level & Paw Points Bar -->
         <div class="user-status-bar">
             <div class="status-pill">
                <span>⭐ Lvl <strong id="val-level">1</strong></span>
@@ -31,6 +33,7 @@
 
         <main class="pomofox-glass-card">
             
+            <!-- ================= TAB 1: TIMER ================= -->
             <section id="tab-timer" class="view-panel active">
                 
                 <div class="top-controls-bar">
@@ -52,6 +55,7 @@
                     <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
                 </div>
 
+                <!-- Timer Circle Stage -->
                 <div class="timer-circle-stage">
                     <svg class="circle-svg" viewBox="0 0 300 300">
                         <circle cx="150" cy="150" r="133" class="circle-bg-ring" />
@@ -60,6 +64,7 @@
 
                     <div class="timer-digits-text" id="timer-readout">25:00</div>
 
+                    <!-- Orbit Arm with Melog Integrated Into Game World -->
                     <div class="orbit-arm" id="orbit-arm">
                         <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
                             
@@ -120,6 +125,7 @@
                 </div>
             </section>
 
+            <!-- ================= TAB 2: PLANNER ================= -->
             <section id="tab-planner" class="view-panel">
                 <h2 class="section-heading">🩷 Study Planner</h2>
                 <div class="form-col">
@@ -168,6 +174,7 @@
                 </div>
             </section>
 
+            <!-- ================= TAB 3: SANCTUARY & STORE ================= -->
             <section id="tab-world" class="view-panel">
                 <h2 class="section-heading">🏡 Melog's Sanctuary</h2>
                 <p style="font-size:0.72rem; text-align:center; opacity:0.8; margin-bottom:0.4rem;">Adopt room upgrades to customize Melog's study space!</p>
@@ -181,6 +188,7 @@
                 <div class="grid-2" id="furniture-catalog-grid"></div>
             </section>
 
+            <!-- ================= TAB 4: ADVANCED STATS ================= -->
             <section id="tab-stats" class="view-panel">
                 <h2 class="section-heading">📊 Detailed Analytics</h2>
                 
@@ -206,6 +214,7 @@
                 <div class="log-scroll-area" id="session-log-list"></div>
             </section>
 
+            <!-- ================= TAB 5: SETTINGS & SYNC ================= -->
             <section id="tab-settings" class="view-panel">
                 <h2 class="section-heading">⚙️ Preferences &amp; Sync</h2>
                 
@@ -247,6 +256,7 @@
 
         </main>
 
+        <!-- Bottom Dock Navigation -->
         <nav class="pf-bottom-dock">
             <button type="button" class="pf-dock-btn active" data-tab="tab-timer">
                 <span class="dock-ico">⏱️</span>
