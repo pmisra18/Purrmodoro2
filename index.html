@@ -29,26 +29,17 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23F28C28"><path d="M12 13.5c-2.5 0-4.5 2-4.5 4.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5z" /><ellipse cx="6" cy="11.5" rx="2" ry="3" transform="rotate(-30 6 11.5)"/><ellipse cx="9.5" cy="7.5" rx="2" ry="3" transform="rotate(-10 9.5 7.5)"/><ellipse cx="14.5" cy="7.5" rx="2" ry="3" transform="rotate(10 14.5 7.5)"/><ellipse cx="18" cy="11.5" rx="2" ry="3" transform="rotate(30 18 11.5)"/></svg>') !important;
         }
 
-        /* 2. Sleep Animation for Timer (Triggers when not running) */
-        body:not(.timer-running) .px-cat-master {
-            transform: translateY(4px) scaleY(0.85); /* Crouches down */
-            transition: all 0.5s ease-in-out;
-            transform-origin: bottom center;
-        }
-        body:not(.timer-running) .px-head {
-            transform: translateY(2px) rotate(12deg); /* Rests head */
-            transition: all 0.5s ease-in-out;
-        }
-        /* Floating Zzzs */
+        /* 2. Sleep System: Swapping Sprites & Zzzs */
+        .melog-awake { display: block; }
+        .melog-asleep { display: none; }
+        
+        body:not(.timer-running) .melog-awake { display: none; }
+        body:not(.timer-running) .melog-asleep { display: block; }
+
         .zzz-container {
-            position: absolute;
-            top: -20px;
-            right: -10px;
-            font-family: var(--font-pixel);
-            font-size: 0.8rem;
-            color: #A6CFE2;
-            opacity: 0;
-            pointer-events: none;
+            position: absolute; top: -20px; right: -10px;
+            font-family: var(--font-pixel); font-size: 0.8rem;
+            color: #A6CFE2; opacity: 0; pointer-events: none;
         }
         body:not(.timer-running) .zzz-container {
             opacity: 1;
@@ -60,86 +51,61 @@
             100% { transform: translateY(-20px) scale(1.2) translateX(10px); opacity: 0; }
         }
 
-        /* 3. Bigger, Realistic Sanctuary Room */
+        /* 3. Cozy Sanctuary Room (Taller, better desk) */
         .sanctuary-room-stage {
-            height: 220px !important; /* Taller room */
+            height: 220px !important;
             background: linear-gradient(to bottom, #d6e8f5 60%, #b5ccdf 60%, #b5ccdf 63%, #a27b6c 63%, #a27b6c 100%) !important;
             border: 4px solid rgba(0,0,0,0.15) !important;
             position: relative;
-            display: block !important; /* Remove grid to allow absolute positioning */
+            display: block !important;
         }
         
-        /* Pixel Decor: Poster & Window */
         .pixel-poster {
-            position: absolute; top: 15px; left: 15px;
-            width: 25px; height: 35px; background: white;
-            border: 2px solid #555; display: flex; align-items: center; justify-content: center;
-            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+            position: absolute; top: 15px; left: 15px; width: 25px; height: 35px; background: white;
+            border: 2px solid #555; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
         }
         .pixel-cross {
             width: 14px; height: 14px; background: #ff6b6b;
             clip-path: polygon(33% 0, 66% 0, 66% 33%, 100% 33%, 100% 66%, 66% 66%, 66% 100%, 33% 100%, 33% 66%, 0 66%, 0 33%, 33% 33%);
         }
         .pixel-window {
-            position: absolute; top: 20px; right: 25px;
-            width: 40px; height: 50px; background: #87CEEB;
-            border: 3px solid #FFF; box-shadow: inset 0 0 10px rgba(255,255,255,0.5), 2px 2px 0 rgba(0,0,0,0.1);
-            overflow: hidden;
+            position: absolute; top: 20px; right: 25px; width: 40px; height: 50px; background: #87CEEB;
+            border: 3px solid #FFF; box-shadow: inset 0 0 10px rgba(255,255,255,0.5), 2px 2px 0 rgba(0,0,0,0.1); overflow: hidden;
         }
-        .pixel-window::after {
-            content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: #FFF;
-        }
-        .pixel-window::before {
-            content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: #FFF;
-        }
+        .pixel-window::after { content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: #FFF; }
+        .pixel-window::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: #FFF; }
         
-        /* Pixel Desk */
         .pixel-desk {
-            position: absolute;
-            bottom: 30px; /* Floor level */
-            right: 15px;
-            width: 110px; height: 50px;
-            background: #D2B48C; /* Wood top */
-            border-top: 4px solid #C19A6B;
-            border-left: 3px solid #8B5A2B;
-            border-right: 3px solid #8B5A2B;
-            box-shadow: -5px 10px 0 rgba(0,0,0,0.08);
-            z-index: 2;
+            position: absolute; bottom: 30px; right: 15px; width: 110px; height: 50px; background: #D2B48C;
+            border-top: 4px solid #C19A6B; border-left: 3px solid #8B5A2B; border-right: 3px solid #8B5A2B; box-shadow: -5px 10px 0 rgba(0,0,0,0.08); z-index: 2;
         }
-        /* Desk Legs */
-        .pixel-desk::before, .pixel-desk::after {
-            content: ''; position: absolute; top: 100%; width: 8px; height: 30px; background: #5C4033;
-        }
-        .pixel-desk::before { left: 5px; }
-        .pixel-desk::after { right: 5px; }
+        .pixel-desk::before, .pixel-desk::after { content: ''; position: absolute; top: 100%; width: 8px; height: 30px; background: #5C4033; }
+        .pixel-desk::before { left: 5px; } .pixel-desk::after { right: 5px; }
 
-        /* Realistic Item Placement (Items sit on desk/floor) */
+        /* 4. Smart Item Placement System */
         #sanctuary-placed-items {
-            position: absolute;
-            bottom: 30px; /* Same level as desk top */
-            width: 100%;
-            display: flex;
-            align-items: flex-end; /* Anchors items to the bottom */
-            justify-content: space-around;
-            padding: 0 15px;
-            z-index: 4;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none;
         }
         #sanctuary-placed-items > * {
-            max-height: 40px; /* Scales down items like coffee to fit desk */
-            image-rendering: pixelated;
+            position: absolute; image-rendering: pixelated; pointer-events: auto;
         }
+        /* Item 1 goes on the Desk (Coffee, Books) */
+        #sanctuary-placed-items > :nth-child(1) { right: 25px; bottom: 78px; max-height: 25px; max-width: 25px; }
+        /* Item 2 goes in the corner floor (Plants, lamps) */
+        #sanctuary-placed-items > :nth-child(2) { left: 15px; bottom: 25px; max-height: 45px; }
+        /* Item 3 goes on the wall (Clocks, art) */
+        #sanctuary-placed-items > :nth-child(3) { left: 42%; top: 15px; max-height: 35px; }
+        /* Item 4 goes on the floor center (Rugs, beds) */
+        #sanctuary-placed-items > :nth-child(4) { left: 35%; bottom: 15px; max-height: 30px; }
+        /* Item 5 goes next to the desk */
+        #sanctuary-placed-items > :nth-child(n+5) { right: 80px; bottom: 25px; max-height: 35px; }
 
-        /* 4. Realistic Walking Animation for Sanctuary Melog */
+        /* 5. Realistic Walking Animation for Sanctuary Melog */
         .sanctuary-pet {
-            position: absolute;
-            bottom: 25px; /* Walking on the floor */
-            width: 60px;
-            height: 60px;
-            z-index: 5;
+            position: absolute; bottom: 25px; width: 60px; height: 60px; z-index: 5;
             animation: wanderMelog 14s infinite linear;
         }
         
-        /* Apply timer leg animations to the walking sanctuary Melog */
         .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 8px 11px; }
         .sanctuary-pet .px-leg-fl { animation: strideFrontLeft 1.2s infinite; transform-origin: 8px 8px; }
         .sanctuary-pet .px-leg-fr { animation: strideFrontRight 1.2s infinite; transform-origin: 8px 8px; }
@@ -147,13 +113,17 @@
         .sanctuary-pet .px-leg-br { animation: strideBackRight 1.2s infinite; transform-origin: 4px 8px; }
         .sanctuary-pet .px-balanced-tail { animation: attachedTailSway 1.2s infinite ease-in-out; transform-origin: 3px 6px; }
 
-        /* Left/Right pacing across the room */
         @keyframes wanderMelog {
             0% { left: 5%; transform: scaleX(1); }
-            45% { left: 65%; transform: scaleX(1); }
-            50% { left: 65%; transform: scaleX(-1); }
+            45% { left: 60%; transform: scaleX(1); }
+            50% { left: 60%; transform: scaleX(-1); }
             95% { left: 5%; transform: scaleX(-1); }
             100% { left: 5%; transform: scaleX(1); }
+        }
+        
+        /* Make sleeping Melog sit still in Sanctuary */
+        body:not(.timer-running) .sanctuary-pet {
+            animation: none; left: 15%; /* Drops to sleep in the left corner */
         }
     </style>
 </head>
@@ -180,6 +150,7 @@
                 
                 <div class="top-controls-bar">
                     <button type="button" class="pf-btn-icon btn-orange" id="btn-timer-toggle" title="Start / Pause">▶</button>
+                    <button type="button" class="pf-btn-icon btn-dark" id="btn-timer-skip" title="Skip Session/Break">⏭️</button>
                     <button type="button" class="pf-btn-icon btn-dark" id="btn-timer-reset" title="Reset Timer">🔄</button>
                     <button type="button" class="pf-btn-icon btn-orange" id="btn-sound-toggle" title="Mute / Unmute">🔊</button>
                     <button type="button" class="pf-btn-icon btn-dark" id="btn-theme-toggle" title="Dark Mode Toggle">🌙</button>
@@ -208,46 +179,34 @@
                     <div class="orbit-arm" id="orbit-arm">
                         <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
                             <div class="zzz-container">Zzz...</div>
-                            <svg viewBox="0 0 16 16" class="pixel-melog-svg">
+                            
+                            <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-awake">
                                 <g class="px-cat-master">
-                                    <g class="px-balanced-tail">
-                                        <rect x="2" y="6" width="2" height="2" fill="#2C1E16" />
-                                        <rect x="1" y="5" width="2" height="2" fill="#F4C28D" />
-                                        <rect x="0" y="3" width="2" height="2" fill="#D9965B" />
-                                        <rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" />
-                                    </g>
+                                    <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
                                     <g class="px-leg-bl"><rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
                                     <g class="px-leg-fl"><rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    <g class="px-torso">
-                                        <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
-                                        <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
-                                        <rect x="10" y="7" width="1" height="3" fill="#2C1E16" />
-                                        <rect x="3" y="10" width="7" height="1" fill="#2C1E16" />
-                                        <rect x="3" y="7" width="5" height="3" fill="#F4C28D" />
-                                        <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
-                                        <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
-                                    </g>
+                                    <g class="px-torso"><rect x="3" y="6" width="7" height="1" fill="#2C1E16" /><rect x="2" y="7" width="1" height="3" fill="#2C1E16" /><rect x="10" y="7" width="1" height="3" fill="#2C1E16" /><rect x="3" y="10" width="7" height="1" fill="#2C1E16" /><rect x="3" y="7" width="5" height="3" fill="#F4C28D" /><rect x="4" y="7" width="1" height="2" fill="#D9965B" /><rect x="8" y="7" width="2" height="3" fill="#FFFFFF" /></g>
                                     <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
                                     <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    
-                                    <g class="px-head">
-                                        <rect x="6" y="1" width="2" height="3" fill="#2C1E16" />
-                                        <rect x="7" y="2" width="1" height="2" fill="#F4C28D" />
-                                        <rect x="7" y="2" width="1" height="1" fill="#FCAEBA" />
-                                        <rect x="10" y="1" width="2" height="3" fill="#2C1E16" />
-                                        <rect x="10" y="2" width="1" height="2" fill="#F4C28D" />
-                                        <rect x="10" y="2" width="1" height="1" fill="#FCAEBA" />
-                                        <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
-                                        <rect x="6" y="4" width="1" height="4" fill="#2C1E16" />
-                                        <rect x="13" y="5" width="1" height="3" fill="#2C1E16" />
-                                        <rect x="8" y="3" width="4" height="1" fill="#2C1E16" />
-                                        <rect x="7" y="8" width="5" height="1" fill="#2C1E16" />
-                                        <rect x="9" y="4" width="1" height="1" fill="#D9965B" />
-                                        <rect x="10" y="5" width="1" height="1" fill="#2C1E16" />
-                                        <rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
-                                        <rect x="11" y="6" width="2" height="2" fill="#FFFFFF" />
-                                        <rect x="12" y="6" width="1" height="1" fill="#E88894" />
-                                    </g>
+                                    <g class="px-head"><rect x="6" y="1" width="2" height="3" fill="#2C1E16" /><rect x="7" y="2" width="1" height="2" fill="#F4C28D" /><rect x="7" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="10" y="1" width="2" height="3" fill="#2C1E16" /><rect x="10" y="2" width="1" height="2" fill="#F4C28D" /><rect x="10" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="7" y="4" width="6" height="4" fill="#F4C28D" /><rect x="6" y="4" width="1" height="4" fill="#2C1E16" /><rect x="13" y="5" width="1" height="3" fill="#2C1E16" /><rect x="8" y="3" width="4" height="1" fill="#2C1E16" /><rect x="7" y="8" width="5" height="1" fill="#2C1E16" /><rect x="9" y="4" width="1" height="1" fill="#D9965B" /><rect x="10" y="5" width="1" height="1" fill="#2C1E16" /><rect x="10" y="4" width="1" height="1" fill="#9CBD38" /><rect x="11" y="6" width="2" height="2" fill="#FFFFFF" /><rect x="12" y="6" width="1" height="1" fill="#E88894" /></g>
+                                </g>
+                            </svg>
+
+                            <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-asleep">
+                                <g class="px-sleep-master">
+                                    <rect x="3" y="11" width="10" height="3" fill="#2C1E16" />
+                                    <rect x="4" y="8" width="8" height="3" fill="#2C1E16" />
+                                    <rect x="5" y="8" width="4" height="3" fill="#F4C28D" />
+                                    <rect x="10" y="9" width="2" height="3" fill="#D9965B" />
+                                    <rect x="5" y="12" width="6" height="2" fill="#FFFFFF" />
+                                    <rect x="2" y="10" width="2" height="4" fill="#D9965B" />
+                                    <rect x="3" y="13" width="2" height="1" fill="#FFFFFF" />
+                                    <rect x="2" y="14" width="5" height="1" fill="#D9965B" />
+                                    <rect x="10" y="11" width="4" height="3" fill="#2C1E16" />
+                                    <rect x="11" y="12" width="2" height="2" fill="#F4C28D" />
+                                    <rect x="10" y="9" width="1" height="2" fill="#2C1E16" />
+                                    <rect x="13" y="10" width="1" height="1" fill="#2C1E16" />
+                                    <rect x="11" y="13" width="2" height="1" fill="#111" />
                                 </g>
                             </svg>
                         </div>
@@ -325,51 +284,40 @@
                     <div class="pixel-desk"></div>
 
                     <div class="sanctuary-pet">
-                        <svg viewBox="0 0 16 16" class="pixel-melog-svg" style="width: 100%; height: 100%; image-rendering: pixelated;">
+                        <div class="zzz-container">Zzz...</div>
+                        
+                        <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-awake" style="width: 100%; height: 100%; image-rendering: pixelated;">
                             <g class="px-cat-master">
-                                <g class="px-balanced-tail">
-                                    <rect x="2" y="6" width="2" height="2" fill="#2C1E16" />
-                                    <rect x="1" y="5" width="2" height="2" fill="#F4C28D" />
-                                    <rect x="0" y="3" width="2" height="2" fill="#D9965B" />
-                                    <rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" />
-                                </g>
+                                <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
                                 <g class="px-leg-bl"><rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
                                 <g class="px-leg-fl"><rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                <g class="px-torso">
-                                    <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
-                                    <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
-                                    <rect x="10" y="7" width="1" height="3" fill="#2C1E16" />
-                                    <rect x="3" y="10" width="7" height="1" fill="#2C1E16" />
-                                    <rect x="3" y="7" width="5" height="3" fill="#F4C28D" />
-                                    <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
-                                    <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
-                                </g>
+                                <g class="px-torso"><rect x="3" y="6" width="7" height="1" fill="#2C1E16" /><rect x="2" y="7" width="1" height="3" fill="#2C1E16" /><rect x="10" y="7" width="1" height="3" fill="#2C1E16" /><rect x="3" y="10" width="7" height="1" fill="#2C1E16" /><rect x="3" y="7" width="5" height="3" fill="#F4C28D" /><rect x="4" y="7" width="1" height="2" fill="#D9965B" /><rect x="8" y="7" width="2" height="3" fill="#FFFFFF" /></g>
                                 <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
                                 <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                
-                                <g class="px-head">
-                                    <rect x="6" y="1" width="2" height="3" fill="#2C1E16" />
-                                    <rect x="7" y="2" width="1" height="2" fill="#F4C28D" />
-                                    <rect x="7" y="2" width="1" height="1" fill="#FCAEBA" />
-                                    <rect x="10" y="1" width="2" height="3" fill="#2C1E16" />
-                                    <rect x="10" y="2" width="1" height="2" fill="#F4C28D" />
-                                    <rect x="10" y="2" width="1" height="1" fill="#FCAEBA" />
-                                    <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
-                                    <rect x="6" y="4" width="1" height="4" fill="#2C1E16" />
-                                    <rect x="13" y="5" width="1" height="3" fill="#2C1E16" />
-                                    <rect x="8" y="3" width="4" height="1" fill="#2C1E16" />
-                                    <rect x="7" y="8" width="5" height="1" fill="#2C1E16" />
-                                    <rect x="9" y="4" width="1" height="1" fill="#D9965B" />
-                                    <rect x="10" y="5" width="1" height="1" fill="#2C1E16" />
-                                    <rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
-                                    <rect x="11" y="6" width="2" height="2" fill="#FFFFFF" />
-                                    <rect x="12" y="6" width="1" height="1" fill="#E88894" />
-                                </g>
+                                <g class="px-head"><rect x="6" y="1" width="2" height="3" fill="#2C1E16" /><rect x="7" y="2" width="1" height="2" fill="#F4C28D" /><rect x="7" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="10" y="1" width="2" height="3" fill="#2C1E16" /><rect x="10" y="2" width="1" height="2" fill="#F4C28D" /><rect x="10" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="7" y="4" width="6" height="4" fill="#F4C28D" /><rect x="6" y="4" width="1" height="4" fill="#2C1E16" /><rect x="13" y="5" width="1" height="3" fill="#2C1E16" /><rect x="8" y="3" width="4" height="1" fill="#2C1E16" /><rect x="7" y="8" width="5" height="1" fill="#2C1E16" /><rect x="9" y="4" width="1" height="1" fill="#D9965B" /><rect x="10" y="5" width="1" height="1" fill="#2C1E16" /><rect x="10" y="4" width="1" height="1" fill="#9CBD38" /><rect x="11" y="6" width="2" height="2" fill="#FFFFFF" /><rect x="12" y="6" width="1" height="1" fill="#E88894" /></g>
+                            </g>
+                        </svg>
+
+                        <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-asleep" style="width: 100%; height: 100%; image-rendering: pixelated;">
+                            <g class="px-sleep-master">
+                                <rect x="3" y="11" width="10" height="3" fill="#2C1E16" />
+                                <rect x="4" y="8" width="8" height="3" fill="#2C1E16" />
+                                <rect x="5" y="8" width="4" height="3" fill="#F4C28D" />
+                                <rect x="10" y="9" width="2" height="3" fill="#D9965B" />
+                                <rect x="5" y="12" width="6" height="2" fill="#FFFFFF" />
+                                <rect x="2" y="10" width="2" height="4" fill="#D9965B" />
+                                <rect x="3" y="13" width="2" height="1" fill="#FFFFFF" />
+                                <rect x="2" y="14" width="5" height="1" fill="#D9965B" />
+                                <rect x="10" y="11" width="4" height="3" fill="#2C1E16" />
+                                <rect x="11" y="12" width="2" height="2" fill="#F4C28D" />
+                                <rect x="10" y="9" width="1" height="2" fill="#2C1E16" />
+                                <rect x="13" y="10" width="1" height="1" fill="#2C1E16" />
+                                <rect x="11" y="13" width="2" height="1" fill="#111" />
                             </g>
                         </svg>
                     </div>
                     
-                    <div id="sanctuary-placed-items" class="sanctuary-items-container"></div>
+                    <div id="sanctuary-placed-items"></div>
                 </div>
 
                 <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">🐾 Sanctuary Store</h3>
@@ -436,7 +384,7 @@
                         <label for="cfg-long-min">Long Break</label>
                         <input type="number" id="cfg-long-min" class="med-input" value="20" min="5" max="60" />
                     </div>
-                    <button type="submit" class="btn-action-wide" style="margin-top:0.4rem;">Save Settings</button>
+                    <button type="button" id="btn-force-save" class="btn-action-wide" style="margin-top:0.4rem;">Save Settings</button>
                 </form>
             </section>
 
@@ -468,22 +416,23 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const settingsForm = document.getElementById('settings-form');
+            const forceSaveBtn = document.getElementById('btn-force-save');
             const focusInput = document.getElementById('cfg-study-min');
             const timerReadout = document.getElementById('timer-readout');
 
-            if (settingsForm && focusInput && timerReadout) {
-                settingsForm.addEventListener('submit', (e) => {
-                    // Pull the newly submitted focus time, defaulting to 25 if empty
-                    const newMins = parseInt(focusInput.value, 10) || 25;
-                    // Format to ensure numbers below 10 have a leading zero (e.g. "05:00")
-                    const formattedMins = newMins < 10 ? '0' + newMins : newMins;
+            if (forceSaveBtn && focusInput && timerReadout) {
+                // We use a direct click event instead of form submit to ensure it doesn't get blocked
+                forceSaveBtn.addEventListener('click', () => {
+                    let newMins = parseInt(focusInput.value, 10);
+                    if (isNaN(newMins) || newMins < 1) newMins = 25;
                     
-                    // Immediately update the text on the main timer screen, 
-                    // provided the timer is not actively ticking down right now
-                    if (!document.body.classList.contains('timer-running')) {
-                        timerReadout.textContent = formattedMins + ':00';
-                    }
+                    let formattedMins = newMins < 10 ? '0' + newMins : newMins;
+                    
+                    // Force the text to update instantly
+                    timerReadout.textContent = formattedMins + ':00';
+                    
+                    // Also fire a submit event just in case your original JS relies on it
+                    document.getElementById('settings-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
                 });
             }
         });
