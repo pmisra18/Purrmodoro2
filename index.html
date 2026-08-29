@@ -13,18 +13,13 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Parallax Background Container -->
     <div class="parallax-bg-container" id="parallax-container">
         <div class="sky-layer"></div>
-        <div class="clouds-layer"></div>
-        <div class="mountains-layer"></div>
-        <div class="trees-layer"></div>
+        <div class="scenery-layer" id="dynamic-scenery"></div>
     </div>
 
-    <!-- App Shell Container -->
     <div class="app-shell">
         
-        <!-- ================= GAMIFIED LEVEL & PAW POINTS BAR ================= -->
         <div class="user-status-bar">
             <div class="status-pill">
                <span>⭐ Lvl <strong id="val-level">1</strong></span>
@@ -39,7 +34,6 @@
 
         <main class="pomofox-glass-card">
             
-            <!-- ================= TAB 1: TIMER ================= -->
             <section id="tab-timer" class="view-panel active">
                 
                 <div class="top-controls-bar">
@@ -61,7 +55,6 @@
                     <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
                 </div>
 
-                <!-- Timer Circle Stage -->
                 <div class="timer-circle-stage">
                     <svg class="circle-svg" viewBox="0 0 300 300">
                         <circle cx="150" cy="150" r="133" class="circle-bg-ring" />
@@ -70,7 +63,6 @@
 
                     <div class="timer-digits-text" id="timer-readout">25:00</div>
 
-                    <!-- Orbit Arm -->
                     <div class="orbit-arm" id="orbit-arm">
                         <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
                             
@@ -131,7 +123,6 @@
                 </div>
             </section>
 
-            <!-- ================= TAB 2: PLANNER ================= -->
             <section id="tab-planner" class="view-panel">
                 <h2 class="section-heading">🩷 Study Planner</h2>
                 <div class="form-col">
@@ -180,12 +171,10 @@
                 </div>
             </section>
 
-            <!-- ================= TAB 3: SANCTUARY & STORE ================= -->
             <section id="tab-world" class="view-panel">
                 <h2 class="section-heading">🏡 Melog's Sanctuary</h2>
-                <p style="font-size:0.75rem; text-align:center; opacity:0.8; margin-bottom:0.5rem;">Adopt items with Paw Points to decorate your study room!</p>
+                <p style="font-size:0.72rem; text-align:center; opacity:0.8; margin-bottom:0.4rem;">Adopt room upgrades to customize Melog's study space!</p>
                 
-                <!-- Interactive Sanctuary Room Display Box -->
                 <div class="sanctuary-room-stage" id="sanctuary-stage">
                     <div class="sanctuary-pet">🐱</div>
                     <div id="sanctuary-placed-items" class="sanctuary-items-container"></div>
@@ -195,24 +184,31 @@
                 <div class="grid-2" id="furniture-catalog-grid"></div>
             </section>
 
-            <!-- ================= TAB 4: STATS ================= -->
             <section id="tab-stats" class="view-panel">
-                <h2 class="section-heading">📊 Progress &amp; Streaks</h2>
-                <div class="pf-item-box" style="display:flex; align-items:center; gap:0.75rem; width:100%;">
-                    <span style="font-size: 2.2rem;">🔥</span>
-                    <div style="text-align:left;">
-                        <h3 id="txt-stats-streak">1 Day Streak</h3>
-                        <p style="font-size: 0.78rem; opacity: 0.8;">Melog is cheering you on!</p>
+                <h2 class="section-heading">📊 Detailed Analytics</h2>
+                
+                <div class="grid-2" style="width:100%;">
+                    <div class="pf-item-box">
+                        <div style="font-size: 1.4rem;">⏳</div>
+                        <div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-total-hours">0.0h</div>
+                        <div style="font-size: 0.65rem; opacity:0.7;">Total Focus Time</div>
+                    </div>
+                    <div class="pf-item-box">
+                        <div style="font-size: 1.4rem;">🔥</div>
+                        <div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-streak-days">1 Day</div>
+                        <div style="font-size: 0.65rem; opacity:0.7;">Active Streak</div>
                     </div>
                 </div>
 
                 <div class="week-row-dots" id="weekly-tracker-row"></div>
 
-                <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">Session History</h3>
+                <h3 style="margin: 0.6rem 0 0.2rem 0; font-size: 0.8rem; text-transform: uppercase;">Subject Distribution</h3>
+                <div class="log-scroll-area" id="subject-breakdown-list"></div>
+
+                <h3 style="margin: 0.6rem 0 0.2rem 0; font-size: 0.8rem; text-transform: uppercase;">Recent Sessions</h3>
                 <div class="log-scroll-area" id="session-log-list"></div>
             </section>
 
-            <!-- ================= TAB 5: SETTINGS & JSONBIN SYNC ================= -->
             <section id="tab-settings" class="view-panel">
                 <h2 class="section-heading">⚙️ Preferences &amp; Sync</h2>
                 
@@ -254,7 +250,6 @@
 
         </main>
 
-        <!-- Bottom Dock Navigation -->
         <nav class="pf-bottom-dock">
             <button type="button" class="pf-dock-btn active" data-tab="tab-timer">
                 <span class="dock-ico">⏱️</span>
