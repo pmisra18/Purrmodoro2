@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Guaranteed Multi-Layered Biome Scenery Engine
+   PURRMODORO - High-Definition 60 FPS Pixel Art Scenery Engine
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initUI();
   initTimer();
   initPlanner();
-  updateBiomeBackground(state.settings.currentBiome);
+  initCanvasEngine();
   
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     await pullFromCloudOnStart();
@@ -60,14 +60,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v17', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v18', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     triggerAutoSync();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v17');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v18');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -126,7 +126,6 @@ function initUI() {
       document.querySelectorAll('.biome-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.settings.currentBiome = btn.dataset.biome;
-      updateBiomeBackground(state.settings.currentBiome);
       saveState();
     });
   });
@@ -162,27 +161,6 @@ function initUI() {
       await triggerAutoSync();
       alert('Cloud connection tested & saved successfully! ☁️');
     });
-  }
-}
-
-/* ================= EXPLICIT VIDEO GAME BIOME ART RENDERER ================= */
-function updateBiomeBackground(biome) {
-  const skyPlane = document.querySelector('.sky-plane');
-  const sceneryPlane = document.getElementById('scenery-art-plane');
-  if (!skyPlane || !sceneryPlane) return;
-
-  if (biome === 'forest') {
-    skyPlane.style.background = 'linear-gradient(to bottom, #4286f4, #73b5e8, #c1e8fb)';
-    sceneryPlane.style.background = 'repeating-linear-gradient(90deg, #1b3821 0px, #1b3821 40px, #285233 40px, #285233 80px), linear-gradient(0deg, #16301b 0%, transparent 100%)';
-  } else if (biome === 'mountain') {
-    skyPlane.style.background = 'linear-gradient(to bottom, #2c5887, #598bc2, #aed2f2)';
-    sceneryPlane.style.background = 'linear-gradient(135deg, #385575 25%, #567a9e 50%, #385575 75%), linear-gradient(0deg, #243952 0%, transparent 100%)';
-  } else if (biome === 'sunset') {
-    skyPlane.style.background = 'linear-gradient(to bottom, #392b5e, #7a5087, #f7ab94)';
-    sceneryPlane.style.background = 'linear-gradient(135deg, #422847 25%, #6e4273 50%, #422847 75%), linear-gradient(0deg, #2b182e 0%, transparent 100%)';
-  } else {
-    skyPlane.style.background = 'linear-gradient(to bottom, #fce1ec, #f8b8cd, #d4ebd8)';
-    sceneryPlane.style.background = 'linear-gradient(135deg, #874b62 25%, #ab6982 50%, #874b62 75%), linear-gradient(0deg, #593040 0%, transparent 100%)';
   }
 }
 
@@ -522,6 +500,175 @@ function triggerAutoSync() {
       if (badge) badge.textContent = 'Sync Error';
     }
   }, 1000);
+}
+
+/* ================= HIGH-DEF VIDEO GAME CANVAS SCENERY ENGINE ================= */
+function initCanvasEngine() {
+  const canvas = document.getElementById('pixel-bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, tick = 0;
+
+  const resize = () => {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  function renderScene() {
+    ctx.clearRect(0, 0, w, h);
+    tick += 0.015;
+    const biome = state.settings.currentBiome;
+    const dark = state.settings.darkMode;
+
+    // 1. DYNAMIC ATMOSPHERIC SKY GRADIENT
+    let sky = ctx.createLinearGradient(0, 0, 0, h);
+    if (dark) {
+      sky.addColorStop(0, '#04070d');
+      sky.addColorStop(1, '#111928');
+    } else if (biome === 'forest') {
+      sky.addColorStop(0, '#3a86cc');
+      sky.addColorStop(0.5, '#73b4e3');
+      sky.addColorStop(1, '#c5ebfd');
+    } else if (biome === 'mountain') {
+      sky.addColorStop(0, '#1f4878');
+      sky.addColorStop(0.5, '#4f82bc');
+      sky.addColorStop(1, '#a3cced');
+    } else if (biome === 'sunset') {
+      sky.addColorStop(0, '#2b1b4d');
+      sky.addColorStop(0.5, '#6a407a');
+      sky.addColorStop(1, '#ed9479');
+    } else {
+      sky.addColorStop(0, '#fccad9');
+      sky.addColorStop(0.5, '#f49ab8');
+      sky.addColorStop(1, '#bce6dc');
+    }
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, w, h);
+
+    // 2. BIOME-SPECIFIC HIGH-DETAIL VIDEO GAME ART
+    if (biome === 'forest') {
+      // Volumetric Drifting Clouds
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
+      for (let i = 0; i < 4; i++) {
+        let cx = ((i * 350 + tick * 18) % (w + 300)) - 150;
+        let cy = 80 + i * 40;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 35, 0, Math.PI * 2);
+        ctx.arc(cx + 25, cy - 10, 40, 0, Math.PI * 2);
+        ctx.arc(cx + 55, cy, 30, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Rolling Green Forest Foothills
+      ctx.fillStyle = dark ? '#0d2116' : '#275231';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.58);
+      for (let x = 0; x <= w; x += 30) {
+        ctx.lineTo(x, h * 0.58 + Math.sin(x * 0.025 + tick * 0.15) * 18);
+      }
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // Detailed Pixel Pine Trees
+      ctx.fillStyle = dark ? '#07120c' : '#14301a';
+      for (let x = -20; x < w + 40; x += 32) {
+        let th = 130 + (Math.abs(x) % 45);
+        ctx.fillRect(x + Math.sin(tick * 0.5 + x) * 1.5, h - th, 12, th);
+        ctx.beginPath();
+        ctx.moveTo(x - 22, h - th + 45);
+        ctx.lineTo(x + 6, h - th - 25);
+        ctx.lineTo(x + 34, h - th + 45);
+        ctx.fill();
+      }
+    } 
+    else if (biome === 'mountain') {
+      // Massive Jagged Alpine Mountains
+      ctx.fillStyle = dark ? '#152438' : '#4d7294';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.62);
+      ctx.lineTo(w * 0.2, h * 0.28);
+      ctx.lineTo(w * 0.45, h * 0.52);
+      ctx.lineTo(w * 0.75, h * 0.18);
+      ctx.lineTo(w, h * 0.42);
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // High-Definition Pixel Snow Caps
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(w * 0.16, h * 0.35);
+      ctx.lineTo(w * 0.2, h * 0.28);
+      ctx.lineTo(w * 0.24, h * 0.35);
+      ctx.lineTo(w * 0.2, h * 0.4);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(w * 0.7, h * 0.26);
+      ctx.lineTo(w * 0.75, h * 0.18);
+      ctx.lineTo(w * 0.8, h * 0.26);
+      ctx.lineTo(w * 0.75, h * 0.32);
+      ctx.fill();
+
+      // Continuous Realistic Snowfall
+      ctx.fillStyle = '#ffffff';
+      for (let i = 0; i < 40; i++) {
+        let sx = (i * 73 + tick * 25) % w;
+        let sy = (i * 41 + tick * 40) % h;
+        ctx.fillRect(sx, sy, 3, 3);
+      }
+    }
+    else if (biome === 'sunset') {
+      // Twilight Rolling Ridges
+      ctx.fillStyle = dark ? '#21152e' : '#422442';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.6);
+      for (let x = 0; x <= w; x += 40) {
+        ctx.lineTo(x, h * 0.6 + Math.cos(x * 0.02) * 22);
+      }
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // Glowing Fireflies with Soft Radial Gradients
+      for (let i = 0; i < 18; i++) {
+        let fx = (i * 123 + Math.sin(tick + i) * 30 + tick * 12) % w;
+        let fy = h * 0.45 + Math.sin(tick * 1.5 + i) * 60;
+        
+        let glow = ctx.createRadialGradient(fx, fy, 1, fx, fy, 12);
+        glow.addColorStop(0, 'rgba(255, 235, 140, 0.9)');
+        glow.addColorStop(1, 'rgba(255, 180, 50, 0)');
+        
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(fx, fy, 12, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+    else {
+      // Sakura Blossom Rolling Slopes
+      ctx.fillStyle = dark ? '#2b1720' : '#7d4057';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.58);
+      for (let x = 0; x <= w; x += 45) {
+        ctx.lineTo(x, h * 0.58 + Math.sin(x * 0.02) * 20);
+      }
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // Elegant Butterflies and Swirling Sakura Petals
+      for (let i = 0; i < 22; i++) {
+        let bx = (i * 85 + Math.sin(tick + i) * 40 + tick * 20) % w;
+        let by = (i * 39 + Math.cos(tick + i) * 25 + tick * 15) % h;
+        
+        // Render detailed butterfly shape
+        ctx.fillStyle = 'rgba(255, 200, 220, 0.95)';
+        ctx.fillRect(bx, by, 6, 4);
+        ctx.fillStyle = 'rgba(255, 150, 180, 0.85)';
+        ctx.fillRect(bx - 3, by - 2, 4, 3);
+        ctx.fillRect(bx + 5, by - 2, 4, 3);
+      }
+    }
+
+    requestAnimationFrame(renderScene);
+  }
+  renderScene();
 }
 
 function playTone(freq, dur) {
