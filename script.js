@@ -164,9 +164,6 @@ function initUI() {
   }
 }
 
-// ==========================================
-// UPDATED: Added skipBtn Event Listener
-// ==========================================
 function initTimer() {
   const toggleBtn = document.getElementById('btn-timer-toggle');
   const resetBtn = document.getElementById('btn-timer-reset');
@@ -177,11 +174,9 @@ function initTimer() {
   
   if (skipBtn) {
     skipBtn.addEventListener('click', () => {
-      // Pause the timer if it is actively running so we don't get overlapping intervals
       if (state.timer.isRunning) {
         pauseTimer();
       }
-      // Force the cycle to complete instantly
       completeBlock();
     });
   }
@@ -198,6 +193,8 @@ function toggleTimer() {
 function startTimer() {
   state.timer.isRunning = true;
   document.getElementById('btn-timer-toggle').textContent = '⏸';
+  
+  document.body.classList.add('timer-running');
   
   const sprite = document.getElementById('melog-sprite');
   if (sprite) sprite.classList.add('timer-running');
@@ -217,6 +214,8 @@ function pauseTimer() {
   clearInterval(state.timer.intervalId);
   document.getElementById('btn-timer-toggle').textContent = '▶';
 
+  document.body.classList.remove('timer-running');
+
   const sprite = document.getElementById('melog-sprite');
   if (sprite) sprite.classList.remove('timer-running');
 }
@@ -225,6 +224,8 @@ function resetTimer() {
   clearInterval(state.timer.intervalId);
   state.timer.isRunning = false;
   document.getElementById('btn-timer-toggle').textContent = '▶';
+
+  document.body.classList.remove('timer-running');
 
   const sprite = document.getElementById('melog-sprite');
   if (sprite) sprite.classList.remove('timer-running');
@@ -238,6 +239,8 @@ function completeBlock() {
   clearInterval(state.timer.intervalId);
   state.timer.isRunning = false;
   document.getElementById('btn-timer-toggle').textContent = '▶';
+
+  document.body.classList.remove('timer-running');
 
   const sprite = document.getElementById('melog-sprite');
   if (sprite) sprite.classList.remove('timer-running');
@@ -329,7 +332,7 @@ function renderWorld() {
     state.game.catalog.forEach(item => {
       if (item.purchased) {
         const span = document.createElement('span');
-        span.className = 'placed-item-icon';
+        span.className = 'placed-item-emoji';
         span.textContent = item.icon;
         span.title = item.name;
         placedContainer.appendChild(span);
@@ -343,7 +346,14 @@ function renderWorld() {
     state.game.catalog.forEach(item => {
       const div = document.createElement('div');
       div.className = `pf-item-box ${item.purchased ? '' : 'locked'}`;
-      div.innerHTML = `<div style="font-size:1.6rem;">${item.icon}</div><div style="font-weight:700; font-size:0.75rem;">${item.name}</div><div style="font-size:0.75rem; font-weight:800; color:var(--btn-orange);">${item.purchased ? 'Placed 🎀' : `${item.cost} 🐾`}</div>${!item.purchased ? `<button type="button" class="btn-adopt">Adopt</button>` : ''}`;
+      
+      div.innerHTML = `
+        <div style="font-size: 2rem; margin-bottom: 5px;">${item.icon}</div>
+        <div style="font-weight:700; font-size:0.75rem;">${item.name}</div>
+        <div style="font-size:0.75rem; font-weight:800; color:var(--btn-orange);">${item.purchased ? 'Placed 🎀' : `${item.cost} 🐾`}</div>
+        ${!item.purchased ? `<button type="button" class="btn-adopt">Adopt</button>` : ''}
+      `;
+      
       if (!item.purchased) {
         div.querySelector('button').addEventListener('click', () => {
           if (state.game.pawPoints >= item.cost) {
@@ -537,7 +547,6 @@ function initFluidWaveEngine() {
     const biome = state.settings.currentBiome;
     const dark = state.settings.darkMode;
 
-    // 1. DYNAMIC FLUID SKY & AMBIENT GRADIENT BASE
     let bgGrad = ctx.createLinearGradient(0, 0, 0, h);
     if (dark) {
       bgGrad.addColorStop(0, '#060a12');
@@ -561,7 +570,6 @@ function initFluidWaveEngine() {
     ctx.fillStyle = bgGrad;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. MULTI-LAYERED FLUID WAVES & BLENDED COLOR ORBS
     const waveCount = 4;
     for (let i = 0; i < waveCount; i++) {
       ctx.beginPath();
@@ -590,7 +598,6 @@ function initFluidWaveEngine() {
       ctx.fill();
     }
 
-    // 3. FLOATING AMBIENT GLOW ORBS
     for (let j = 0; j < 5; j++) {
       let ox = (j * 250 + Math.sin(tick * 0.5 + j) * 100 + tick * 20) % (w + 200) - 100;
       let oy = h * 0.3 + Math.cos(tick * 0.4 + j) * 80;
