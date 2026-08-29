@@ -12,18 +12,15 @@
     
     <link rel="stylesheet" href="style.css">
 
-    <!-- ========================================================
-         NEW CUSTOM STYLES (Overrides for Paws & Pixel Room)
-         ======================================================== -->
     <style>
-        /* 1. Cycle Dots to Paw Prints */
+        /* 1. Cycle Dots to Clean Paw Prints */
         .tomato-dot {
             border-radius: 0 !important;
             background-color: transparent !important;
-            width: 18px !important; 
-            height: 18px !important;
-            /* Empty grey paw */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M12 21c-4 0-6-3-6-6 0-1.5.5-3 2-4 1-1 3-1 4-1s3 0 4 1c1.5 1 2 2.5 2 4 0 3-2 6-6 6zm-5.5-9c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm11 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm-8.5-4c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm6 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3z"/></svg>') !important;
+            width: 22px !important; 
+            height: 22px !important;
+            /* Empty grey paw - properly separated toes */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M17.5 13c-.5-1.4-1.8-2.5-3.5-3-.5-.2-1.2-.3-2-.3s-1.5.1-2 .3c-1.7.5-3 1.6-3.5 3-.4 1.1-.5 2.4-.2 3.5.3 1.1 1.2 2 2.3 2.3.6.2 1.2.3 1.9.3s1.3-.1 1.9-.3c1.1-.3 2-1.2 2.3-2.3.3-1.1.2-2.4-.2-3.5z"/><ellipse cx="7" cy="9" rx="1.8" ry="2.8" transform="rotate(-30 7 9)"/><ellipse cx="10.5" cy="5.5" rx="1.8" ry="2.8" transform="rotate(-10 10.5 5.5)"/><ellipse cx="14.5" cy="5.5" rx="1.8" ry="2.8" transform="rotate(10 14.5 5.5)"/><ellipse cx="18" cy="9" rx="1.8" ry="2.8" transform="rotate(30 18 9)"/></svg>') !important;
             background-size: contain !important;
             background-repeat: no-repeat !important;
             opacity: 0.4;
@@ -31,75 +28,88 @@
         .tomato-dot.active {
             opacity: 1;
             /* Orange active paw */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23F28C28"><path d="M12 21c-4 0-6-3-6-6 0-1.5.5-3 2-4 1-1 3-1 4-1s3 0 4 1c1.5 1 2 2.5 2 4 0 3-2 6-6 6zm-5.5-9c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm11 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm-8.5-4c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm6 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3z"/></svg>') !important;
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23F28C28"><path d="M17.5 13c-.5-1.4-1.8-2.5-3.5-3-.5-.2-1.2-.3-2-.3s-1.5.1-2 .3c-1.7.5-3 1.6-3.5 3-.4 1.1-.5 2.4-.2 3.5.3 1.1 1.2 2 2.3 2.3.6.2 1.2.3 1.9.3s1.3-.1 1.9-.3c1.1-.3 2-1.2 2.3-2.3.3-1.1.2-2.4-.2-3.5z"/><ellipse cx="7" cy="9" rx="1.8" ry="2.8" transform="rotate(-30 7 9)"/><ellipse cx="10.5" cy="5.5" rx="1.8" ry="2.8" transform="rotate(-10 10.5 5.5)"/><ellipse cx="14.5" cy="5.5" rx="1.8" ry="2.8" transform="rotate(10 14.5 5.5)"/><ellipse cx="18" cy="9" rx="1.8" ry="2.8" transform="rotate(30 18 9)"/></svg>') !important;
         }
 
-        /* 2. Daily Challenge Checkboxes */
-        .daily-challenges-box {
-            background: rgba(0, 0, 0, 0.15);
-            padding: 12px 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            border: 1px dashed rgba(255, 255, 255, 0.2);
-            text-align: left;
-        }
-        .task-list {
-            list-style: none; padding: 0; margin: 0;
-        }
-        .task-list li {
-            display: flex; align-items: center; margin-bottom: 8px; font-size: 0.85rem; font-family: var(--font-ui, sans-serif);
-        }
-        input[type="checkbox"].paw-checkbox {
-            appearance: none; -webkit-appearance: none;
-            width: 20px; height: 20px;
-            cursor: pointer; display: inline-block; margin-right: 10px;
-            /* Outline blue paw */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23A6CFE2" stroke-width="2"><path d="M12 21c-4 0-6-3-6-6 0-1.5.5-3 2-4 1-1 3-1 4-1s3 0 4 1c1.5 1 2 2.5 2 4 0 3-2 6-6 6zm-5.5-9c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm11 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm-8.5-4c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm6 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3z"/></svg>');
-            background-size: cover; flex-shrink: 0;
-        }
-        input[type="checkbox"].paw-checkbox:checked {
-            /* Filled blue paw */
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23A6CFE2"><path d="M12 21c-4 0-6-3-6-6 0-1.5.5-3 2-4 1-1 3-1 4-1s3 0 4 1c1.5 1 2 2.5 2 4 0 3-2 6-6 6zm-5.5-9c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm11 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm-8.5-4c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm6 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3z"/></svg>');
-        }
-        input[type="checkbox"].paw-checkbox:checked + span {
-            text-decoration: line-through; opacity: 0.6;
-        }
-
-        /* 3. Sanctuary Pixel Room Grid (Prevents Overlap) */
+        /* 2. Sanctuary Doctor's Office Vibe & Grid */
         .sanctuary-room-stage {
             display: grid !important;
             grid-template-columns: repeat(3, 1fr);
             grid-template-rows: repeat(3, 1fr);
             align-items: center;
             justify-items: center;
+            /* Cozy Wallpaper & Floor Gradient */
+            background: linear-gradient(to bottom, #d6e8f5 55%, #b5ccdf 55%, #b5ccdf 60%, #a27b6c 60%, #a27b6c 100%) !important;
+            border: 4px solid rgba(0,0,0,0.15) !important;
+            position: relative;
         }
+        
+        /* Pixel Medical Poster */
+        .pixel-poster {
+            position: absolute;
+            top: 10px; left: 15px;
+            width: 22px; height: 30px;
+            background: white;
+            border: 2px solid #555;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
+        }
+        .pixel-cross {
+            width: 12px; height: 12px;
+            background: #ff6b6b;
+            clip-path: polygon(33% 0, 66% 0, 66% 33%, 100% 33%, 100% 66%, 66% 66%, 66% 100%, 33% 100%, 33% 66%, 0 66%, 0 33%, 33% 33%);
+        }
+        
+        /* Pixel Rug */
+        .pixel-rug {
+            position: absolute;
+            bottom: 12px; left: 50%;
+            transform: translateX(-50%);
+            width: 100px; height: 26px;
+            background: #FCAEBA;
+            border-radius: 13px;
+            border: 2px dashed rgba(255,255,255,0.7);
+            z-index: 1;
+        }
+
+        /* 3. Wandering Melog Animation */
         .sanctuary-pet {
-            grid-column: 2; /* Forces Melog into the direct center */
+            grid-column: 1 / -1; /* Allows Melog to pace across the whole room */
             grid-row: 2;
             width: 100%;
             height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0; /* hides any leftover text */
+            font-size: 0;
+            z-index: 2;
+            animation: wanderMelog 10s infinite linear;
         }
+        
+        @keyframes wanderMelog {
+            0% { transform: translateX(-40px) scaleX(1); }
+            45% { transform: translateX(40px) scaleX(1); }
+            50% { transform: translateX(40px) scaleX(-1); } /* Flips Melog to walk back */
+            95% { transform: translateX(-40px) scaleX(-1); }
+            100% { transform: translateX(-40px) scaleX(1); }
+        }
+
         #sanctuary-placed-items {
-            display: contents; /* MAGIC TRICK: This makes injected items act as direct grid children */
+            display: contents;
         }
         #sanctuary-placed-items > * {
             max-width: 90%;
             max-height: 90%;
             image-rendering: pixelated;
+            z-index: 3;
         }
     </style>
 </head>
 <body>
-    <!-- Immersive Organic Fluid Wave & Gradient Animation Canvas -->
     <canvas id="fluid-bg-canvas"></canvas>
 
     <div class="app-shell">
         
-        <!-- Gamified Level & Paw Points Bar -->
         <div class="user-status-bar">
             <div class="status-pill">
                <span>⭐ Lvl <strong id="val-level">1</strong></span>
@@ -114,7 +124,6 @@
 
         <main class="pomofox-glass-card">
             
-            <!-- ================= TAB 1: TIMER ================= -->
             <section id="tab-timer" class="view-panel active">
                 
                 <div class="top-controls-bar">
@@ -124,7 +133,6 @@
                     <button type="button" class="pf-btn-icon btn-dark" id="btn-theme-toggle" title="Dark Mode Toggle">🌙</button>
                 </div>
 
-                <!-- WALLPAPERS CHANGED TO COLORS -->
                 <div class="biome-tag-bar">
                     <button type="button" class="biome-btn active" data-biome="forest">🟢 Green</button>
                     <button type="button" class="biome-btn" data-biome="mountain">🔵 Dark Blue</button>
@@ -137,7 +145,6 @@
                     <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
                 </div>
 
-                <!-- Timer Circle Stage -->
                 <div class="timer-circle-stage">
                     <svg class="circle-svg" viewBox="0 0 300 300">
                         <circle cx="150" cy="150" r="133" class="circle-bg-ring" />
@@ -146,7 +153,6 @@
 
                     <div class="timer-digits-text" id="timer-readout">25:00</div>
 
-                    <!-- Orbit Arm with Melog -->
                     <div class="orbit-arm" id="orbit-arm">
                         <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
                             <svg viewBox="0 0 16 16" class="pixel-melog-svg">
@@ -198,7 +204,6 @@
                 <div class="bottom-cycle-pill">
                     <span>cycle: <strong id="val-cycle-count">1</strong></span>
                     <div class="tomatoes-row">
-                        <!-- Custom CSS overrides these with Paw Prints -->
                         <span class="tomato-dot active" id="dot-1"></span>
                         <span class="tomato-dot" id="dot-2"></span>
                         <span class="tomato-dot" id="dot-3"></span>
@@ -207,29 +212,9 @@
                 </div>
             </section>
 
-            <!-- ================= TAB 2: PLANNER ================= -->
             <section id="tab-planner" class="view-panel">
                 <h2 class="section-heading">🩷 Study Planner</h2>
                 
-                <!-- NEW DAILY CHALLENGES CHECKLIST -->
-                <div class="daily-challenges-box">
-                    <h3 style="margin: 0 0 8px 0; font-size: 0.85rem; text-transform: uppercase;">Daily Challenges</h3>
-                    <ul class="task-list">
-                        <li>
-                            <input type="checkbox" class="paw-checkbox">
-                            <span>Complete Anki Flashcards</span>
-                        </li>
-                        <li>
-                            <input type="checkbox" class="paw-checkbox">
-                            <span>Review OMM Study Guides</span>
-                        </li>
-                        <li>
-                            <input type="checkbox" class="paw-checkbox">
-                            <span>Complete 2 Purrmodoro Cycles</span>
-                        </li>
-                    </ul>
-                </div>
-
                 <div class="form-col">
                     <div class="form-item">
                         <label for="plan-date">Exam Date</label>
@@ -276,15 +261,17 @@
                 </div>
             </section>
 
-            <!-- ================= TAB 3: SANCTUARY & STORE ================= -->
             <section id="tab-world" class="view-panel">
                 <h2 class="section-heading">🏡 Melog's Sanctuary</h2>
                 <p style="font-size:0.72rem; text-align:center; opacity:0.8; margin-bottom:0.4rem;">Adopt room upgrades to customize Melog's study space!</p>
                 
                 <div class="sanctuary-room-stage" id="sanctuary-stage">
-                    <!-- NEW PIXEL MELOG -->
+                    
+                    <div class="pixel-poster"><div class="pixel-cross"></div></div>
+                    <div class="pixel-rug"></div>
+
                     <div class="sanctuary-pet">
-                        <svg viewBox="0 0 16 16" class="pixel-melog-svg" style="width: 50%; height: 50%; image-rendering: pixelated;">
+                        <svg viewBox="0 0 16 16" class="pixel-melog-svg" style="width: 45%; height: 45%; image-rendering: pixelated;">
                             <g class="px-cat-master">
                                 <g class="px-balanced-tail">
                                     <rect x="2" y="6" width="2" height="2" fill="#2C1E16" />
@@ -334,7 +321,6 @@
                 <div class="grid-2" id="furniture-catalog-grid"></div>
             </section>
 
-            <!-- ================= TAB 4: ADVANCED STATS ================= -->
             <section id="tab-stats" class="view-panel">
                 <h2 class="section-heading">📊 Detailed Analytics</h2>
                 
@@ -360,7 +346,6 @@
                 <div class="log-scroll-area" id="session-log-list"></div>
             </section>
 
-            <!-- ================= TAB 5: SETTINGS & SYNC ================= -->
             <section id="tab-settings" class="view-panel">
                 <h2 class="section-heading">⚙️ Preferences &amp; Sync</h2>
                 
@@ -402,7 +387,6 @@
 
         </main>
 
-        <!-- Bottom Dock Navigation -->
         <nav class="pf-bottom-dock">
             <button type="button" class="pf-dock-btn active" data-tab="tab-timer">
                 <span class="dock-ico">⏱️</span>
