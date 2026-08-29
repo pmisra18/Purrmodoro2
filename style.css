@@ -1,5 +1,5 @@
 :root {
-  --card-glass: rgba(255, 255, 255, 0.82);
+  --card-glass: rgba(255, 255, 255, 0.80);
   --card-glass-border: rgba(255, 255, 255, 0.95);
   --btn-orange: #D9733E;
   --btn-orange-shadow: #A84E20;
@@ -17,7 +17,7 @@
 }
 
 body.theme-dark {
-  --card-glass: rgba(26, 20, 34, 0.88);
+  --card-glass: rgba(26, 20, 34, 0.85);
   --card-glass-border: rgba(255, 255, 255, 0.15);
   --btn-orange: #E06F38;
   --btn-orange-shadow: #8A3714;
@@ -29,12 +29,6 @@ body.theme-dark {
   --dock-bg: rgba(26, 20, 34, 0.92);
   --dock-border: rgba(255, 255, 255, 0.14);
 }
-
-/* Stunning Atmospheric Cozy Game Color Palettes */
-body.biome-forest { background: linear-gradient(135deg, #284b36 0%, #172d21 100%); }
-body.biome-mountain { background: linear-gradient(135deg, #2b4560 0%, #142233 100%); }
-body.biome-sunset { background: linear-gradient(135deg, #59314b 0%, #291224 100%); }
-body.biome-sakura { background: linear-gradient(135deg, #4d263b 0%, #1f0f18 100%); }
 
 * {
   box-sizing: border-box;
@@ -51,10 +45,10 @@ body {
   justify-content: center;
   position: relative;
   overflow-y: auto;
-  transition: background 0.8s ease;
+  background-color: #0b101b;
 }
 
-.ambient-vignette {
+#fluid-bg-canvas {
   position: fixed;
   top: 0;
   left: 0;
@@ -62,7 +56,6 @@ body {
   height: 100vh;
   z-index: 0;
   pointer-events: none;
-  background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.35) 100%);
 }
 
 /* User Status Bar Tracker Top */
@@ -180,7 +173,7 @@ body.theme-dark .sanctuary-room-stage {
   -webkit-backdrop-filter: blur(20px);
   border: 2.5px solid var(--card-glass-border);
   border-radius: 36px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
