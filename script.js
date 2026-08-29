@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Complete Engine with Gamified Leveling & Sanctuary Room
+   PURRMODORO - Complete Engine with Silent Background Sync
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initUI();
   initTimer();
   initPlanner();
-  updateBiomeStyles(state.settings.currentBiome);
+  updateBiomeScene(state.settings.currentBiome);
   renderAll();
 });
 
@@ -51,14 +51,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v11', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v12', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
-    syncWithJSONBin();
+    syncWithJSONBin(true); // Silent background sync
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v11');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v12');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -117,7 +117,7 @@ function initUI() {
       document.querySelectorAll('.biome-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.settings.currentBiome = btn.dataset.biome;
-      updateBiomeStyles(state.settings.currentBiome);
+      updateBiomeScene(state.settings.currentBiome);
       saveState();
     });
   });
@@ -150,33 +150,29 @@ function initUI() {
       state.settings.jsonbinKey = jsonbinKeyInput.value.trim();
       state.settings.jsonbinId = jsonbinIdInput.value.trim();
       saveState();
-      syncWithJSONBin();
+      syncWithJSONBin(false); // Manual click shows confirmation
     });
   }
 }
 
-function updateBiomeStyles(biome) {
+/* Stunning Video Game Biome Background Generator */
+function updateBiomeScene(biome) {
   const sky = document.querySelector('.parallax-bg-container .sky-layer');
-  const mountains = document.querySelector('.parallax-bg-container .mountains-layer');
-  const trees = document.querySelector('.parallax-bg-container .trees-layer');
-  if (!sky) return;
+  const scenery = document.querySelector('.parallax-bg-container .scenery-layer');
+  if (!sky || !scenery) return;
 
   if (biome === 'forest') {
-    sky.style.background = 'linear-gradient(to bottom, #4688B8, #7CB3D8, #B5DCEB)';
-    mountains.style.background = 'linear-gradient(135deg, #467099 25%, #6a9ac2 50%, #467099 75%)';
-    trees.style.background = 'repeating-linear-gradient(90deg, #1d3b26, #1d3b26 40px, #274e33 40px, #274e33 80px)';
+    sky.style.background = 'linear-gradient(to bottom, #4688B8 0%, #7CB3D8 50%, #B5DCEB 100%)';
+    scenery.style.background = 'repeating-linear-gradient(90deg, #183320 0px, #183320 35px, #24482d 35px, #24482d 70px)';
   } else if (biome === 'mountain') {
-    sky.style.background = 'linear-gradient(to bottom, #295E9A, #5283B7, #A4CBE6)';
-    mountains.style.background = 'linear-gradient(135deg, #2c4c6e 25%, #48739e 50%, #2c4c6e 75%)';
-    trees.style.background = 'repeating-linear-gradient(90deg, #2b3e50, #2b3e50 40px, #3a536b 40px, #3a536b 80px)';
+    sky.style.background = 'linear-gradient(to bottom, #2b5c94 0%, #5283b7 50%, #a4cbe6 100%)';
+    scenery.style.background = 'linear-gradient(135deg, #324f6e 25%, #4f7398 50%, #324f6e 75%)';
   } else if (biome === 'sunset') {
-    sky.style.background = 'linear-gradient(to bottom, #322C5C, #685182, #C98EA7)';
-    mountains.style.background = 'linear-gradient(135deg, #59395c 25%, #82537e 50%, #59395c 75%)';
-    trees.style.background = 'repeating-linear-gradient(90deg, #38233b, #38233b 40px, #4d3152 40px, #4d3152 80px)';
+    sky.style.background = 'linear-gradient(to bottom, #322c5c 0%, #685182 50%, #c98ea7 100%)';
+    scenery.style.background = 'linear-gradient(135deg, #422845 25%, #633f66 50%, #422845 75%)';
   } else {
-    sky.style.background = 'linear-gradient(to bottom, #FCDCE6, #F3B8CD, #CDE2DC)';
-    mountains.style.background = 'linear-gradient(135deg, #a6637e 25%, #c786a0 50%, #a6637e 75%)';
-    trees.style.background = 'repeating-linear-gradient(90deg, #573546, #573546 40px, #70455a 40px, #70455a 80px)';
+    sky.style.background = 'linear-gradient(to bottom, #fce6ed 0%, #f3b8cd 50%, #cde2dc 100%)';
+    scenery.style.background = 'linear-gradient(135deg, #7a465c 25%, #9e617a 50%, #7a465c 75%)';
   }
 }
 
@@ -260,7 +256,6 @@ function completeBlock() {
     const newLevel = Math.floor(state.game.xp / 100) + 1;
     if (newLevel > state.game.level) {
       state.game.level = newLevel;
-      alert(`🎉 Level Up! Melog is now Level ${newLevel}!`);
     }
 
     const today = getTodayDateString();
@@ -307,7 +302,6 @@ function renderTimer() {
 function renderAll() {
   renderTimer();
   
-  // Update Level & Paw Points Header
   const lvlElem = document.getElementById('val-level');
   const pawsElem = document.getElementById('val-paws');
   const xpFill = document.getElementById('mini-xp-fill');
@@ -326,7 +320,6 @@ function renderAll() {
 }
 
 function renderWorld() {
-  // Render Sanctuary Room Customizer items
   const placedContainer = document.getElementById('sanctuary-placed-items');
   if (placedContainer) {
     placedContainer.innerHTML = '';
@@ -341,7 +334,6 @@ function renderWorld() {
     });
   }
 
-  // Render Store Catalog
   const cat = document.getElementById('furniture-catalog-grid');
   if (cat) {
     cat.innerHTML = '';
@@ -357,8 +349,7 @@ function renderWorld() {
             saveState();
             renderWorld();
             renderAll();
-            alert(`Placed ${item.name} into Melog's Sanctuary! ✨`);
-          } else alert(`Need ${item.cost - state.game.pawPoints} more 🐾 Paw Points! Complete focus sessions to earn more.`);
+          } else alert(`Need ${item.cost - state.game.pawPoints} more 🐾 Paw Points!`);
         });
       }
       cat.appendChild(div);
@@ -440,9 +431,12 @@ function initPlanner() {
   }
 }
 
-async function syncWithJSONBin() {
+async function syncWithJSONBin(silent = false) {
   const { jsonbinKey, jsonbinId } = state.settings;
-  if (!jsonbinKey || !jsonbinId) return alert('Please enter your JSONBin Master Key and Bin ID first.');
+  if (!jsonbinKey || !jsonbinId) {
+    if (!silent) alert('Please enter your JSONBin Master Key and Bin ID first.');
+    return;
+  }
 
   const badge = document.getElementById('sync-status-badge');
   if (badge) badge.textContent = 'Syncing...';
@@ -475,14 +469,14 @@ async function syncWithJSONBin() {
       }
       saveState();
       renderAll();
-      alert('Successfully synced with JSONBin! 📦');
+      if (!silent) alert('Successfully synced with JSONBin! 📦');
     } else {
       if (badge) badge.textContent = 'Auth Error';
-      alert('Failed to connect. Check your Master Key and Bin ID.');
+      if (!silent) alert('Failed to connect. Check your Master Key and Bin ID.');
     }
   } catch (err) {
     if (badge) badge.textContent = 'Offline';
-    alert('Sync failed due to a network error.');
+    if (!silent) alert('Sync failed due to a network error.');
   }
 }
 
