@@ -47,10 +47,101 @@ body {
   justify-content: center;
   position: relative;
   overflow-y: auto;
-  background-color: #111;
+  background-color: #2c4a6f;
 }
 
-/* Background Container pinned at Z-Index 0 */
+/* User Status Bar Tracker Top */
+.user-status-bar {
+  width: 100%;
+  max-width: 440px;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0 0.25rem;
+}
+
+.status-pill {
+  background: var(--card-glass);
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--card-glass-border);
+  border-radius: 14px;
+  padding: 0.4rem 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.mini-xp-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(0,0,0,0.1);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+#mini-xp-fill {
+  height: 100%;
+  background: var(--btn-orange);
+  transition: width 0.4s ease;
+}
+
+/* Sanctuary Room Customizer Stage */
+.sanctuary-room-stage {
+  position: relative;
+  width: 100%;
+  height: 130px;
+  background: rgba(0, 0, 0, 0.08);
+  border: 2px dashed rgba(0, 0, 0, 0.15);
+  border-radius: 16px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 10px;
+  overflow: hidden;
+}
+
+body.theme-dark .sanctuary-room-stage {
+  background: rgba(255, 255, 255, 0.04);
+  border-color: rgba(255, 255, 255, 0.12);
+}
+
+.sanctuary-pet {
+  font-size: 2.2rem;
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  animation: petBounce 2s infinite ease-in-out;
+}
+
+@keyframes petBounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(-4px); }
+}
+
+.sanctuary-items-container {
+  display: flex;
+  gap: 1rem;
+  z-index: 2;
+  position: absolute;
+  bottom: 10px;
+  left: 15px;
+}
+
+.placed-item-icon {
+  font-size: 1.6rem;
+  animation: itemPop 0.3s ease;
+}
+
+@keyframes itemPop {
+  0% { transform: scale(0); }
+  80% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Parallax Background Layers Container */
 .parallax-bg-container {
   position: fixed;
   top: 0;
@@ -62,13 +153,63 @@ body {
   pointer-events: none;
 }
 
-#pixel-bg-canvas {
+.parallax-bg-container .sky-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
-  display: block;
+  background: linear-gradient(to bottom, #5ba4d9, #9fd0e8, #d4edf6);
+  z-index: 1;
 }
 
-/* App Shell floats on top at Z-Index 10 */
+.parallax-bg-container .clouds-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 300%;
+  height: 60%;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.8) 15%, transparent 20%);
+  background-size: 80px 50px;
+  opacity: 0.6;
+  z-index: 2;
+  animation: driftClouds 60s linear infinite;
+}
+
+.parallax-bg-container .mountains-layer {
+  position: absolute;
+  bottom: 30vh;
+  left: 0;
+  width: 200%;
+  height: 35vh;
+  background: linear-gradient(135deg, #467099 25%, #6a9ac2 50%, #467099 75%);
+  clip-path: polygon(0% 100%, 5% 60%, 12% 75%, 20% 40%, 30% 80%, 42% 30%, 55% 85%, 68% 45%, 80% 75%, 90% 50%, 100% 100%);
+  z-index: 3;
+}
+
+.parallax-bg-container .trees-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 200%;
+  height: 40vh;
+  background: repeating-linear-gradient(90deg, #1d3b26, #1d3b26 40px, #274e33 40px, #274e33 80px);
+  clip-path: polygon(0% 100%, 0% 30%, 3% 15%, 6% 30%, 10% 20%, 15% 35%, 20% 10%, 25% 30%, 30% 18%, 35% 40%, 40% 15%, 45% 30%, 50% 12%, 55% 28%, 60% 15%, 65% 35%, 70% 20%, 75% 30%, 80% 10%, 85% 25%, 90% 15%, 95% 30%, 100% 20%, 100% 100%);
+  z-index: 4;
+  animation: driftForest 35s linear infinite;
+}
+
+@keyframes driftClouds {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-33.33%); }
+}
+
+@keyframes driftForest {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-25%); }
+}
+
+/* App Shell & UI */
 .app-shell {
   position: relative;
   z-index: 10;
@@ -77,8 +218,8 @@ body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1rem;
-  padding: 1.5rem 1rem 6.5rem 1rem;
+  gap: 0.75rem;
+  padding: 1rem 1rem 6.5rem 1rem;
   min-height: 100vh;
 }
 
