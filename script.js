@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - High-Definition Flowy Biome Engine & Auto-Sync
+   PURRMODORO - High-Definition Blended Multi-Layered Scenery Engine
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -60,14 +60,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v19', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v20', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     triggerAutoSync();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v19');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v20');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -502,7 +502,7 @@ function triggerAutoSync() {
   }, 1000);
 }
 
-/* ================= HIGH-DEF FLOWY VIDEO GAME CANVAS ENGINE ================= */
+/* ================= HIGH-DEF BLENDED VIDEO GAME CANVAS ENGINE ================= */
 function initCanvasEngine() {
   const canvas = document.getElementById('pixel-bg-canvas');
   if (!canvas) return;
@@ -518,112 +518,135 @@ function initCanvasEngine() {
 
   function renderScene() {
     ctx.clearRect(0, 0, w, h);
-    tick += 0.015;
+    tick += 0.012;
     const biome = state.settings.currentBiome;
     const dark = state.settings.darkMode;
 
-    // 1. ATMOSPHERIC SKY GRADIENT
+    // 1. RICH BLENDED SKY GRADIENT
     let sky = ctx.createLinearGradient(0, 0, 0, h);
     if (dark) {
       sky.addColorStop(0, '#04070d');
-      sky.addColorStop(1, '#111928');
+      sky.addColorStop(0.5, '#0e1726');
+      sky.addColorStop(1, '#1b2a42');
     } else if (biome === 'forest') {
-      sky.addColorStop(0, '#3a86cc');
-      sky.addColorStop(0.5, '#73b4e3');
-      sky.addColorStop(1, '#c5ebfd');
+      sky.addColorStop(0, '#2e7bc4');
+      sky.addColorStop(0.5, '#6ab0df');
+      sky.addColorStop(1, '#bde4fe');
     } else if (biome === 'mountain') {
-      sky.addColorStop(0, '#1f4878');
-      sky.addColorStop(0.5, '#4f82bc');
-      sky.addColorStop(1, '#a3cced');
+      sky.addColorStop(0, '#193f6b');
+      sky.addColorStop(0.5, '#4576b0');
+      sky.addColorStop(1, '#98c3e8');
     } else if (biome === 'sunset') {
-      sky.addColorStop(0, '#2b1b4d');
-      sky.addColorStop(0.5, '#6a407a');
-      sky.addColorStop(1, '#ed9479');
+      sky.addColorStop(0, '#251642');
+      sky.addColorStop(0.5, '#68397a');
+      sky.addColorStop(1, '#e88970');
     } else {
-      sky.addColorStop(0, '#fccad9');
-      sky.addColorStop(0.5, '#f49ab8');
-      sky.addColorStop(1, '#bce6dc');
+      sky.addColorStop(0, '#fcc2d4');
+      sky.addColorStop(0.5, '#f28dae');
+      sky.addColorStop(1, '#addcd4');
     }
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. BIOME-SPECIFIC FLOWY ORGANIC LANDSCAPES
+    // 2. MULTI-TIERED BLENDED VIDEO GAME SCENERY
     if (biome === 'forest') {
-      // Volumetric Drifting Clouds
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
-      for (let i = 0; i < 4; i++) {
-        let cx = ((i * 350 + tick * 18) % (w + 300)) - 150;
-        let cy = 80 + i * 40;
+      // Billowing Volumetric Clouds
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+      for (let i = 0; i < 5; i++) {
+        let cx = ((i * 320 + tick * 15) % (w + 300)) - 150;
+        let cy = 60 + i * 45;
         ctx.beginPath();
-        ctx.arc(cx, cy, 35, 0, Math.PI * 2);
-        ctx.arc(cx + 25, cy - 10, 40, 0, Math.PI * 2);
-        ctx.arc(cx + 55, cy, 30, 0, Math.PI * 2);
+        ctx.arc(cx, cy, 40, 0, Math.PI * 2);
+        ctx.arc(cx + 30, cy - 12, 48, 0, Math.PI * 2);
+        ctx.arc(cx + 65, cy, 35, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // Smooth Flowing Bezier Rolling Hills
-      ctx.fillStyle = dark ? '#0d2116' : '#275231';
+      // Back Hill Layer (Softly Blended)
+      ctx.fillStyle = dark ? '#132e1f' : '#2d5e39';
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.6);
-      ctx.bezierCurveTo(w * 0.25, h * 0.52 + Math.sin(tick) * 20, w * 0.75, h * 0.68 + Math.cos(tick) * 20, w, h * 0.6);
+      ctx.moveTo(0, h * 0.62);
+      ctx.bezierCurveTo(w * 0.3, h * 0.55 + Math.sin(tick * 0.8) * 15, w * 0.7, h * 0.65 + Math.cos(tick * 0.8) * 15, w, h * 0.62);
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // Front Hill Layer (Rich Organic Curves)
+      ctx.fillStyle = dark ? '#0a1a11' : '#1e4028';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.68);
+      ctx.bezierCurveTo(w * 0.35, h * 0.62 + Math.sin(tick) * 20, w * 0.65, h * 0.72 + Math.cos(tick) * 20, w, h * 0.68);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
     } 
     else if (biome === 'mountain') {
-      // Majestic Alpine Peaks with Bezier Slopes
-      ctx.fillStyle = dark ? '#152438' : '#4d7294';
+      // Atmospheric Mist Layer Behind Mountains
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+      ctx.fillRect(0, h * 0.45, w, h * 0.3);
+
+      // Majestic Layered Alpine Mountains
+      ctx.fillStyle = dark ? '#102033' : '#3d6185';
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.65);
-      ctx.bezierCurveTo(w * 0.3, h * 0.25, w * 0.7, h * 0.25, w, h * 0.55);
+      ctx.moveTo(0, h * 0.68);
+      ctx.bezierCurveTo(w * 0.25, h * 0.3, w * 0.45, h * 0.45, w * 0.65, h * 0.22);
+      ctx.bezierCurveTo(w * 0.82, h * 0.38, w * 0.92, h * 0.48, w, h * 0.58);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Continuous Realistic Snowfall
+      // High-Definition Blended Snow Caps
       ctx.fillStyle = '#ffffff';
-      for (let i = 0; i < 40; i++) {
-        let sx = (i * 73 + tick * 25) % w;
-        let sy = (i * 41 + tick * 40) % h;
+      ctx.beginPath();
+      ctx.moveTo(w * 0.59, h * 0.32);
+      ctx.lineTo(w * 0.65, h * 0.22);
+      ctx.lineTo(w * 0.71, h * 0.33);
+      ctx.lineTo(w * 0.65, h * 0.4);
+      ctx.fill();
+
+      // Dense Snowfall Particles
+      ctx.fillStyle = '#ffffff';
+      for (let i = 0; i < 45; i++) {
+        let sx = (i * 67 + tick * 22) % w;
+        let sy = (i * 37 + tick * 38) % h;
         ctx.fillRect(sx, sy, 3, 3);
       }
     }
     else if (biome === 'sunset') {
-      // Twilight Rolling Ridges
-      ctx.fillStyle = dark ? '#21152e' : '#422442';
+      // Sunset Gradient Horizon Ridge
+      ctx.fillStyle = dark ? '#191124' : '#381e3d';
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.6);
-      ctx.bezierCurveTo(w * 0.3, h * 0.65, w * 0.7, h * 0.55, w, h * 0.6);
+      ctx.moveTo(0, h * 0.64);
+      ctx.bezierCurveTo(w * 0.3, h * 0.58 + Math.cos(tick) * 15, w * 0.7, h * 0.68 + Math.sin(tick) * 15, w, h * 0.64);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Glowing Fireflies with Soft Radial Gradients
-      for (let i = 0; i < 18; i++) {
-        let fx = (i * 123 + Math.sin(tick + i) * 30 + tick * 12) % w;
-        let fy = h * 0.45 + Math.sin(tick * 1.5 + i) * 60;
+      // Magical Glowing Fireflies with Soft Radial Glows
+      for (let i = 0; i < 20; i++) {
+        let fx = (i * 117 + Math.sin(tick + i) * 35 + tick * 14) % w;
+        let fy = h * 0.4 + Math.sin(tick * 1.5 + i) * 70;
         
-        let glow = ctx.createRadialGradient(fx, fy, 1, fx, fy, 12);
-        glow.addColorStop(0, 'rgba(255, 235, 140, 0.9)');
-        glow.addColorStop(1, 'rgba(255, 180, 50, 0)');
+        let glow = ctx.createRadialGradient(fx, fy, 1, fx, fy, 16);
+        glow.addColorStop(0, 'rgba(255, 235, 130, 0.95)');
+        glow.addColorStop(0.5, 'rgba(255, 170, 40, 0.4)');
+        glow.addColorStop(1, 'rgba(255, 120, 10, 0)');
         
         ctx.fillStyle = glow;
         ctx.beginPath();
-        ctx.arc(fx, fy, 12, 0, Math.PI * 2);
+        ctx.arc(fx, fy, 16, 0, Math.PI * 2);
         ctx.fill();
       }
     }
     else {
-      // Sakura Blossom Flowing Slopes
-      ctx.fillStyle = dark ? '#2b1720' : '#7d4057';
+      // Sakura Blossom Rolling Slopes
+      ctx.fillStyle = dark ? '#24131d' : '#6b364c';
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.6);
-      ctx.bezierCurveTo(w * 0.4, h * 0.55, w * 0.6, h * 0.65, w, h * 0.58);
+      ctx.moveTo(0, h * 0.62);
+      ctx.bezierCurveTo(w * 0.35, h * 0.56 + Math.sin(tick) * 18, w * 0.65, h * 0.66 + Math.cos(tick) * 18, w, h * 0.62);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Elegant Butterflies and Swirling Sakura Petals
-      for (let i = 0; i < 22; i++) {
-        let bx = (i * 85 + Math.sin(tick + i) * 40 + tick * 20) % w;
-        let by = (i * 39 + Math.cos(tick + i) * 25 + tick * 15) % h;
+      // Graceful Swirling Sakura Petals and Butterflies
+      for (let i = 0; i < 25; i++) {
+        let bx = (i * 79 + Math.sin(tick + i) * 45 + tick * 22) % w;
+        let by = (i * 41 + Math.cos(tick + i) * 30 + tick * 16) % h;
         
-        ctx.fillStyle = 'rgba(255, 200, 220, 0.95)';
+        ctx.fillStyle = 'rgba(255, 210, 225, 0.95)';
         ctx.fillRect(bx, by, 6, 4);
-        ctx.fillStyle = 'rgba(255, 150, 180, 0.85)';
+        ctx.fillStyle = 'rgba(255, 140, 175, 0.9)';
         ctx.fillRect(bx - 3, by - 2, 4, 3);
         ctx.fillRect(bx + 5, by - 2, 4, 3);
       }
