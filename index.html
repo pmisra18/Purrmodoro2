@@ -36,7 +36,6 @@
         body:not(.timer-running) .melog-awake { display: none; }
         body:not(.timer-running) .melog-asleep { display: block; }
 
-        /* Moves the sleeping sprite down safely without breaking pixels */
         body:not(.timer-running) .orbit-arm .melog-sprite-box {
             transform: translateX(-50%) translateY(4px);
         }
@@ -87,18 +86,24 @@
         .pixel-desk::before, .pixel-desk::after { content: ''; position: absolute; top: 100%; width: 8px; height: 30px; background: #5C4033; }
         .pixel-desk::before { left: 5px; } .pixel-desk::after { right: 5px; }
 
-        /* 4. Smart Item Placement System */
+        /* 4. Smart Emoji Placement System */
         #sanctuary-placed-items {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none;
         }
-        #sanctuary-placed-items > * {
-            position: absolute; image-rendering: pixelated; pointer-events: auto;
+        .placed-item-emoji {
+            position: absolute; pointer-events: auto; display: inline-block; line-height: 1;
         }
-        #sanctuary-placed-items > :nth-child(1) { right: 25px; bottom: 78px; max-height: 25px; max-width: 25px; }
-        #sanctuary-placed-items > :nth-child(2) { left: 15px; bottom: 25px; max-height: 45px; }
-        #sanctuary-placed-items > :nth-child(3) { left: 42%; top: 15px; max-height: 35px; }
-        #sanctuary-placed-items > :nth-child(4) { left: 35%; bottom: 15px; max-height: 30px; }
-        #sanctuary-placed-items > :nth-child(n+5) { right: 80px; bottom: 25px; max-height: 35px; }
+        /* Uses font-size to scale emojis properly */
+        #sanctuary-placed-items > :nth-child(1) { right: 25px; bottom: 75px; font-size: 1.5rem; } 
+        #sanctuary-placed-items > :nth-child(2) { left: 10px; bottom: 25px; font-size: 2.2rem; } 
+        #sanctuary-placed-items > :nth-child(3) { right: 100px; bottom: 25px; font-size: 2.5rem; } 
+        #sanctuary-placed-items > :nth-child(4) { left: 45%; top: 10px; font-size: 1.8rem; } 
+        #sanctuary-placed-items > :nth-child(5) { right: 15px; top: 15px; font-size: 2rem; } 
+        #sanctuary-placed-items > :nth-child(6) { left: 35%; bottom: 15px; font-size: 1.8rem; } 
+        #sanctuary-placed-items > :nth-child(7) { right: 55px; bottom: 75px; font-size: 1.5rem; } 
+        #sanctuary-placed-items > :nth-child(8) { left: 15px; top: 15px; font-size: 1.8rem; } 
+        #sanctuary-placed-items > :nth-child(9) { left: 70px; bottom: 25px; font-size: 2rem; } 
+        #sanctuary-placed-items > :nth-child(10) { right: 130px; bottom: 25px; font-size: 2.2rem; }
 
         /* 5. Realistic Walking Animation for Sanctuary Melog */
         .sanctuary-pet {
@@ -121,7 +126,6 @@
             100% { left: 5%; transform: scaleX(1); }
         }
         
-        /* Make sleeping Melog sit perfectly still on the rug */
         body:not(.timer-running) .sanctuary-pet {
             animation: none; left: 15%; 
         }
@@ -418,13 +422,12 @@
                 forceSaveBtn.addEventListener('click', () => {
                     let newMins = parseInt(focusInput.value, 10);
                     if (isNaN(newMins) || newMins < 1) newMins = 25;
-                    
                     let formattedMins = newMins < 10 ? '0' + newMins : newMins;
                     
-                    // Force the text to update instantly
-                    timerReadout.textContent = formattedMins + ':00';
+                    if (!document.body.classList.contains('timer-running')) {
+                        timerReadout.textContent = formattedMins + ':00';
+                    }
                     
-                    // Also fire a submit event just in case your original JS relies on it
                     document.getElementById('settings-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
                 });
             }
