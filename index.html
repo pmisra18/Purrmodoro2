@@ -13,13 +13,12 @@
     <link rel="stylesheet" href="style.css">
 
     <style>
-        /* 1. Cycle Dots to Clean Paw Prints (Toes separated) */
+        /* 1. Cycle Dots to Clean Paw Prints */
         .tomato-dot {
             border-radius: 0 !important;
             background-color: transparent !important;
             width: 22px !important; 
             height: 22px !important;
-            /* Empty grey paw - properly separated toes */
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M12 13.5c-2.5 0-4.5 2-4.5 4.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5z" /><ellipse cx="6" cy="11.5" rx="2" ry="3" transform="rotate(-30 6 11.5)"/><ellipse cx="9.5" cy="7.5" rx="2" ry="3" transform="rotate(-10 9.5 7.5)"/><ellipse cx="14.5" cy="7.5" rx="2" ry="3" transform="rotate(10 14.5 7.5)"/><ellipse cx="18" cy="11.5" rx="2" ry="3" transform="rotate(30 18 11.5)"/></svg>') !important;
             background-size: contain !important;
             background-repeat: no-repeat !important;
@@ -27,81 +26,134 @@
         }
         .tomato-dot.active {
             opacity: 1;
-            /* Orange active paw */
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23F28C28"><path d="M12 13.5c-2.5 0-4.5 2-4.5 4.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5z" /><ellipse cx="6" cy="11.5" rx="2" ry="3" transform="rotate(-30 6 11.5)"/><ellipse cx="9.5" cy="7.5" rx="2" ry="3" transform="rotate(-10 9.5 7.5)"/><ellipse cx="14.5" cy="7.5" rx="2" ry="3" transform="rotate(10 14.5 7.5)"/><ellipse cx="18" cy="11.5" rx="2" ry="3" transform="rotate(30 18 11.5)"/></svg>') !important;
         }
 
-        /* 2. Sanctuary Doctor's Office Vibe & Grid */
+        /* 2. Sleep Animation for Timer (Triggers when not running) */
+        body:not(.timer-running) .px-cat-master {
+            transform: translateY(4px) scaleY(0.85); /* Crouches down */
+            transition: all 0.5s ease-in-out;
+            transform-origin: bottom center;
+        }
+        body:not(.timer-running) .px-head {
+            transform: translateY(2px) rotate(12deg); /* Rests head */
+            transition: all 0.5s ease-in-out;
+        }
+        /* Floating Zzzs */
+        .zzz-container {
+            position: absolute;
+            top: -20px;
+            right: -10px;
+            font-family: var(--font-pixel);
+            font-size: 0.8rem;
+            color: #A6CFE2;
+            opacity: 0;
+            pointer-events: none;
+        }
+        body:not(.timer-running) .zzz-container {
+            opacity: 1;
+            animation: floatZzz 3s infinite linear;
+        }
+        @keyframes floatZzz {
+            0% { transform: translateY(0) scale(0.5); opacity: 0; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-20px) scale(1.2) translateX(10px); opacity: 0; }
+        }
+
+        /* 3. Bigger, Realistic Sanctuary Room */
         .sanctuary-room-stage {
-            display: grid !important;
-            grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 1fr);
-            align-items: center;
-            justify-items: center;
-            /* Cozy Wallpaper & Floor Gradient */
-            background: linear-gradient(to bottom, #d6e8f5 55%, #b5ccdf 55%, #b5ccdf 60%, #a27b6c 60%, #a27b6c 100%) !important;
+            height: 220px !important; /* Taller room */
+            background: linear-gradient(to bottom, #d6e8f5 60%, #b5ccdf 60%, #b5ccdf 63%, #a27b6c 63%, #a27b6c 100%) !important;
             border: 4px solid rgba(0,0,0,0.15) !important;
             position: relative;
+            display: block !important; /* Remove grid to allow absolute positioning */
         }
         
-        /* Pixel Medical Poster */
+        /* Pixel Decor: Poster & Window */
         .pixel-poster {
-            position: absolute;
-            top: 10px; left: 15px;
-            width: 22px; height: 30px;
-            background: white;
-            border: 2px solid #555;
-            display: flex; align-items: center; justify-content: center;
+            position: absolute; top: 15px; left: 15px;
+            width: 25px; height: 35px; background: white;
+            border: 2px solid #555; display: flex; align-items: center; justify-content: center;
             box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
         }
         .pixel-cross {
-            width: 12px; height: 12px;
-            background: #ff6b6b;
+            width: 14px; height: 14px; background: #ff6b6b;
             clip-path: polygon(33% 0, 66% 0, 66% 33%, 100% 33%, 100% 66%, 66% 66%, 66% 100%, 33% 100%, 33% 66%, 0 66%, 0 33%, 33% 33%);
         }
+        .pixel-window {
+            position: absolute; top: 20px; right: 25px;
+            width: 40px; height: 50px; background: #87CEEB;
+            border: 3px solid #FFF; box-shadow: inset 0 0 10px rgba(255,255,255,0.5), 2px 2px 0 rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .pixel-window::after {
+            content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: #FFF;
+        }
+        .pixel-window::before {
+            content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: #FFF;
+        }
         
-        /* Pixel Rug */
-        .pixel-rug {
+        /* Pixel Desk */
+        .pixel-desk {
             position: absolute;
-            bottom: 12px; left: 50%;
-            transform: translateX(-50%);
-            width: 100px; height: 26px;
-            background: #FCAEBA;
-            border-radius: 13px;
-            border: 2px dashed rgba(255,255,255,0.7);
-            z-index: 1;
+            bottom: 30px; /* Floor level */
+            right: 15px;
+            width: 110px; height: 50px;
+            background: #D2B48C; /* Wood top */
+            border-top: 4px solid #C19A6B;
+            border-left: 3px solid #8B5A2B;
+            border-right: 3px solid #8B5A2B;
+            box-shadow: -5px 10px 0 rgba(0,0,0,0.08);
+            z-index: 2;
         }
+        /* Desk Legs */
+        .pixel-desk::before, .pixel-desk::after {
+            content: ''; position: absolute; top: 100%; width: 8px; height: 30px; background: #5C4033;
+        }
+        .pixel-desk::before { left: 5px; }
+        .pixel-desk::after { right: 5px; }
 
-        /* 3. Wandering Melog Animation (Now covers the whole room) */
-        .sanctuary-pet {
-            position: absolute; /* Taken out of grid flow so he can walk anywhere */
-            bottom: 15px;       /* Keeps him aligned with the carpet */
-            width: 60px;
-            height: 60px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 5;
-            animation: wanderMelog 12s infinite linear;
-        }
-        
-        /* Uses 'left' percentage to move from wall to wall */
-        @keyframes wanderMelog {
-            0% { left: 5%; transform: scaleX(1); }
-            45% { left: 75%; transform: scaleX(1); }
-            50% { left: 75%; transform: scaleX(-1); } /* Flips horizontally */
-            95% { left: 5%; transform: scaleX(-1); }
-            100% { left: 5%; transform: scaleX(1); }
-        }
-
+        /* Realistic Item Placement (Items sit on desk/floor) */
         #sanctuary-placed-items {
-            display: contents; /* Keeps purchased items on the grid */
+            position: absolute;
+            bottom: 30px; /* Same level as desk top */
+            width: 100%;
+            display: flex;
+            align-items: flex-end; /* Anchors items to the bottom */
+            justify-content: space-around;
+            padding: 0 15px;
+            z-index: 4;
         }
         #sanctuary-placed-items > * {
-            max-width: 90%;
-            max-height: 90%;
+            max-height: 40px; /* Scales down items like coffee to fit desk */
             image-rendering: pixelated;
-            z-index: 3;
+        }
+
+        /* 4. Realistic Walking Animation for Sanctuary Melog */
+        .sanctuary-pet {
+            position: absolute;
+            bottom: 25px; /* Walking on the floor */
+            width: 60px;
+            height: 60px;
+            z-index: 5;
+            animation: wanderMelog 14s infinite linear;
+        }
+        
+        /* Apply timer leg animations to the walking sanctuary Melog */
+        .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 8px 11px; }
+        .sanctuary-pet .px-leg-fl { animation: strideFrontLeft 1.2s infinite; transform-origin: 8px 8px; }
+        .sanctuary-pet .px-leg-fr { animation: strideFrontRight 1.2s infinite; transform-origin: 8px 8px; }
+        .sanctuary-pet .px-leg-bl { animation: strideBackLeft 1.2s infinite; transform-origin: 4px 8px; }
+        .sanctuary-pet .px-leg-br { animation: strideBackRight 1.2s infinite; transform-origin: 4px 8px; }
+        .sanctuary-pet .px-balanced-tail { animation: attachedTailSway 1.2s infinite ease-in-out; transform-origin: 3px 6px; }
+
+        /* Left/Right pacing across the room */
+        @keyframes wanderMelog {
+            0% { left: 5%; transform: scaleX(1); }
+            45% { left: 65%; transform: scaleX(1); }
+            50% { left: 65%; transform: scaleX(-1); }
+            95% { left: 5%; transform: scaleX(-1); }
+            100% { left: 5%; transform: scaleX(1); }
         }
     </style>
 </head>
@@ -155,6 +207,7 @@
 
                     <div class="orbit-arm" id="orbit-arm">
                         <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
+                            <div class="zzz-container">Zzz...</div>
                             <svg viewBox="0 0 16 16" class="pixel-melog-svg">
                                 <g class="px-cat-master">
                                     <g class="px-balanced-tail">
@@ -268,7 +321,8 @@
                 <div class="sanctuary-room-stage" id="sanctuary-stage">
                     
                     <div class="pixel-poster"><div class="pixel-cross"></div></div>
-                    <div class="pixel-rug"></div>
+                    <div class="pixel-window"></div>
+                    <div class="pixel-desk"></div>
 
                     <div class="sanctuary-pet">
                         <svg viewBox="0 0 16 16" class="pixel-melog-svg" style="width: 100%; height: 100%; image-rendering: pixelated;">
@@ -314,6 +368,7 @@
                             </g>
                         </svg>
                     </div>
+                    
                     <div id="sanctuary-placed-items" class="sanctuary-items-container"></div>
                 </div>
 
@@ -411,6 +466,28 @@
         </nav>
     </div>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const settingsForm = document.getElementById('settings-form');
+            const focusInput = document.getElementById('cfg-study-min');
+            const timerReadout = document.getElementById('timer-readout');
+
+            if (settingsForm && focusInput && timerReadout) {
+                settingsForm.addEventListener('submit', (e) => {
+                    // Pull the newly submitted focus time, defaulting to 25 if empty
+                    const newMins = parseInt(focusInput.value, 10) || 25;
+                    // Format to ensure numbers below 10 have a leading zero (e.g. "05:00")
+                    const formattedMins = newMins < 10 ? '0' + newMins : newMins;
+                    
+                    // Immediately update the text on the main timer screen, 
+                    // provided the timer is not actively ticking down right now
+                    if (!document.body.classList.contains('timer-running')) {
+                        timerReadout.textContent = formattedMins + ':00';
+                    }
+                });
+            }
+        });
+    </script>
     <script src="script.js"></script>
 </body>
 </html>
