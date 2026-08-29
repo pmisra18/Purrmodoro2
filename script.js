@@ -55,14 +55,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v14', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v15', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     syncWithJSONBin(true);
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v14');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v15');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -507,7 +507,7 @@ function initCanvasEngine() {
     const biome = state.settings.currentBiome;
     const dark = state.settings.darkMode;
 
-    // 1. SKY GRADIENT
+    // 1. DYNAMIC GRADIENT SKY
     let sky = ctx.createLinearGradient(0, 0, 0, h);
     if (dark) {
       sky.addColorStop(0, '#060a12');
@@ -532,9 +532,9 @@ function initCanvasEngine() {
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. BIOME SPECIFIC PIXEL ART SCENERY
+    // 2. DETAILED 16-BIT PIXEL SCENERY PER BIOME
     if (biome === 'forest') {
-      // Rolling Green Pine Hills & Trees
+      // Rolling Green Foothills
       ctx.fillStyle = dark ? '#0f2217' : '#315c3a';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.55);
@@ -548,7 +548,6 @@ function initCanvasEngine() {
       for (let x = -20; x < w + 40; x += 36) {
         let th = 120 + (Math.abs(x) % 50);
         ctx.fillRect(x + Math.sin(tick + x) * 2, h - th, 14, th);
-        // Triangle pine tiers
         ctx.beginPath();
         ctx.moveTo(x - 20, h - th + 40);
         ctx.lineTo(x + 7, h - th - 20);
@@ -593,7 +592,7 @@ function initCanvasEngine() {
       }
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Glowing Fireflies / Evening Sparkles
+      // Glowing Fireflies
       for (let i = 0; i < 15; i++) {
         let fx = (i * 137 + tick * 15) % w;
         let fy = h * 0.4 + Math.sin(tick + i) * 50;
