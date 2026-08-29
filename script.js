@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Master Studio Animated Living Biome Engine
+   PURRMODORO - Master Studio Procedural-Raster Hybrid Living Biome Engine
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -60,14 +60,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v22', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v23', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     triggerAutoSync();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v22');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v23');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -502,7 +502,7 @@ function triggerAutoSync() {
   }, 1000);
 }
 
-/* ================= MASTER STUDIO LIVING BIOME ENGINE ================= */
+/* ================= MASTER STUDIO ANIMATED LIVING BIOME ENGINE ================= */
 function initCanvasEngine() {
   const canvas = document.getElementById('pixel-bg-canvas');
   if (!canvas) return;
@@ -516,13 +516,22 @@ function initCanvasEngine() {
   window.addEventListener('resize', resize);
   resize();
 
+  function drawPixelatedHeart(x, y, scale = 1) {
+    ctx.fillStyle = '#ff6b8b';
+    ctx.fillRect(x, y, 2 * scale, 2 * scale);
+    ctx.fillRect(x + 4 * scale, y, 2 * scale, 2 * scale);
+    ctx.fillRect(x - scale, y + scale, 8 * scale, 2 * scale);
+    ctx.fillRect(x, y + 3 * scale, 6 * scale, 2 * scale);
+    ctx.fillRect(x + 2 * scale, y + 5 * scale, 2 * scale, scale);
+  }
+
   function renderScene() {
     ctx.clearRect(0, 0, w, h);
     tick += 0.012;
     const biome = state.settings.currentBiome;
     const dark = state.settings.darkMode;
 
-    // 1. RICH SKY GRADIENT
+    // 1. SKY GRADIENT
     let sky = ctx.createLinearGradient(0, 0, 0, h);
     if (dark) {
       sky.addColorStop(0, '#030509');
@@ -548,59 +557,77 @@ function initCanvasEngine() {
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. FULL ANIMATED LIVING WORLDS
+    // 2. DETAILED LIVING ANIMATED WORLDS
     if (biome === 'forest') {
-      // Background rolling hills
+      // Background clouds
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+      for (let i = 0; i < 5; i++) {
+        let cx = ((i * 300 + tick * 15) % (w + 350)) - 175;
+        let cy = 50 + i * 40;
+        ctx.beginPath();
+        ctx.arc(cx, cy, 40, 0, Math.PI * 2);
+        ctx.arc(cx + 30, cy - 12, 48, 0, Math.PI * 2);
+        ctx.arc(cx + 65, cy, 35, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // Mid-ground rolling forest hills
       ctx.fillStyle = dark ? '#0c2217' : '#1e3d25';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.52);
       ctx.bezierCurveTo(w * 0.3, h * 0.45 + Math.sin(tick * 0.5) * 10, w * 0.7, h * 0.55 + Math.cos(tick * 0.5) * 10, w, h * 0.52);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Driving past trees parallax effect (scrolling tree trunks & canopies)
+      // Parallax pine trees
       ctx.fillStyle = dark ? '#06120b' : '#112b18';
-      for (let i = 0; i < 7; i++) {
-        let treeX = ((i * 180 - tick * 45) % (w + 200)) - 100;
-        let treeH = 160 + (i * 25) % 60;
-        // Trunk
-        ctx.fillRect(treeX + 40, h - treeH, 16, treeH);
-        // Lush Foliage Canopy
+      for (let i = 0; i < 8; i++) {
+        let treeX = ((i * 160 - tick * 40) % (w + 200)) - 100;
+        ctx.fillRect(treeX + 40, h * 0.52 - 80, 14, 90);
         ctx.beginPath();
-        ctx.arc(treeX + 48, h - treeH + 10, 42, 0, Math.PI * 2);
+        ctx.moveTo(treeX + 10, h * 0.52 - 20);
+        ctx.lineTo(treeX + 47, h * 0.52 - 100);
+        ctx.lineTo(treeX + 84, h * 0.52 - 20);
         ctx.fill();
       }
 
-      // Cozy Animated Woodland Cabin in background
-      let cabinX = (w * 0.6 - tick * 8) % (w + 300) - 100;
-      ctx.fillStyle = '#8B5A2B'; // Wood walls
-      ctx.fillRect(cabinX, h * 0.52 - 45, 65, 45);
-      ctx.fillStyle = '#A0522D'; // Roof
+      // Cozy Woodland Cabin with glowing window & chimney smoke
+      let cabinX = (w * 0.55 - tick * 6) % (w + 300) - 100;
+      ctx.fillStyle = '#8B5A2B';
+      ctx.fillRect(cabinX, h * 0.52 - 55, 75, 55);
+      ctx.fillStyle = '#A0522D';
       ctx.beginPath();
-      ctx.moveTo(cabinX - 8, h * 0.52 - 45);
-      ctx.lineTo(cabinX + 32.5, h * 0.52 - 75);
-      ctx.lineTo(cabinX + 73, h * 0.52 - 45);
+      ctx.moveTo(cabinX - 10, h * 0.52 - 55);
+      ctx.lineTo(cabinX + 37.5, h * 0.52 - 90);
+      ctx.lineTo(cabinX + 85, h * 0.52 - 55);
       ctx.fill();
-      // Warm glowing cabin window
       ctx.fillStyle = '#FFD700';
-      ctx.fillRect(cabinX + 10, h * 0.52 - 35, 14, 14);
-      // Tiny animated chimney smoke
+      ctx.fillRect(cabinX + 12, h * 0.52 - 40, 16, 16);
       ctx.fillStyle = 'rgba(255,255,255,0.6)';
-      let smokeY = (h * 0.52 - 80) - ((tick * 20) % 30);
+      let smokeY = (h * 0.52 - 95) - ((tick * 15) % 35);
       ctx.beginPath();
-      ctx.arc(cabinX + 50, smokeY, 6 + ((tick*5)%6), 0, Math.PI*2);
+      ctx.arc(cabinX + 58, smokeY, 6 + ((tick * 4) % 6), 0, Math.PI * 2);
       ctx.fill();
 
-      // Cute animated woodland animal (Bunny hopping across foreground)
-      let bunnyX = (w - (tick * 65) % (w + 200));
-      let bunnyY = h * 0.72 + Math.sin(tick * 8) * 8;
+      // 🐰 Hopping Bunny
+      let bunnyX = (w - (tick * 60) % (w + 200));
+      let bunnyY = h * 0.7 + Math.sin(tick * 8) * 10;
       ctx.fillStyle = '#F4C28D';
       ctx.beginPath();
-      ctx.ellipse(bunnyX, bunnyY, 14, 10, 0, 0, Math.PI * 2); // Body
-      ctx.arc(bunnyX + 8, bunnyY - 8, 8, 0, Math.PI * 2); // Head
+      ctx.ellipse(bunnyX, bunnyY, 16, 11, 0, 0, Math.PI * 2);
+      ctx.arc(bunnyX + 9, bunnyY - 9, 9, 0, Math.PI * 2);
       ctx.fill();
-      // Ears
-      ctx.fillRect(bunnyX + 4, bunnyY - 20, 3, 10);
-      ctx.fillRect(bunnyX + 10, bunnyY - 20, 3, 10);
+      ctx.fillRect(bunnyX + 5, bunnyY - 22, 3, 11);
+      ctx.fillRect(bunnyX + 11, bunnyY - 22, 3, 11);
+
+      // 🦉 Gliding Owl in sky
+      let owlX = (tick * 50) % (w + 200) - 100;
+      let owlY = 120 + Math.sin(tick * 3) * 15;
+      ctx.fillStyle = '#8B4513';
+      ctx.beginPath();
+      ctx.ellipse(owlX, owlY, 12, 8, 0, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = '#FFD700';
+      ctx.fillRect(owlX + 3, owlY - 3, 3, 3);
 
       // Foreground lush hill
       ctx.fillStyle = dark ? '#08170f' : '#173620';
@@ -611,11 +638,11 @@ function initCanvasEngine() {
 
     } 
     else if (biome === 'mountain') {
-      // Atmospheric mist belt
+      // Mist belt
       ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
       ctx.fillRect(0, h * 0.4, w, h * 0.28);
 
-      // Majestic tiered alpine mountains
+      // Alpine mountains
       ctx.fillStyle = dark ? '#0d1a2c' : '#335270';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.68);
@@ -632,7 +659,26 @@ function initCanvasEngine() {
       ctx.lineTo(w * 0.6, h * 0.36);
       ctx.fill();
 
-      // Dense realistic snowfall
+      // 🐐 Leaping Mountain Goat
+      let goatX = (w * 0.5 + Math.sin(tick * 0.5) * 100);
+      let goatY = h * 0.48 + Math.cos(tick * 2) * 5;
+      ctx.fillStyle = '#EAEAEA';
+      ctx.fillRect(goatX, goatY, 18, 12);
+      ctx.fillRect(goatX + 12, goatY - 8, 8, 10); // Head
+      ctx.fillRect(goatX + 18, goatY - 14, 2, 6); // Horns
+
+      // 🦅 Soaring Eagle
+      let eagleX = (tick * 70) % (w + 200) - 100;
+      let eagleY = 100 + Math.sin(tick * 4) * 20;
+      ctx.fillStyle = '#3A2E2B';
+      ctx.beginPath();
+      ctx.moveTo(eagleX, eagleY);
+      ctx.lineTo(eagleX + 12, eagleY - 8);
+      ctx.lineTo(eagleX + 24, eagleY);
+      ctx.lineTo(eagleX + 12, eagleY + 4);
+      ctx.fill();
+
+      // Snowfall
       ctx.fillStyle = '#ffffff';
       for (let i = 0; i < 55; i++) {
         let sx = (i * 61 + tick * 25) % w;
@@ -641,14 +687,32 @@ function initCanvasEngine() {
       }
     }
     else if (biome === 'sunset') {
-      // Twilight rolling hills
+      // Twilight hills
       ctx.fillStyle = dark ? '#150c21' : '#2b1633';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.63);
       ctx.bezierCurveTo(w * 0.3, h * 0.56, w * 0.7, h * 0.66, w, h * 0.63);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Glowing fireflies and floating embers
+      // 🦌 Wandering Stag on horizon ridge
+      let stagX = (w * 0.4 + Math.sin(tick * 0.3) * 80);
+      let stagY = h * 0.61;
+      ctx.fillStyle = '#3A2010';
+      ctx.fillRect(stagX, stagY - 20, 10, 22); // Body
+      ctx.fillRect(stagX + 6, stagY - 32, 8, 14); // Head & Antlers
+
+      // 🦇 Fluttering Bats
+      let batX = (tick * 55) % (w + 150) - 75;
+      let batY = 150 + Math.sin(tick * 10) * 15;
+      ctx.fillStyle = '#111111';
+      ctx.beginPath();
+      ctx.moveTo(batX, batY);
+      ctx.lineTo(batX + 8, batY - 6);
+      ctx.lineTo(batX + 16, batY);
+      ctx.lineTo(batX + 8, batY + 3);
+      ctx.fill();
+
+      // Glowing fireflies
       for (let i = 0; i < 28; i++) {
         let fx = (i * 97 + Math.sin(tick + i) * 40 + tick * 15) % w;
         let fy = h * 0.38 + Math.sin(tick * 1.4 + i) * 80;
@@ -665,12 +729,31 @@ function initCanvasEngine() {
       }
     }
     else {
-      // Sakura rolling slopes
+      // Sakura slopes
       ctx.fillStyle = dark ? '#1f0d16' : '#572b3d';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.61);
       ctx.bezierCurveTo(w * 0.35, h * 0.55, w * 0.65, h * 0.65, w, h * 0.61);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // 🐼 Cute Red Panda perched in mid-ground
+      let pandaX = w * 0.7;
+      let pandaY = h * 0.55;
+      ctx.fillStyle = '#C04000';
+      ctx.beginPath();
+      ctx.arc(pandaX, pandaY, 12, 0, Math.PI * 2); // Body
+      ctx.arc(pandaX + 6, pandaY - 8, 9, 0, Math.PI * 2); // Head
+      ctx.fill();
+      ctx.fillStyle = '#FFFFFF';
+      ctx.fillRect(pandaX + 2, pandaY - 11, 4, 4); // White face patch
+
+      // 🐦 Diving Bluebird
+      let birdX = (w - (tick * 80) % (w + 200));
+      let birdY = h * 0.4 + Math.sin(tick * 5) * 25;
+      ctx.fillStyle = '#4682B4';
+      ctx.beginPath();
+      ctx.ellipse(birdX, birdY, 8, 5, 0, 0, Math.PI * 2);
+      ctx.fill();
 
       // Swirling petals and butterflies
       for (let i = 0; i < 30; i++) {
