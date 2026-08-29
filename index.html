@@ -93,7 +93,6 @@
         .placed-item-emoji {
             position: absolute; pointer-events: auto; display: inline-block; line-height: 1;
         }
-        /* Uses font-size to scale emojis properly */
         #sanctuary-placed-items > :nth-child(1) { right: 25px; bottom: 75px; font-size: 1.5rem; } 
         #sanctuary-placed-items > :nth-child(2) { left: 10px; bottom: 25px; font-size: 2.2rem; } 
         #sanctuary-placed-items > :nth-child(3) { right: 100px; bottom: 25px; font-size: 2.5rem; } 
@@ -105,18 +104,28 @@
         #sanctuary-placed-items > :nth-child(9) { left: 70px; bottom: 25px; font-size: 2rem; } 
         #sanctuary-placed-items > :nth-child(10) { right: 130px; bottom: 25px; font-size: 2.2rem; }
 
-        /* 5. Realistic Walking Animation for Sanctuary Melog */
-        .sanctuary-pet {
-            position: absolute; bottom: 25px; width: 60px; height: 60px; z-index: 5;
-            animation: wanderMelog 14s infinite linear;
+        /* ========================================================
+           5. BULLETPROOF WALKING ANIMATION FOR SANCTUARY
+           This specifically blocks style.css from gluing him in place
+           ======================================================== */
+        .sanctuary-room-stage .sanctuary-pet {
+            position: absolute !important; 
+            bottom: 25px !important; 
+            width: 60px !important; 
+            height: 60px !important; 
+            z-index: 5 !important;
+            animation: wanderMelog 14s infinite linear !important;
+            transform: none !important;
+            margin: 0 !important;
         }
-        
-        .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 8px 11px; }
-        .sanctuary-pet .px-leg-fl { animation: strideFrontLeft 1.2s infinite; transform-origin: 8px 8px; }
-        .sanctuary-pet .px-leg-fr { animation: strideFrontRight 1.2s infinite; transform-origin: 8px 8px; }
-        .sanctuary-pet .px-leg-bl { animation: strideBackLeft 1.2s infinite; transform-origin: 4px 8px; }
-        .sanctuary-pet .px-leg-br { animation: strideBackRight 1.2s infinite; transform-origin: 4px 8px; }
-        .sanctuary-pet .px-balanced-tail { animation: attachedTailSway 1.2s infinite ease-in-out; transform-origin: 3px 6px; }
+
+        /* Forces a gentle walk, totally overriding the fast timer-running speed */
+        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: 8px 11px; }
+        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-leg-fl { animation: strideFrontLeft 1.2s infinite !important; transform-origin: 8px 8px; }
+        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-leg-fr { animation: strideFrontRight 1.2s infinite !important; transform-origin: 8px 8px; }
+        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-leg-bl { animation: strideBackLeft 1.2s infinite !important; transform-origin: 4px 8px; }
+        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-leg-br { animation: strideBackRight 1.2s infinite !important; transform-origin: 4px 8px; }
+        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-balanced-tail { animation: attachedTailSway 1.2s infinite ease-in-out !important; transform-origin: 3px 6px; }
 
         @keyframes wanderMelog {
             0% { left: 5%; transform: scaleX(1); }
@@ -126,8 +135,14 @@
             100% { left: 5%; transform: scaleX(1); }
         }
         
-        body:not(.timer-running) .sanctuary-pet {
-            animation: none; left: 15%; 
+        /* Freezes Melog completely when the timer is off (sleep mode) */
+        body:not(.timer-running) .sanctuary-room-stage .sanctuary-pet {
+            animation: none !important; 
+            left: 15% !important; 
+            transform: none !important;
+        }
+        body:not(.timer-running) .sanctuary-room-stage .sanctuary-pet * {
+            animation: none !important;
         }
     </style>
 </head>
