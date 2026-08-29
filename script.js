@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - High-Definition 60 FPS Pixel Art Scenery Engine
+   PURRMODORO - High-Definition Flowy Biome Engine & Auto-Sync
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -60,14 +60,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v18', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v19', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     triggerAutoSync();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v18');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v19');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -502,7 +502,7 @@ function triggerAutoSync() {
   }, 1000);
 }
 
-/* ================= HIGH-DEF VIDEO GAME CANVAS SCENERY ENGINE ================= */
+/* ================= HIGH-DEF FLOWY VIDEO GAME CANVAS ENGINE ================= */
 function initCanvasEngine() {
   const canvas = document.getElementById('pixel-bg-canvas');
   if (!canvas) return;
@@ -522,7 +522,7 @@ function initCanvasEngine() {
     const biome = state.settings.currentBiome;
     const dark = state.settings.darkMode;
 
-    // 1. DYNAMIC ATMOSPHERIC SKY GRADIENT
+    // 1. ATMOSPHERIC SKY GRADIENT
     let sky = ctx.createLinearGradient(0, 0, 0, h);
     if (dark) {
       sky.addColorStop(0, '#04070d');
@@ -547,7 +547,7 @@ function initCanvasEngine() {
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. BIOME-SPECIFIC HIGH-DETAIL VIDEO GAME ART
+    // 2. BIOME-SPECIFIC FLOWY ORGANIC LANDSCAPES
     if (biome === 'forest') {
       // Volumetric Drifting Clouds
       ctx.fillStyle = 'rgba(255, 255, 255, 0.75)';
@@ -561,53 +561,21 @@ function initCanvasEngine() {
         ctx.fill();
       }
 
-      // Rolling Green Forest Foothills
+      // Smooth Flowing Bezier Rolling Hills
       ctx.fillStyle = dark ? '#0d2116' : '#275231';
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.58);
-      for (let x = 0; x <= w; x += 30) {
-        ctx.lineTo(x, h * 0.58 + Math.sin(x * 0.025 + tick * 0.15) * 18);
-      }
+      ctx.moveTo(0, h * 0.6);
+      ctx.bezierCurveTo(w * 0.25, h * 0.52 + Math.sin(tick) * 20, w * 0.75, h * 0.68 + Math.cos(tick) * 20, w, h * 0.6);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Detailed Pixel Pine Trees
-      ctx.fillStyle = dark ? '#07120c' : '#14301a';
-      for (let x = -20; x < w + 40; x += 32) {
-        let th = 130 + (Math.abs(x) % 45);
-        ctx.fillRect(x + Math.sin(tick * 0.5 + x) * 1.5, h - th, 12, th);
-        ctx.beginPath();
-        ctx.moveTo(x - 22, h - th + 45);
-        ctx.lineTo(x + 6, h - th - 25);
-        ctx.lineTo(x + 34, h - th + 45);
-        ctx.fill();
-      }
     } 
     else if (biome === 'mountain') {
-      // Massive Jagged Alpine Mountains
+      // Majestic Alpine Peaks with Bezier Slopes
       ctx.fillStyle = dark ? '#152438' : '#4d7294';
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.62);
-      ctx.lineTo(w * 0.2, h * 0.28);
-      ctx.lineTo(w * 0.45, h * 0.52);
-      ctx.lineTo(w * 0.75, h * 0.18);
-      ctx.lineTo(w, h * 0.42);
+      ctx.moveTo(0, h * 0.65);
+      ctx.bezierCurveTo(w * 0.3, h * 0.25, w * 0.7, h * 0.25, w, h * 0.55);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
-
-      // High-Definition Pixel Snow Caps
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(w * 0.16, h * 0.35);
-      ctx.lineTo(w * 0.2, h * 0.28);
-      ctx.lineTo(w * 0.24, h * 0.35);
-      ctx.lineTo(w * 0.2, h * 0.4);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(w * 0.7, h * 0.26);
-      ctx.lineTo(w * 0.75, h * 0.18);
-      ctx.lineTo(w * 0.8, h * 0.26);
-      ctx.lineTo(w * 0.75, h * 0.32);
-      ctx.fill();
 
       // Continuous Realistic Snowfall
       ctx.fillStyle = '#ffffff';
@@ -622,9 +590,7 @@ function initCanvasEngine() {
       ctx.fillStyle = dark ? '#21152e' : '#422442';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.6);
-      for (let x = 0; x <= w; x += 40) {
-        ctx.lineTo(x, h * 0.6 + Math.cos(x * 0.02) * 22);
-      }
+      ctx.bezierCurveTo(w * 0.3, h * 0.65, w * 0.7, h * 0.55, w, h * 0.6);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
       // Glowing Fireflies with Soft Radial Gradients
@@ -643,13 +609,11 @@ function initCanvasEngine() {
       }
     }
     else {
-      // Sakura Blossom Rolling Slopes
+      // Sakura Blossom Flowing Slopes
       ctx.fillStyle = dark ? '#2b1720' : '#7d4057';
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.58);
-      for (let x = 0; x <= w; x += 45) {
-        ctx.lineTo(x, h * 0.58 + Math.sin(x * 0.02) * 20);
-      }
+      ctx.moveTo(0, h * 0.6);
+      ctx.bezierCurveTo(w * 0.4, h * 0.55, w * 0.6, h * 0.65, w, h * 0.58);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
       // Elegant Butterflies and Swirling Sakura Petals
@@ -657,7 +621,6 @@ function initCanvasEngine() {
         let bx = (i * 85 + Math.sin(tick + i) * 40 + tick * 20) % w;
         let by = (i * 39 + Math.cos(tick + i) * 25 + tick * 15) % h;
         
-        // Render detailed butterfly shape
         ctx.fillStyle = 'rgba(255, 200, 220, 0.95)';
         ctx.fillRect(bx, by, 6, 4);
         ctx.fillStyle = 'rgba(255, 150, 180, 0.85)';
