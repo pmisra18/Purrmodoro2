@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - 60 FPS Video Game Pixel Scenery Engine
+   PURRMODORO - Guaranteed Multi-Layered Biome Scenery Engine
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -38,14 +38,19 @@ let state = {
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 133;
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   loadState();
   initTheme();
   initTabs();
   initUI();
   initTimer();
   initPlanner();
-  initCanvasEngine();
+  updateBiomeBackground(state.settings.currentBiome);
+  
+  if (state.settings.jsonbinKey && state.settings.jsonbinId) {
+    await pullFromCloudOnStart();
+  }
+  
   renderAll();
 });
 
@@ -55,14 +60,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v15', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v17', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
-    syncWithJSONBin(true);
+    triggerAutoSync();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v15');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v17');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -121,6 +126,7 @@ function initUI() {
       document.querySelectorAll('.biome-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.settings.currentBiome = btn.dataset.biome;
+      updateBiomeBackground(state.settings.currentBiome);
       saveState();
     });
   });
@@ -149,12 +155,34 @@ function initUI() {
   if (jsonbinIdInput) jsonbinIdInput.value = state.settings.jsonbinId || '';
 
   if (btnSaveCloud) {
-    btnSaveCloud.addEventListener('click', () => {
+    btnSaveCloud.addEventListener('click', async () => {
       state.settings.jsonbinKey = jsonbinKeyInput.value.trim();
       state.settings.jsonbinId = jsonbinIdInput.value.trim();
       saveState();
-      syncWithJSONBin(false);
+      await triggerAutoSync();
+      alert('Cloud connection tested & saved successfully! ☁️');
     });
+  }
+}
+
+/* ================= EXPLICIT VIDEO GAME BIOME ART RENDERER ================= */
+function updateBiomeBackground(biome) {
+  const skyPlane = document.querySelector('.sky-plane');
+  const sceneryPlane = document.getElementById('scenery-art-plane');
+  if (!skyPlane || !sceneryPlane) return;
+
+  if (biome === 'forest') {
+    skyPlane.style.background = 'linear-gradient(to bottom, #4286f4, #73b5e8, #c1e8fb)';
+    sceneryPlane.style.background = 'repeating-linear-gradient(90deg, #1b3821 0px, #1b3821 40px, #285233 40px, #285233 80px), linear-gradient(0deg, #16301b 0%, transparent 100%)';
+  } else if (biome === 'mountain') {
+    skyPlane.style.background = 'linear-gradient(to bottom, #2c5887, #598bc2, #aed2f2)';
+    sceneryPlane.style.background = 'linear-gradient(135deg, #385575 25%, #567a9e 50%, #385575 75%), linear-gradient(0deg, #243952 0%, transparent 100%)';
+  } else if (biome === 'sunset') {
+    skyPlane.style.background = 'linear-gradient(to bottom, #392b5e, #7a5087, #f7ab94)';
+    sceneryPlane.style.background = 'linear-gradient(135deg, #422847 25%, #6e4273 50%, #422847 75%), linear-gradient(0deg, #2b182e 0%, transparent 100%)';
+  } else {
+    skyPlane.style.background = 'linear-gradient(to bottom, #fce1ec, #f8b8cd, #d4ebd8)';
+    sceneryPlane.style.background = 'linear-gradient(135deg, #874b62 25%, #ab6982 50%, #874b62 75%), linear-gradient(0deg, #593040 0%, transparent 100%)';
   }
 }
 
@@ -438,15 +466,10 @@ function initPlanner() {
   }
 }
 
-async function syncWithJSONBin(silent = false) {
+async function pullFromCloudOnStart() {
   const { jsonbinKey, jsonbinId } = state.settings;
-  if (!jsonbinKey || !jsonbinId) {
-    if (!silent) alert('Please enter your JSONBin Master Key and Bin ID first.');
-    return;
-  }
-
   const badge = document.getElementById('sync-status-badge');
-  if (badge) badge.textContent = 'Syncing...';
+  if (!jsonbinKey || !jsonbinId) return;
 
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${jsonbinId}/latest`, {
@@ -456,11 +479,32 @@ async function syncWithJSONBin(silent = false) {
     if (res.ok) {
       const json = await res.json();
       if (json && json.record && json.record.game) {
-        if (json.record.game.totalPomodoros > state.game.totalPomodoros) {
+        if (json.record.game.totalPomodoros >= state.game.totalPomodoros) {
           state.game = json.record.game;
         }
       }
+      if (badge) {
+        badge.textContent = 'Cloud Active';
+        badge.style.background = '#5EAA78';
+      }
+      renderAll();
+    }
+  } catch (err) {
+    if (badge) badge.textContent = 'Offline Mode';
+  }
+}
 
+let syncDebounceTimer = null;
+function triggerAutoSync() {
+  const { jsonbinKey, jsonbinId } = state.settings;
+  if (!jsonbinKey || !jsonbinId) return;
+
+  const badge = document.getElementById('sync-status-badge');
+  if (badge) badge.textContent = 'Syncing...';
+
+  clearTimeout(syncDebounceTimer);
+  syncDebounceTimer = setTimeout(async () => {
+    try {
       await fetch(`https://api.jsonbin.io/v3/b/${jsonbinId}`, {
         method: 'PUT',
         headers: {
@@ -474,154 +518,10 @@ async function syncWithJSONBin(silent = false) {
         badge.textContent = 'Cloud Active';
         badge.style.background = '#5EAA78';
       }
-      saveState();
-      renderAll();
-      if (!silent) alert('Successfully synced with JSONBin! 📦');
-    } else {
-      if (badge) badge.textContent = 'Auth Error';
-      if (!silent) alert('Failed to connect. Check your Master Key and Bin ID.');
+    } catch (err) {
+      if (badge) badge.textContent = 'Sync Error';
     }
-  } catch (err) {
-    if (badge) badge.textContent = 'Offline';
-    if (!silent) alert('Sync failed due to a network error.');
-  }
-}
-
-/* ================= 60 FPS VIDEO GAME PIXEL SCENERY ENGINE ================= */
-function initCanvasEngine() {
-  const canvas = document.getElementById('pixel-bg-canvas');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  let w, h, tick = 0;
-
-  const resize = () => {
-    w = canvas.width = window.innerWidth;
-    h = canvas.height = window.innerHeight;
-  };
-  window.addEventListener('resize', resize);
-  resize();
-
-  function renderScene() {
-    ctx.clearRect(0, 0, w, h);
-    tick += 0.02;
-    const biome = state.settings.currentBiome;
-    const dark = state.settings.darkMode;
-
-    // 1. DYNAMIC GRADIENT SKY
-    let sky = ctx.createLinearGradient(0, 0, 0, h);
-    if (dark) {
-      sky.addColorStop(0, '#060a12');
-      sky.addColorStop(1, '#152238');
-    } else if (biome === 'forest') {
-      sky.addColorStop(0, '#4a90c2');
-      sky.addColorStop(0.6, '#8bc6e8');
-      sky.addColorStop(1, '#d0f0fd');
-    } else if (biome === 'mountain') {
-      sky.addColorStop(0, '#2b588c');
-      sky.addColorStop(0.6, '#629ad4');
-      sky.addColorStop(1, '#b5dcf7');
-    } else if (biome === 'sunset') {
-      sky.addColorStop(0, '#382e66');
-      sky.addColorStop(0.5, '#7a548c');
-      sky.addColorStop(1, '#f2a893');
-    } else {
-      sky.addColorStop(0, '#fce1ec');
-      sky.addColorStop(0.6, '#f7b2cb');
-      sky.addColorStop(1, '#d2ece4');
-    }
-    ctx.fillStyle = sky;
-    ctx.fillRect(0, 0, w, h);
-
-    // 2. DETAILED 16-BIT PIXEL SCENERY PER BIOME
-    if (biome === 'forest') {
-      // Rolling Green Foothills
-      ctx.fillStyle = dark ? '#0f2217' : '#315c3a';
-      ctx.beginPath();
-      ctx.moveTo(0, h * 0.55);
-      for (let x = 0; x <= w; x += 40) {
-        ctx.lineTo(x, h * 0.55 + Math.sin(x * 0.02 + tick * 0.2) * 15);
-      }
-      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
-
-      // Foreground Pine Trees
-      ctx.fillStyle = dark ? '#08140e' : '#1b3821';
-      for (let x = -20; x < w + 40; x += 36) {
-        let th = 120 + (Math.abs(x) % 50);
-        ctx.fillRect(x + Math.sin(tick + x) * 2, h - th, 14, th);
-        ctx.beginPath();
-        ctx.moveTo(x - 20, h - th + 40);
-        ctx.lineTo(x + 7, h - th - 20);
-        ctx.lineTo(x + 34, h - th + 40);
-        ctx.fill();
-      }
-    } 
-    else if (biome === 'mountain') {
-      // Massive Alpine Mountain Range
-      ctx.fillStyle = dark ? '#1b2c45' : '#577c9e';
-      ctx.beginPath();
-      ctx.moveTo(0, h * 0.6);
-      ctx.lineTo(w * 0.25, h * 0.25);
-      ctx.lineTo(w * 0.55, h * 0.5);
-      ctx.lineTo(w * 0.8, h * 0.2);
-      ctx.lineTo(w, h * 0.45);
-      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
-
-      // Pixel Snow Caps
-      ctx.fillStyle = '#ffffff';
-      ctx.beginPath();
-      ctx.moveTo(w * 0.21, h * 0.31);
-      ctx.lineTo(w * 0.25, h * 0.25);
-      ctx.lineTo(w * 0.29, h * 0.31);
-      ctx.lineTo(w * 0.25, h * 0.35);
-      ctx.fill();
-
-      ctx.beginPath();
-      ctx.moveTo(w * 0.76, h * 0.26);
-      ctx.lineTo(w * 0.8, h * 0.2);
-      ctx.lineTo(w * 0.84, h * 0.26);
-      ctx.lineTo(w * 0.8, h * 0.3);
-      ctx.fill();
-    }
-    else if (biome === 'sunset') {
-      // Evening Horizon & Rolling Ridges
-      ctx.fillStyle = dark ? '#261b33' : '#4a2845';
-      ctx.beginPath();
-      ctx.moveTo(0, h * 0.6);
-      for (let x = 0; x <= w; x += 50) {
-        ctx.lineTo(x, h * 0.6 + Math.cos(x * 0.015) * 25);
-      }
-      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
-
-      // Glowing Fireflies
-      for (let i = 0; i < 15; i++) {
-        let fx = (i * 137 + tick * 15) % w;
-        let fy = h * 0.4 + Math.sin(tick + i) * 50;
-        ctx.fillStyle = 'rgba(255, 220, 140, 0.8)';
-        ctx.fillRect(fx, fy, 4, 4);
-      }
-    }
-    else {
-      // Sakura Blossom Valley
-      ctx.fillStyle = dark ? '#2b1b22' : '#8a4b62';
-      ctx.beginPath();
-      ctx.moveTo(0, h * 0.58);
-      for (let x = 0; x <= w; x += 45) {
-        ctx.lineTo(x, h * 0.58 + Math.sin(x * 0.02) * 20);
-      }
-      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
-
-      // Drifting Sakura Petals
-      for (let i = 0; i < 20; i++) {
-        let px = (i * 95 + tick * 25) % w;
-        let py = (i * 47 + tick * 35) % h;
-        ctx.fillStyle = 'rgba(255, 182, 193, 0.85)';
-        ctx.fillRect(px, py, 5, 3);
-      }
-    }
-
-    requestAnimationFrame(renderScene);
-  }
-  renderScene();
+  }, 1000);
 }
 
 function playTone(freq, dur) {
