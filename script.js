@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Complete Engine with Silent Background Sync
+   PURRMODORO - Expanded Sanctuary Store & Advanced Analytics
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -19,11 +19,15 @@ const MEDICAL_SUBJECTS = [
 
 const CATALOG_ITEMS = [
   { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false },
-  { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 50, purchased: false },
-  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 100, purchased: false },
+  { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 40, purchased: false },
+  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 80, purchased: false },
+  { id: 'books', name: 'Medical Bookshelf', icon: '📚', cost: 150, purchased: false },
   { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false },
+  { id: 'cattree', name: 'Cozy Cat Tree', icon: '🪵', cost: 350, purchased: false },
   { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false },
-  { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1000, purchased: false }
+  { id: 'fireplace', name: 'Study Fireplace', icon: '🔥', cost: 750, purchased: false },
+  { id: 'coffee', name: 'Espresso Machine', icon: '☕', cost: 1000, purchased: false },
+  { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1500, purchased: false }
 ];
 
 let state = {
@@ -51,14 +55,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v12', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v13', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
-    syncWithJSONBin(true); // Silent background sync
+    syncWithJSONBin(true);
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v12');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v13');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -150,12 +154,12 @@ function initUI() {
       state.settings.jsonbinKey = jsonbinKeyInput.value.trim();
       state.settings.jsonbinId = jsonbinIdInput.value.trim();
       saveState();
-      syncWithJSONBin(false); // Manual click shows confirmation
+      syncWithJSONBin(false);
     });
   }
 }
 
-/* Stunning Video Game Biome Background Generator */
+/* Unique Video Game Biome Background Generator */
 function updateBiomeScene(biome) {
   const sky = document.querySelector('.parallax-bg-container .sky-layer');
   const scenery = document.querySelector('.parallax-bg-container .scenery-layer');
@@ -358,8 +362,12 @@ function renderWorld() {
 }
 
 function renderStats() {
-  const streakHeader = document.getElementById('txt-stats-streak');
-  if (streakHeader) streakHeader.textContent = `${state.game.streak} Day Streak`;
+  const totalHoursElem = document.getElementById('stat-total-hours');
+  const streakDaysElem = document.getElementById('stat-streak-days');
+  const totalMins = state.game.sessionLogs.reduce((acc, curr) => acc + curr.minutes, 0);
+  
+  if (totalHoursElem) totalHoursElem.textContent = `${(totalMins / 60).toFixed(1)}h`;
+  if (streakDaysElem) streakDaysElem.textContent = `${state.game.streak} Day`;
 
   const row = document.getElementById('weekly-tracker-row');
   if (row) {
@@ -381,16 +389,38 @@ function renderStats() {
     }
   }
 
+  // Subject breakdown list
+  const subjectList = document.getElementById('subject-breakdown-list');
+  if (subjectList) {
+    subjectList.innerHTML = '';
+    const counts = {};
+    state.game.sessionLogs.forEach(log => {
+      counts[log.subject] = (counts[log.subject] || 0) + log.minutes;
+    });
+
+    const entries = Object.entries(counts);
+    if (entries.length === 0) {
+      subjectList.innerHTML = `<div style="text-align:center; padding:0.5rem; font-size:0.7rem; opacity:0.7;">No subjects logged yet.</div>`;
+    } else {
+      entries.forEach(([subj, mins]) => {
+        const item = document.createElement('div');
+        item.className = 'log-item-pill';
+        item.innerHTML = `<div><strong>${escapeHTML(subj.substring(2, 25))}...</strong></div><div>${mins} mins</div>`;
+        subjectList.appendChild(item);
+      });
+    }
+  }
+
   const list = document.getElementById('session-log-list');
   if (list) {
     list.innerHTML = '';
     if (state.game.sessionLogs.length === 0) {
-      list.innerHTML = `<div style="text-align:center; padding:0.8rem; font-size:0.75rem; opacity:0.7;">No study sessions logged today yet.</div>`;
+      list.innerHTML = `<div style="text-align:center; padding:0.5rem; font-size:0.7rem; opacity:0.7;">No study sessions logged today yet.</div>`;
     } else {
-      state.game.sessionLogs.slice(0, 8).forEach(log => {
+      state.game.sessionLogs.slice(0, 5).forEach(log => {
         const item = document.createElement('div');
         item.className = 'log-item-pill';
-        item.innerHTML = `<div><strong>${escapeHTML(log.subject)}</strong> &mdash; ${escapeHTML(log.task)}</div><div>${log.time} (${log.minutes}m)</div>`;
+        item.innerHTML = `<div><strong>${escapeHTML(log.task)}</strong></div><div>${log.time} (${log.minutes}m)</div>`;
         list.appendChild(item);
       });
     }
