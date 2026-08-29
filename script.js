@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Ultra High-Definition Living Video Game Engine
+   PURRMODORO - Master Studio Animated Living Biome Engine
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -60,14 +60,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v21', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v22', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     triggerAutoSync();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v21');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v22');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -502,7 +502,7 @@ function triggerAutoSync() {
   }, 1000);
 }
 
-/* ================= ULTRA HIGH-DEF LIVING VIDEO GAME ENGINE ================= */
+/* ================= MASTER STUDIO LIVING BIOME ENGINE ================= */
 function initCanvasEngine() {
   const canvas = document.getElementById('pixel-bg-canvas');
   if (!canvas) return;
@@ -522,7 +522,7 @@ function initCanvasEngine() {
     const biome = state.settings.currentBiome;
     const dark = state.settings.darkMode;
 
-    // 1. RICH BLENDED SKY GRADIENT
+    // 1. RICH SKY GRADIENT
     let sky = ctx.createLinearGradient(0, 0, 0, h);
     if (dark) {
       sky.addColorStop(0, '#030509');
@@ -548,45 +548,74 @@ function initCanvasEngine() {
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. ULTRA-DETAILED LIVING BIOME ART
+    // 2. FULL ANIMATED LIVING WORLDS
     if (biome === 'forest') {
-      // Billowing Volumetric Multi-Tiered Clouds
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
-      for (let i = 0; i < 6; i++) {
-        let cx = ((i * 280 + tick * 16) % (w + 350)) - 175;
-        let cy = 50 + i * 35;
+      // Background rolling hills
+      ctx.fillStyle = dark ? '#0c2217' : '#1e3d25';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.52);
+      ctx.bezierCurveTo(w * 0.3, h * 0.45 + Math.sin(tick * 0.5) * 10, w * 0.7, h * 0.55 + Math.cos(tick * 0.5) * 10, w, h * 0.52);
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // Driving past trees parallax effect (scrolling tree trunks & canopies)
+      ctx.fillStyle = dark ? '#06120b' : '#112b18';
+      for (let i = 0; i < 7; i++) {
+        let treeX = ((i * 180 - tick * 45) % (w + 200)) - 100;
+        let treeH = 160 + (i * 25) % 60;
+        // Trunk
+        ctx.fillRect(treeX + 40, h - treeH, 16, treeH);
+        // Lush Foliage Canopy
         ctx.beginPath();
-        ctx.arc(cx, cy, 45, 0, Math.PI * 2);
-        ctx.arc(cx + 35, cy - 15, 52, 0, Math.PI * 2);
-        ctx.arc(cx + 75, cy, 40, 0, Math.PI * 2);
+        ctx.arc(treeX + 48, h - treeH + 10, 42, 0, Math.PI * 2);
         ctx.fill();
       }
 
-      // Mid-Ground Pine Silhouette Layer
-      ctx.fillStyle = dark ? '#0f291c' : '#234a2e';
+      // Cozy Animated Woodland Cabin in background
+      let cabinX = (w * 0.6 - tick * 8) % (w + 300) - 100;
+      ctx.fillStyle = '#8B5A2B'; // Wood walls
+      ctx.fillRect(cabinX, h * 0.52 - 45, 65, 45);
+      ctx.fillStyle = '#A0522D'; // Roof
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.58);
-      ctx.bezierCurveTo(w * 0.3, h * 0.5 + Math.sin(tick * 0.7) * 15, w * 0.7, h * 0.6 + Math.cos(tick * 0.7) * 15, w, h * 0.58);
-      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+      ctx.moveTo(cabinX - 8, h * 0.52 - 45);
+      ctx.lineTo(cabinX + 32.5, h * 0.52 - 75);
+      ctx.lineTo(cabinX + 73, h * 0.52 - 45);
+      ctx.fill();
+      // Warm glowing cabin window
+      ctx.fillStyle = '#FFD700';
+      ctx.fillRect(cabinX + 10, h * 0.52 - 35, 14, 14);
+      // Tiny animated chimney smoke
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      let smokeY = (h * 0.52 - 80) - ((tick * 20) % 30);
+      ctx.beginPath();
+      ctx.arc(cabinX + 50, smokeY, 6 + ((tick*5)%6), 0, Math.PI*2);
+      ctx.fill();
 
-      // Atmospheric Ground Mist
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.12)';
-      ctx.fillRect(0, h * 0.65, w, h * 0.15);
+      // Cute animated woodland animal (Bunny hopping across foreground)
+      let bunnyX = (w - (tick * 65) % (w + 200));
+      let bunnyY = h * 0.72 + Math.sin(tick * 8) * 8;
+      ctx.fillStyle = '#F4C28D';
+      ctx.beginPath();
+      ctx.ellipse(bunnyX, bunnyY, 14, 10, 0, 0, Math.PI * 2); // Body
+      ctx.arc(bunnyX + 8, bunnyY - 8, 8, 0, Math.PI * 2); // Head
+      ctx.fill();
+      // Ears
+      ctx.fillRect(bunnyX + 4, bunnyY - 20, 3, 10);
+      ctx.fillRect(bunnyX + 10, bunnyY - 20, 3, 10);
 
-      // Foreground Rich Green Rolling Hills
+      // Foreground lush hill
       ctx.fillStyle = dark ? '#08170f' : '#173620';
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.67);
-      ctx.bezierCurveTo(w * 0.35, h * 0.6 + Math.sin(tick) * 22, w * 0.65, h * 0.7 + Math.cos(tick) * 22, w, h * 0.67);
+      ctx.moveTo(0, h * 0.68);
+      ctx.bezierCurveTo(w * 0.35, h * 0.62, w * 0.65, h * 0.72, w, h * 0.68);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
     } 
     else if (biome === 'mountain') {
-      // Atmospheric Mist Ribbon
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
-      ctx.fillRect(0, h * 0.42, w, h * 0.25);
+      // Atmospheric mist belt
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.2)';
+      ctx.fillRect(0, h * 0.4, w, h * 0.28);
 
-      // Majestic Layered Alpine Mountains with Deep Shadow Creases
+      // Majestic tiered alpine mountains
       ctx.fillStyle = dark ? '#0d1a2c' : '#335270';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.68);
@@ -594,15 +623,7 @@ function initCanvasEngine() {
       ctx.bezierCurveTo(w * 0.8, h * 0.35, w * 0.9, h * 0.45, w, h * 0.55);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Deep Shadow Ravines
-      ctx.fillStyle = dark ? '#08111d' : '#233a52';
-      ctx.beginPath();
-      ctx.moveTo(w * 0.58, h * 0.25);
-      ctx.lineTo(w * 0.6, h * 0.18);
-      ctx.lineTo(w * 0.65, h * 0.38);
-      ctx.fill();
-
-      // High-Definition Blended Snow Caps & Sparkles
+      // Snow caps
       ctx.fillStyle = '#ffffff';
       ctx.beginPath();
       ctx.moveTo(w * 0.54, h * 0.28);
@@ -611,23 +632,23 @@ function initCanvasEngine() {
       ctx.lineTo(w * 0.6, h * 0.36);
       ctx.fill();
 
-      // Dense Dual-Speed Realistic Snowfall
+      // Dense realistic snowfall
       ctx.fillStyle = '#ffffff';
       for (let i = 0; i < 55; i++) {
         let sx = (i * 61 + tick * 25) % w;
         let sy = (i * 31 + tick * 45) % h;
-        ctx.fillRect(sx, sy, (i % 2 === 0 ? 3 : 2), (i % 2 === 0 ? 3 : 2));
+        ctx.fillRect(sx, sy, 3, 3);
       }
     }
     else if (biome === 'sunset') {
-      // Evening Horizon Hills
+      // Twilight rolling hills
       ctx.fillStyle = dark ? '#150c21' : '#2b1633';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.63);
-      ctx.bezierCurveTo(w * 0.3, h * 0.56 + Math.cos(tick) * 15, w * 0.7, h * 0.66 + Math.sin(tick) * 15, w, h * 0.63);
+      ctx.bezierCurveTo(w * 0.3, h * 0.56, w * 0.7, h * 0.66, w, h * 0.63);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Magical Glowing Fireflies with Layered Radial Halos & Floating Embers
+      // Glowing fireflies and floating embers
       for (let i = 0; i < 28; i++) {
         let fx = (i * 97 + Math.sin(tick + i) * 40 + tick * 15) % w;
         let fy = h * 0.38 + Math.sin(tick * 1.4 + i) * 80;
@@ -644,17 +665,17 @@ function initCanvasEngine() {
       }
     }
     else {
-      // Sakura Blossom Rolling Slopes
+      // Sakura rolling slopes
       ctx.fillStyle = dark ? '#1f0d16' : '#572b3d';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.61);
-      ctx.bezierCurveTo(w * 0.35, h * 0.55 + Math.sin(tick) * 18, w * 0.65, h * 0.65 + Math.cos(tick) * 18, w, h * 0.61);
+      ctx.bezierCurveTo(w * 0.35, h * 0.55, w * 0.65, h * 0.65, w, h * 0.61);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Graceful Swirling Sakura Petals and Fluttering Butterflies
+      // Swirling petals and butterflies
       for (let i = 0; i < 30; i++) {
         let bx = (i * 71 + Math.sin(tick + i) * 50 + tick * 25) % w;
-        let by = (i * 33 + Math.cos(tick + i) * 35 + tick * 18) % h;
+        let by = (i * 33 + Math.cos(tick + i) * 30 + tick * 18) % h;
         
         ctx.fillStyle = 'rgba(255, 215, 230, 0.95)';
         ctx.fillRect(bx, by, 7, 5);
