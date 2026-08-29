@@ -11,6 +11,87 @@
     <link href="https://fonts.googleapis.com/css2?family=VT323&family=Silkscreen:wght@400;700&family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="style.css">
+
+    <!-- ========================================================
+         NEW CUSTOM STYLES (Overrides for Paws & Pixel Room)
+         ======================================================== -->
+    <style>
+        /* 1. Cycle Dots to Paw Prints */
+        .tomato-dot {
+            border-radius: 0 !important;
+            background-color: transparent !important;
+            width: 18px !important; 
+            height: 18px !important;
+            /* Empty grey paw */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23666"><path d="M12 21c-4 0-6-3-6-6 0-1.5.5-3 2-4 1-1 3-1 4-1s3 0 4 1c1.5 1 2 2.5 2 4 0 3-2 6-6 6zm-5.5-9c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm11 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm-8.5-4c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm6 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3z"/></svg>') !important;
+            background-size: contain !important;
+            background-repeat: no-repeat !important;
+            opacity: 0.4;
+        }
+        .tomato-dot.active {
+            opacity: 1;
+            /* Orange active paw */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23F28C28"><path d="M12 21c-4 0-6-3-6-6 0-1.5.5-3 2-4 1-1 3-1 4-1s3 0 4 1c1.5 1 2 2.5 2 4 0 3-2 6-6 6zm-5.5-9c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm11 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm-8.5-4c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm6 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3z"/></svg>') !important;
+        }
+
+        /* 2. Daily Challenge Checkboxes */
+        .daily-challenges-box {
+            background: rgba(0, 0, 0, 0.15);
+            padding: 12px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+            text-align: left;
+        }
+        .task-list {
+            list-style: none; padding: 0; margin: 0;
+        }
+        .task-list li {
+            display: flex; align-items: center; margin-bottom: 8px; font-size: 0.85rem; font-family: var(--font-ui, sans-serif);
+        }
+        input[type="checkbox"].paw-checkbox {
+            appearance: none; -webkit-appearance: none;
+            width: 20px; height: 20px;
+            cursor: pointer; display: inline-block; margin-right: 10px;
+            /* Outline blue paw */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="%23A6CFE2" stroke-width="2"><path d="M12 21c-4 0-6-3-6-6 0-1.5.5-3 2-4 1-1 3-1 4-1s3 0 4 1c1.5 1 2 2.5 2 4 0 3-2 6-6 6zm-5.5-9c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm11 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm-8.5-4c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm6 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3z"/></svg>');
+            background-size: cover; flex-shrink: 0;
+        }
+        input[type="checkbox"].paw-checkbox:checked {
+            /* Filled blue paw */
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23A6CFE2"><path d="M12 21c-4 0-6-3-6-6 0-1.5.5-3 2-4 1-1 3-1 4-1s3 0 4 1c1.5 1 2 2.5 2 4 0 3-2 6-6 6zm-5.5-9c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm11 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm-8.5-4c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3zm6 0c-1.5 0-2.5-1.5-2.5-3s1-3 2.5-3 2.5 1.5 2.5 3-1 3-2.5 3z"/></svg>');
+        }
+        input[type="checkbox"].paw-checkbox:checked + span {
+            text-decoration: line-through; opacity: 0.6;
+        }
+
+        /* 3. Sanctuary Pixel Room Grid (Prevents Overlap) */
+        .sanctuary-room-stage {
+            display: grid !important;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            align-items: center;
+            justify-items: center;
+        }
+        .sanctuary-pet {
+            grid-column: 2; /* Forces Melog into the direct center */
+            grid-row: 2;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0; /* hides any leftover text */
+        }
+        #sanctuary-placed-items {
+            display: contents; /* MAGIC TRICK: This makes injected items act as direct grid children */
+        }
+        #sanctuary-placed-items > * {
+            max-width: 90%;
+            max-height: 90%;
+            image-rendering: pixelated;
+        }
+    </style>
 </head>
 <body>
     <!-- Immersive Organic Fluid Wave & Gradient Animation Canvas -->
@@ -43,11 +124,12 @@
                     <button type="button" class="pf-btn-icon btn-dark" id="btn-theme-toggle" title="Dark Mode Toggle">🌙</button>
                 </div>
 
+                <!-- WALLPAPERS CHANGED TO COLORS -->
                 <div class="biome-tag-bar">
-                    <button type="button" class="biome-btn active" data-biome="forest">🌲 Forest</button>
-                    <button type="button" class="biome-btn" data-biome="mountain">🏔️ Peak</button>
-                    <button type="button" class="biome-btn" data-biome="sunset">🌅 Sunset</button>
-                    <button type="button" class="biome-btn" data-biome="sakura">🌸 Sakura</button>
+                    <button type="button" class="biome-btn active" data-biome="forest">🟢 Green</button>
+                    <button type="button" class="biome-btn" data-biome="mountain">🔵 Dark Blue</button>
+                    <button type="button" class="biome-btn" data-biome="sunset">🟠 Orange</button>
+                    <button type="button" class="biome-btn" data-biome="sakura">🌸 Pink</button>
                 </div>
 
                 <div class="medical-select-wrap">
@@ -116,6 +198,7 @@
                 <div class="bottom-cycle-pill">
                     <span>cycle: <strong id="val-cycle-count">1</strong></span>
                     <div class="tomatoes-row">
+                        <!-- Custom CSS overrides these with Paw Prints -->
                         <span class="tomato-dot active" id="dot-1"></span>
                         <span class="tomato-dot" id="dot-2"></span>
                         <span class="tomato-dot" id="dot-3"></span>
@@ -127,6 +210,26 @@
             <!-- ================= TAB 2: PLANNER ================= -->
             <section id="tab-planner" class="view-panel">
                 <h2 class="section-heading">🩷 Study Planner</h2>
+                
+                <!-- NEW DAILY CHALLENGES CHECKLIST -->
+                <div class="daily-challenges-box">
+                    <h3 style="margin: 0 0 8px 0; font-size: 0.85rem; text-transform: uppercase;">Daily Challenges</h3>
+                    <ul class="task-list">
+                        <li>
+                            <input type="checkbox" class="paw-checkbox">
+                            <span>Complete Anki Flashcards</span>
+                        </li>
+                        <li>
+                            <input type="checkbox" class="paw-checkbox">
+                            <span>Review OMM Study Guides</span>
+                        </li>
+                        <li>
+                            <input type="checkbox" class="paw-checkbox">
+                            <span>Complete 2 Purrmodoro Cycles</span>
+                        </li>
+                    </ul>
+                </div>
+
                 <div class="form-col">
                     <div class="form-item">
                         <label for="plan-date">Exam Date</label>
@@ -179,7 +282,51 @@
                 <p style="font-size:0.72rem; text-align:center; opacity:0.8; margin-bottom:0.4rem;">Adopt room upgrades to customize Melog's study space!</p>
                 
                 <div class="sanctuary-room-stage" id="sanctuary-stage">
-                    <div class="sanctuary-pet">🐱</div>
+                    <!-- NEW PIXEL MELOG -->
+                    <div class="sanctuary-pet">
+                        <svg viewBox="0 0 16 16" class="pixel-melog-svg" style="width: 50%; height: 50%; image-rendering: pixelated;">
+                            <g class="px-cat-master">
+                                <g class="px-balanced-tail">
+                                    <rect x="2" y="6" width="2" height="2" fill="#2C1E16" />
+                                    <rect x="1" y="5" width="2" height="2" fill="#F4C28D" />
+                                    <rect x="0" y="3" width="2" height="2" fill="#D9965B" />
+                                    <rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" />
+                                </g>
+                                <g class="px-leg-bl"><rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                <g class="px-leg-fl"><rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                <g class="px-torso">
+                                    <rect x="3" y="6" width="7" height="1" fill="#2C1E16" />
+                                    <rect x="2" y="7" width="1" height="3" fill="#2C1E16" />
+                                    <rect x="10" y="7" width="1" height="3" fill="#2C1E16" />
+                                    <rect x="3" y="10" width="7" height="1" fill="#2C1E16" />
+                                    <rect x="3" y="7" width="5" height="3" fill="#F4C28D" />
+                                    <rect x="4" y="7" width="1" height="2" fill="#D9965B" />
+                                    <rect x="8" y="7" width="2" height="3" fill="#FFFFFF" />
+                                </g>
+                                <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                
+                                <g class="px-head">
+                                    <rect x="6" y="1" width="2" height="3" fill="#2C1E16" />
+                                    <rect x="7" y="2" width="1" height="2" fill="#F4C28D" />
+                                    <rect x="7" y="2" width="1" height="1" fill="#FCAEBA" />
+                                    <rect x="10" y="1" width="2" height="3" fill="#2C1E16" />
+                                    <rect x="10" y="2" width="1" height="2" fill="#F4C28D" />
+                                    <rect x="10" y="2" width="1" height="1" fill="#FCAEBA" />
+                                    <rect x="7" y="4" width="6" height="4" fill="#F4C28D" />
+                                    <rect x="6" y="4" width="1" height="4" fill="#2C1E16" />
+                                    <rect x="13" y="5" width="1" height="3" fill="#2C1E16" />
+                                    <rect x="8" y="3" width="4" height="1" fill="#2C1E16" />
+                                    <rect x="7" y="8" width="5" height="1" fill="#2C1E16" />
+                                    <rect x="9" y="4" width="1" height="1" fill="#D9965B" />
+                                    <rect x="10" y="5" width="1" height="1" fill="#2C1E16" />
+                                    <rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
+                                    <rect x="11" y="6" width="2" height="2" fill="#FFFFFF" />
+                                    <rect x="12" y="6" width="1" height="1" fill="#E88894" />
+                                </g>
+                            </g>
+                        </svg>
+                    </div>
                     <div id="sanctuary-placed-items" class="sanctuary-items-container"></div>
                 </div>
 
