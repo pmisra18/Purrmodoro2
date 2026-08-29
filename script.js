@@ -164,12 +164,27 @@ function initUI() {
   }
 }
 
+// ==========================================
+// UPDATED: Added skipBtn Event Listener
+// ==========================================
 function initTimer() {
   const toggleBtn = document.getElementById('btn-timer-toggle');
   const resetBtn = document.getElementById('btn-timer-reset');
+  const skipBtn = document.getElementById('btn-timer-skip'); 
 
   if (toggleBtn) toggleBtn.addEventListener('click', toggleTimer);
   if (resetBtn) resetBtn.addEventListener('click', resetTimer);
+  
+  if (skipBtn) {
+    skipBtn.addEventListener('click', () => {
+      // Pause the timer if it is actively running so we don't get overlapping intervals
+      if (state.timer.isRunning) {
+        pauseTimer();
+      }
+      // Force the cycle to complete instantly
+      completeBlock();
+    });
+  }
 }
 
 function toggleTimer() {
@@ -547,7 +562,6 @@ function initFluidWaveEngine() {
     ctx.fillRect(0, 0, w, h);
 
     // 2. MULTI-LAYERED FLUID WAVES & BLENDED COLOR ORBS
-    // Draw gorgeous, smooth, rolling color waves across the screen
     const waveCount = 4;
     for (let i = 0; i < waveCount; i++) {
       ctx.beginPath();
@@ -576,7 +590,7 @@ function initFluidWaveEngine() {
       ctx.fill();
     }
 
-    // 3. FLOATING AMBIENT GLOW ORBS (Smooth Blended Color Lights)
+    // 3. FLOATING AMBIENT GLOW ORBS
     for (let j = 0; j < 5; j++) {
       let ox = (j * 250 + Math.sin(tick * 0.5 + j) * 100 + tick * 20) % (w + 200) - 100;
       let oy = h * 0.3 + Math.cos(tick * 0.4 + j) * 80;
