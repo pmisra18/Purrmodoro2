@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Polished Minimalist Cozy Game UI Engine
+   PURRMODORO - Immersive Organic Fluid Wave & Gradient Engine
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initUI();
   initTimer();
   initPlanner();
-  updateBiomeTheme(state.settings.currentBiome);
+  initFluidWaveEngine();
   
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     await pullFromCloudOnStart();
@@ -60,14 +60,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v28', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v29', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     triggerAutoSync();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v28');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v29');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -88,11 +88,6 @@ function initTheme() {
       saveState();
     });
   }
-}
-
-function updateBiomeTheme(biome) {
-  document.body.className = document.body.classList.contains('theme-dark') ? 'theme-dark' : '';
-  document.body.classList.add(`biome-${biome}`);
 }
 
 function initTabs() {
@@ -131,7 +126,6 @@ function initUI() {
       document.querySelectorAll('.biome-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.settings.currentBiome = btn.dataset.biome;
-      updateBiomeTheme(state.settings.currentBiome);
       saveState();
     });
   });
@@ -506,6 +500,111 @@ function triggerAutoSync() {
       if (badge) badge.textContent = 'Sync Error';
     }
   }, 1000);
+}
+
+/* ================= IMMERSIVE ORGANIC FLUID WAVE & GRADIENT ENGINE ================= */
+function initFluidWaveEngine() {
+  const canvas = document.getElementById('fluid-bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, tick = 0;
+
+  const resize = () => {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  function renderScene() {
+    ctx.clearRect(0, 0, w, h);
+    tick += 0.012;
+    const biome = state.settings.currentBiome;
+    const dark = state.settings.darkMode;
+
+    // 1. DYNAMIC FLUID SKY & AMBIENT GRADIENT BASE
+    let bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+    if (dark) {
+      bgGrad.addColorStop(0, '#060a12');
+      bgGrad.addColorStop(1, '#152238');
+    } else if (biome === 'forest') {
+      bgGrad.addColorStop(0, '#2d5a3f');
+      bgGrad.addColorStop(0.5, '#1e3d29');
+      bgGrad.addColorStop(1, '#0f2015');
+    } else if (biome === 'mountain') {
+      bgGrad.addColorStop(0, '#314e6b');
+      bgGrad.addColorStop(0.5, '#1e334a');
+      bgGrad.addColorStop(1, '#0b1622');
+    } else if (biome === 'sunset') {
+      bgGrad.addColorStop(0, '#613348');
+      bgGrad.addColorStop(0.5, '#3b1d30');
+      bgGrad.addColorStop(1, '#1c0d17');
+    } else {
+      bgGrad.addColorStop(0, '#592e42');
+      bgGrad.addColorStop(1, '#1c0915');
+    }
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    // 2. MULTI-LAYERED FLUID WAVES & BLENDED COLOR ORBS
+    // Draw gorgeous, smooth, rolling color waves across the screen
+    const waveCount = 4;
+    for (let i = 0; i < waveCount; i++) {
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+
+      let alpha = 0.15 + (i * 0.05);
+      if (biome === 'forest') {
+        ctx.fillStyle = i % 2 === 0 ? `rgba(80, 160, 100, ${alpha})` : `rgba(40, 100, 70, ${alpha})`;
+      } else if (biome === 'mountain') {
+        ctx.fillStyle = i % 2 === 0 ? `rgba(100, 140, 180, ${alpha})` : `rgba(50, 90, 130, ${alpha})`;
+      } else if (biome === 'sunset') {
+        ctx.fillStyle = i % 2 === 0 ? `rgba(220, 140, 100, ${alpha})` : `rgba(160, 70, 110, ${alpha})`;
+      } else {
+        ctx.fillStyle = i % 2 === 0 ? `rgba(240, 150, 180, ${alpha})` : `rgba(180, 80, 120, ${alpha})`;
+      }
+
+      let yBase = h * (0.4 + (i * 0.12));
+      for (let x = 0; x <= w; x += 30) {
+        let y = yBase + Math.sin(x * 0.003 + tick + (i * 0.8)) * 45 + Math.cos(x * 0.005 - tick * 0.5) * 25;
+        ctx.lineTo(x, y);
+      }
+
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // 3. FLOATING AMBIENT GLOW ORBS (Smooth Blended Color Lights)
+    for (let j = 0; j < 5; j++) {
+      let ox = (j * 250 + Math.sin(tick * 0.5 + j) * 100 + tick * 20) % (w + 200) - 100;
+      let oy = h * 0.3 + Math.cos(tick * 0.4 + j) * 80;
+      
+      let orb = ctx.createRadialGradient(ox, oy, 10, ox, oy, 150);
+      if (biome === 'forest') {
+        orb.addColorStop(0, 'rgba(120, 220, 140, 0.25)');
+        orb.addColorStop(1, 'rgba(50, 120, 80, 0)');
+      } else if (biome === 'mountain') {
+        orb.addColorStop(0, 'rgba(140, 200, 255, 0.25)');
+        orb.addColorStop(1, 'rgba(60, 110, 170, 0)');
+      } else if (biome === 'sunset') {
+        orb.addColorStop(0, 'rgba(255, 180, 120, 0.3)');
+        orb.addColorStop(1, 'rgba(180, 80, 120, 0)');
+      } else {
+        orb.addColorStop(0, 'rgba(255, 160, 200, 0.3)');
+        orb.addColorStop(1, 'rgba(140, 60, 110, 0)');
+      }
+
+      ctx.fillStyle = orb;
+      ctx.beginPath();
+      ctx.arc(ox, oy, 150, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(renderScene);
+  }
+  renderScene();
 }
 
 function playTone(freq, dur) {
