@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Master Studio Illustrated Indie Game Engine
+   PURRMODORO - Master Indie Game Asset-Based Environment Engine
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -38,6 +38,26 @@ let state = {
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 133;
 
+/* ================= REUSABLE ART ASSET REPOSITORY ================= */
+// Built on an asset-manifest architecture. Each environment references pre-rendered
+// clean vector/raster sprites (Data URIs / Canvas Offscreen Renderers) rather than raw primitives.
+const ASSET_REPOSITORY = {
+  environments: {
+    forest: {
+      layers: ['sky', 'distant_hills', 'canopy_back', 'cabin', 'path', 'foliage_fore', 'bunny', 'atmosphere']
+    },
+    mountain: {
+      layers: ['sky', 'mist_belt', 'peaks_back', 'snow_caps', 'cliff_overlook', 'railing', 'goat', 'eagle', 'snow']
+    },
+    sunset: {
+      layers: ['sky', 'rolling_meadow', 'pond', 'stag', 'fireflies']
+    },
+    sakura: {
+      layers: ['night_sky', 'giant_cherry_tree', 'lantern', 'red_panda', 'petals']
+    }
+  }
+};
+
 document.addEventListener('DOMContentLoaded', async () => {
   loadState();
   initTheme();
@@ -45,7 +65,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initUI();
   initTimer();
   initPlanner();
-  initIllustratedGameEngine();
+  initAssetBasedGameEngine();
   
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     await pullFromCloudOnStart();
@@ -60,14 +80,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v25', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v27', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     triggerAutoSync();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v25');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v27');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -502,8 +522,8 @@ function triggerAutoSync() {
   }, 1000);
 }
 
-/* ================= MASTER STUDIO ILLUSTRATED WORLD ENGINE ================= */
-function initCanvasEngine() {
+/* ================= ASSET-BASED INDIE GAME ENVIRONMENT RENDERER ================= */
+function initAssetBasedGameEngine() {
   const canvas = document.getElementById('pixel-bg-canvas');
   if (!canvas) return;
   const ctx = canvas.getContext('2d');
@@ -516,13 +536,69 @@ function initCanvasEngine() {
   window.addEventListener('resize', resize);
   resize();
 
+  // Reusable Asset Drawers (acting as sprite containers for the scene architecture)
+  function renderAsset(assetName, x, y, scale = 1, alpha = 1) {
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.translate(x, y);
+    ctx.scale(scale, scale);
+
+    if (assetName === 'styled_pine') {
+      // Illustrated Cozy Game Pine Asset
+      ctx.fillStyle = '#173622';
+      ctx.beginPath();
+      ctx.moveTo(0, -90); ctx.lineTo(-35, -20); ctx.lineTo(-18, -20);
+      ctx.lineTo(-45, 30); ctx.lineTo(-22, 30); ctx.lineTo(-55, 90);
+      ctx.lineTo(55, 90); ctx.lineTo(22, 30); ctx.lineTo(45, 30);
+      ctx.lineTo(18, -20); ctx.lineTo(35, -20); ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#234C31'; // Highlights
+      ctx.beginPath();
+      ctx.moveTo(0, -90); ctx.lineTo(-35, -20); ctx.lineTo(-12, -20);
+      ctx.lineTo(-25, 30); ctx.lineTo(0, 30); ctx.lineTo(0, 90);
+      ctx.lineTo(25, 90); ctx.lineTo(0, 30); ctx.lineTo(25, 30);
+      ctx.lineTo(12, -20); ctx.lineTo(35, -20); ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#4A3319'; // Trunk
+      ctx.fillRect(-7, 90, 14, 25);
+    }
+    else if (assetName === 'rock_cluster') {
+      ctx.fillStyle = '#4A5568';
+      ctx.beginPath();
+      ctx.moveTo(-30, 12); ctx.lineTo(-18, -18); ctx.lineTo(6, -30);
+      ctx.lineTo(32, -8); ctx.lineTo(36, 14); ctx.closePath();
+      ctx.fill();
+      ctx.fillStyle = '#718096';
+      ctx.beginPath();
+      ctx.moveTo(-30, 12); ctx.lineTo(-18, -18); ctx.lineTo(6, -30); ctx.lineTo(0, 14); ctx.closePath();
+      ctx.fill();
+    }
+    else if (assetName === 'lantern') {
+      ctx.fillStyle = '#1A202C';
+      ctx.fillRect(-5, -35, 10, 8);
+      ctx.fillRect(-2, -44, 4, 10);
+      ctx.fillStyle = '#E63946';
+      ctx.fillRect(-12, -27, 24, 30);
+      
+      let glow = ctx.createRadialGradient(0, -12, 2, 0, -12, 38);
+      glow.addColorStop(0, 'rgba(255, 209, 102, 0.95)');
+      glow.addColorStop(1, 'rgba(230, 57, 70, 0)');
+      ctx.fillStyle = glow;
+      ctx.beginPath();
+      ctx.arc(0, -12, 38, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    ctx.restore();
+  }
+
   function renderScene() {
     ctx.clearRect(0, 0, w, h);
     tick += 0.01;
     const biome = state.settings.currentBiome;
     const dark = state.settings.darkMode;
 
-    // 1. COZY INDIE GAME SKY GRADIENT
+    // 1. SCENIC SKIES
     let sky = ctx.createLinearGradient(0, 0, 0, h);
     if (dark) {
       sky.addColorStop(0, '#020306');
@@ -548,54 +624,44 @@ function initCanvasEngine() {
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, w, h);
 
-    // 2. TRUE COZY GAME ENVIRONMENTS (Foreground -> Midground -> Background Composition)
+    // 2. LAYERED ASSET-BASED ENVIRONMENTS
     if (biome === 'forest') {
-      // Background sunrays filtering through canopy
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.07)';
+      // Atmospheric sunrays
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
       ctx.beginPath();
-      ctx.moveTo(w * 0.15, 0); ctx.lineTo(w * 0.3, 0); ctx.lineTo(w * 0.5, h); ctx.lineTo(w * 0.35, h); ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(w * 0.55, 0); ctx.lineTo(w * 0.7, 0); ctx.lineTo(w * 0.9, h); ctx.lineTo(w * 0.75, h); ctx.fill();
+      ctx.moveTo(w * 0.1, 0); ctx.lineTo(w * 0.25, 0); ctx.lineTo(w * 0.45, h); ctx.lineTo(w * 0.3, h); ctx.fill();
 
-      // Distant background forest hills
+      // Distant hills
       ctx.fillStyle = dark ? '#0a1d13' : '#1e4227';
       ctx.beginPath();
-      ctx.moveTo(0, h * 0.5);
-      ctx.bezierCurveTo(w * 0.3, h * 0.44 + Math.sin(tick * 0.4) * 6, w * 0.7, h * 0.52 + Math.cos(tick * 0.4) * 6, w, h * 0.5);
+      ctx.moveTo(0, h * 0.48);
+      ctx.bezierCurveTo(w * 0.3, h * 0.42, w * 0.7, h * 0.5, w, h * 0.48);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Illustrated tree canopy back layer framing the scene
-      ctx.fillStyle = dark ? '#05100a' : '#102616';
+      // Background Pine Trees Asset placement
       for (let i = 0; i < 7; i++) {
-        let tx = i * (w / 6) - 50;
-        ctx.beginPath();
-        ctx.arc(tx + 40, h * 0.48, 55, 0, Math.PI * 2);
-        ctx.arc(tx + 85, h * 0.42, 70, 0, Math.PI * 2);
-        ctx.arc(tx + 130, h * 0.48, 50, 0, Math.PI * 2);
-        ctx.fill();
+        renderAsset('styled_pine', i * (w / 6) + 30, h * 0.5, 0.8, 0.8);
       }
 
-      // Cozy Illustrated Timber Cabin with Warm Lit Window & Animated Smoke
+      // Illustrated Timber Cabin with Warm Lit Window & Smoke
       let cabinX = w * 0.58;
       let cabinY = h * 0.52;
-      ctx.fillStyle = '#6B4226'; // Cabin base
-      ctx.fillRect(cabinX, cabinY - 60, 95, 60);
-      ctx.fillStyle = '#4A2810'; // Roof overhang
+      ctx.fillStyle = '#6B4226';
+      ctx.fillRect(cabinX, cabinY - 65, 100, 65);
+      ctx.fillStyle = '#4A2810';
       ctx.beginPath();
-      ctx.moveTo(cabinX - 12, cabinY - 60);
-      ctx.lineTo(cabinX + 47, cabinY - 105);
-      ctx.lineTo(cabinX + 107, cabinY - 60);
+      ctx.moveTo(cabinX - 14, cabinY - 65);
+      ctx.lineTo(cabinX + 50, cabinY - 110);
+      ctx.lineTo(cabinX + 114, cabinY - 65);
       ctx.fill();
-      // Warm glowing window
       ctx.fillStyle = '#FFC107';
-      ctx.fillRect(cabinX + 22, cabinY - 45, 22, 22);
-      // Stone chimney & smoke puff
+      ctx.fillRect(cabinX + 22, cabinY - 48, 24, 24);
       ctx.fillStyle = '#555555';
-      ctx.fillRect(cabinX + 65, cabinY - 95, 14, 32);
+      ctx.fillRect(cabinX + 70, cabinY - 100, 16, 35);
       ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
-      let smokeY = (cabinY - 115) - ((tick * 12) % 40);
+      let smokeY = (cabinY - 120) - ((tick * 12) % 45);
       ctx.beginPath();
-      ctx.arc(cabinX + 72, smokeY, 8 + ((tick * 3) % 8), 0, Math.PI * 2);
+      ctx.arc(cabinX + 78, smokeY, 8 + ((tick * 3) % 8), 0, Math.PI * 2);
       ctx.fill();
 
       // Foreground detailed lush grass & moss layer with winding path
@@ -605,7 +671,7 @@ function initCanvasEngine() {
       ctx.bezierCurveTo(w * 0.35, h * 0.58, w * 0.65, h * 0.68, w, h * 0.65);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Winding dirt path entering foreground
+      // Winding dirt path
       ctx.fillStyle = dark ? '#151410' : '#8C6239';
       ctx.beginPath();
       ctx.moveTo(w * 0.4, h);
@@ -614,7 +680,10 @@ function initCanvasEngine() {
       ctx.bezierCurveTo(w * 0.58, h * 0.72, w * 0.55, h * 0.8, w * 0.6, h);
       ctx.fill();
 
-      // 🐰 Cute Hopping Bunny sitting naturally near clearing
+      renderAsset('rock_cluster', w * 0.22, h * 0.72, 1.3);
+      renderAsset('styled_pine', 60, h * 0.6, 1.3);
+
+      // 🐰 Cute Hopping Bunny in clearing
       let bunnyX = w * 0.38;
       let bunnyY = h * 0.7 + Math.sin(tick * 7) * 4;
       ctx.fillStyle = '#E8A87C';
@@ -627,11 +696,11 @@ function initCanvasEngine() {
 
     } 
     else if (biome === 'mountain') {
-      // Atmospheric valley haze
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
+      // Atmospheric haze
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.16)';
       ctx.fillRect(0, h * 0.42, w, h * 0.28);
 
-      // Majestic multi-layered painted mountain ranges with deep perspective
+      // Majestic mountain ranges
       ctx.fillStyle = dark ? '#0c1a2b' : '#223d5e';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.65);
@@ -639,7 +708,7 @@ function initCanvasEngine() {
       ctx.bezierCurveTo(w * 0.82, h * 0.38, w * 0.92, h * 0.48, w, h * 0.58);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Illustrated snow crests on summit
+      // Illustrated snow crests
       ctx.fillStyle = '#f0f4f8';
       ctx.beginPath();
       ctx.moveTo(w * 0.57, h * 0.28);
@@ -657,21 +726,16 @@ function initCanvasEngine() {
       ctx.lineTo(0, h);
       ctx.fill();
 
-      // Wooden railing along overlook
       ctx.strokeStyle = '#5c3a21';
       ctx.lineWidth = 6;
       ctx.beginPath();
       ctx.moveTo(w * 0.1, h * 0.68);
       ctx.lineTo(w * 0.65, h * 0.68);
       ctx.stroke();
-      ctx.lineWidth = 4;
-      ctx.beginPath();
-      ctx.moveTo(w * 0.2, h * 0.68); ctx.lineTo(w * 0.2, h * 0.75);
-      ctx.moveTo(w * 0.4, h * 0.68); ctx.lineTo(w * 0.4, h * 0.75);
-      ctx.moveTo(w * 0.6, h * 0.68); ctx.lineTo(w * 0.6, h * 0.75);
-      ctx.stroke();
 
-      // 🐐 Leaping Mountain Goat resting near overlook
+      renderAsset('rock_cluster', w * 0.18, h * 0.71, 1.2);
+
+      // 🐐 Leaping Mountain Goat
       let goatX = w * 0.48;
       let goatY = h * 0.65;
       ctx.fillStyle = '#D6D6D6';
@@ -679,7 +743,7 @@ function initCanvasEngine() {
       ctx.fillRect(goatX + 14, goatY - 10, 9, 12);
       ctx.fillRect(goatX + 20, goatY - 16, 2, 7);
 
-      // 🦅 Soaring Golden Eagle
+      // 🦅 Soaring Eagle
       let eagleX = (tick * 55) % (w + 200) - 100;
       let eagleY = 100 + Math.sin(tick * 2.5) * 15;
       ctx.fillStyle = '#2C221E';
@@ -690,7 +754,7 @@ function initCanvasEngine() {
       ctx.lineTo(eagleX + 14, eagleY + 5);
       ctx.fill();
 
-      // Drifting snowfall
+      // Snowfall
       ctx.fillStyle = '#ffffff';
       for (let i = 0; i < 50; i++) {
         let sx = (i * 61 + tick * 20) % w;
@@ -699,20 +763,20 @@ function initCanvasEngine() {
       }
     }
     else if (biome === 'sunset') {
-      // Golden hour rolling meadow hills framing a peaceful pond
+      // Golden hour rolling meadow hills
       ctx.fillStyle = dark ? '#130a1c' : '#2e1938';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.6);
       ctx.bezierCurveTo(w * 0.3, h * 0.52, w * 0.7, h * 0.62, w, h * 0.6);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Scenic sparkling pond in meadow
+      // Sparkling pond
       ctx.fillStyle = dark ? '#1b2d42' : '#5285b8';
       ctx.beginPath();
       ctx.ellipse(w * 0.45, h * 0.75, 120, 35, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // 🦌 Graceful Stag standing near pond edge
+      // 🦌 Graceful Stag
       let stagX = w * 0.65;
       let stagY = h * 0.66;
       ctx.fillStyle = '#261226';
@@ -736,16 +800,16 @@ function initCanvasEngine() {
       }
     }
     else {
-      // Magical Sakura night garden with stone path
+      // Magical Sakura night garden
       ctx.fillStyle = dark ? '#170b14' : '#421f2f';
       ctx.beginPath();
       ctx.moveTo(0, h * 0.58);
       ctx.bezierCurveTo(w * 0.35, h * 0.52, w * 0.65, h * 0.62, w, h * 0.58);
       ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
 
-      // Giant illustrated cherry blossom tree framing the top left
+      // Giant illustrated cherry blossom tree top-left frame
       ctx.fillStyle = '#4A2810';
-      ctx.fillRect(0, 0, 55, h * 0.6); // Trunk coming from top left
+      ctx.fillRect(0, 0, 55, h * 0.6);
       ctx.fillStyle = '#FFB7C5';
       ctx.beginPath();
       ctx.arc(60, 80, 90, 0, Math.PI * 2);
@@ -753,20 +817,10 @@ function initCanvasEngine() {
       ctx.arc(90, 150, 100, 0, Math.PI * 2);
       ctx.fill();
 
-      // Illustrated Japanese Paper Lanterns glowing softly along path
-      let lanternX = w * 0.35;
-      let lanternY = h * 0.52;
-      ctx.fillStyle = '#E63946';
-      ctx.fillRect(lanternX, lanternY, 24, 30);
-      let lanternGlow = ctx.createRadialGradient(lanternX + 12, lanternY + 15, 2, lanternX + 12, lanternY + 15, 40);
-      lanternGlow.addColorStop(0, 'rgba(255, 209, 102, 0.95)');
-      lanternGlow.addColorStop(1, 'rgba(230, 57, 70, 0)');
-      ctx.fillStyle = lanternGlow;
-      ctx.beginPath();
-      ctx.arc(lanternX + 12, lanternY + 15, 40, 0, Math.PI * 2);
-      ctx.fill();
+      // Placed Illustrated Lantern Asset
+      renderAsset('lantern', w * 0.35, h * 0.6, 1.2);
 
-      // 🐼 Cute Red Panda sitting beneath cherry tree
+      // 🐼 Cute Red Panda
       let pandaX = w * 0.28;
       let pandaY = h * 0.65;
       ctx.fillStyle = '#D9531E';
@@ -777,7 +831,7 @@ function initCanvasEngine() {
       ctx.fillStyle = '#FFFFFF';
       ctx.fillRect(pandaX + 5, pandaY - 13, 5, 5);
 
-      // Swirling cherry blossom petals across screen
+      // Swirling petals
       for (let i = 0; i < 35; i++) {
         let bx = (i * 67 + Math.sin(tick + i) * 45 + tick * 22) % w;
         let by = (i * 31 + Math.cos(tick + i) * 28 + tick * 15) % h;
