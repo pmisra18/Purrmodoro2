@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   PURRMODORO - Expanded Sanctuary Store & Advanced Analytics
+   PURRMODORO - 60 FPS Video Game Pixel Scenery Engine
    ------------------------------------------------------------- */
 const MEDICAL_SUBJECTS = [
   "📖 Board Prep (COMLEX / USMLE / TrueLearn / UWorld)",
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initUI();
   initTimer();
   initPlanner();
-  updateBiomeScene(state.settings.currentBiome);
+  initCanvasEngine();
   renderAll();
 });
 
@@ -55,14 +55,14 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v13', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v14', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     syncWithJSONBin(true);
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v13');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v14');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
@@ -121,7 +121,6 @@ function initUI() {
       document.querySelectorAll('.biome-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.settings.currentBiome = btn.dataset.biome;
-      updateBiomeScene(state.settings.currentBiome);
       saveState();
     });
   });
@@ -156,27 +155,6 @@ function initUI() {
       saveState();
       syncWithJSONBin(false);
     });
-  }
-}
-
-/* Unique Video Game Biome Background Generator */
-function updateBiomeScene(biome) {
-  const sky = document.querySelector('.parallax-bg-container .sky-layer');
-  const scenery = document.querySelector('.parallax-bg-container .scenery-layer');
-  if (!sky || !scenery) return;
-
-  if (biome === 'forest') {
-    sky.style.background = 'linear-gradient(to bottom, #4688B8 0%, #7CB3D8 50%, #B5DCEB 100%)';
-    scenery.style.background = 'repeating-linear-gradient(90deg, #183320 0px, #183320 35px, #24482d 35px, #24482d 70px)';
-  } else if (biome === 'mountain') {
-    sky.style.background = 'linear-gradient(to bottom, #2b5c94 0%, #5283b7 50%, #a4cbe6 100%)';
-    scenery.style.background = 'linear-gradient(135deg, #324f6e 25%, #4f7398 50%, #324f6e 75%)';
-  } else if (biome === 'sunset') {
-    sky.style.background = 'linear-gradient(to bottom, #322c5c 0%, #685182 50%, #c98ea7 100%)';
-    scenery.style.background = 'linear-gradient(135deg, #422845 25%, #633f66 50%, #422845 75%)';
-  } else {
-    sky.style.background = 'linear-gradient(to bottom, #fce6ed 0%, #f3b8cd 50%, #cde2dc 100%)';
-    scenery.style.background = 'linear-gradient(135deg, #7a465c 25%, #9e617a 50%, #7a465c 75%)';
   }
 }
 
@@ -389,7 +367,6 @@ function renderStats() {
     }
   }
 
-  // Subject breakdown list
   const subjectList = document.getElementById('subject-breakdown-list');
   if (subjectList) {
     subjectList.innerHTML = '';
@@ -508,6 +485,144 @@ async function syncWithJSONBin(silent = false) {
     if (badge) badge.textContent = 'Offline';
     if (!silent) alert('Sync failed due to a network error.');
   }
+}
+
+/* ================= 60 FPS VIDEO GAME PIXEL SCENERY ENGINE ================= */
+function initCanvasEngine() {
+  const canvas = document.getElementById('pixel-bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, tick = 0;
+
+  const resize = () => {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  function renderScene() {
+    ctx.clearRect(0, 0, w, h);
+    tick += 0.02;
+    const biome = state.settings.currentBiome;
+    const dark = state.settings.darkMode;
+
+    // 1. SKY GRADIENT
+    let sky = ctx.createLinearGradient(0, 0, 0, h);
+    if (dark) {
+      sky.addColorStop(0, '#060a12');
+      sky.addColorStop(1, '#152238');
+    } else if (biome === 'forest') {
+      sky.addColorStop(0, '#4a90c2');
+      sky.addColorStop(0.6, '#8bc6e8');
+      sky.addColorStop(1, '#d0f0fd');
+    } else if (biome === 'mountain') {
+      sky.addColorStop(0, '#2b588c');
+      sky.addColorStop(0.6, '#629ad4');
+      sky.addColorStop(1, '#b5dcf7');
+    } else if (biome === 'sunset') {
+      sky.addColorStop(0, '#382e66');
+      sky.addColorStop(0.5, '#7a548c');
+      sky.addColorStop(1, '#f2a893');
+    } else {
+      sky.addColorStop(0, '#fce1ec');
+      sky.addColorStop(0.6, '#f7b2cb');
+      sky.addColorStop(1, '#d2ece4');
+    }
+    ctx.fillStyle = sky;
+    ctx.fillRect(0, 0, w, h);
+
+    // 2. BIOME SPECIFIC PIXEL ART SCENERY
+    if (biome === 'forest') {
+      // Rolling Green Pine Hills & Trees
+      ctx.fillStyle = dark ? '#0f2217' : '#315c3a';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.55);
+      for (let x = 0; x <= w; x += 40) {
+        ctx.lineTo(x, h * 0.55 + Math.sin(x * 0.02 + tick * 0.2) * 15);
+      }
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // Foreground Pine Trees
+      ctx.fillStyle = dark ? '#08140e' : '#1b3821';
+      for (let x = -20; x < w + 40; x += 36) {
+        let th = 120 + (Math.abs(x) % 50);
+        ctx.fillRect(x + Math.sin(tick + x) * 2, h - th, 14, th);
+        // Triangle pine tiers
+        ctx.beginPath();
+        ctx.moveTo(x - 20, h - th + 40);
+        ctx.lineTo(x + 7, h - th - 20);
+        ctx.lineTo(x + 34, h - th + 40);
+        ctx.fill();
+      }
+    } 
+    else if (biome === 'mountain') {
+      // Massive Alpine Mountain Range
+      ctx.fillStyle = dark ? '#1b2c45' : '#577c9e';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.6);
+      ctx.lineTo(w * 0.25, h * 0.25);
+      ctx.lineTo(w * 0.55, h * 0.5);
+      ctx.lineTo(w * 0.8, h * 0.2);
+      ctx.lineTo(w, h * 0.45);
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // Pixel Snow Caps
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath();
+      ctx.moveTo(w * 0.21, h * 0.31);
+      ctx.lineTo(w * 0.25, h * 0.25);
+      ctx.lineTo(w * 0.29, h * 0.31);
+      ctx.lineTo(w * 0.25, h * 0.35);
+      ctx.fill();
+
+      ctx.beginPath();
+      ctx.moveTo(w * 0.76, h * 0.26);
+      ctx.lineTo(w * 0.8, h * 0.2);
+      ctx.lineTo(w * 0.84, h * 0.26);
+      ctx.lineTo(w * 0.8, h * 0.3);
+      ctx.fill();
+    }
+    else if (biome === 'sunset') {
+      // Evening Horizon & Rolling Ridges
+      ctx.fillStyle = dark ? '#261b33' : '#4a2845';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.6);
+      for (let x = 0; x <= w; x += 50) {
+        ctx.lineTo(x, h * 0.6 + Math.cos(x * 0.015) * 25);
+      }
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // Glowing Fireflies / Evening Sparkles
+      for (let i = 0; i < 15; i++) {
+        let fx = (i * 137 + tick * 15) % w;
+        let fy = h * 0.4 + Math.sin(tick + i) * 50;
+        ctx.fillStyle = 'rgba(255, 220, 140, 0.8)';
+        ctx.fillRect(fx, fy, 4, 4);
+      }
+    }
+    else {
+      // Sakura Blossom Valley
+      ctx.fillStyle = dark ? '#2b1b22' : '#8a4b62';
+      ctx.beginPath();
+      ctx.moveTo(0, h * 0.58);
+      for (let x = 0; x <= w; x += 45) {
+        ctx.lineTo(x, h * 0.58 + Math.sin(x * 0.02) * 20);
+      }
+      ctx.lineTo(w, h); ctx.lineTo(0, h); ctx.fill();
+
+      // Drifting Sakura Petals
+      for (let i = 0; i < 20; i++) {
+        let px = (i * 95 + tick * 25) % w;
+        let py = (i * 47 + tick * 35) % h;
+        ctx.fillStyle = 'rgba(255, 182, 193, 0.85)';
+        ctx.fillRect(px, py, 5, 3);
+      }
+    }
+
+    requestAnimationFrame(renderScene);
+  }
+  renderScene();
 }
 
 function playTone(freq, dur) {
