@@ -1,5 +1,5 @@
 :root {
-  --card-glass: rgba(255, 255, 255, 0.78);
+  --card-glass: rgba(255, 255, 255, 0.82);
   --card-glass-border: rgba(255, 255, 255, 0.95);
   --btn-orange: #D9733E;
   --btn-orange-shadow: #A84E20;
@@ -17,7 +17,7 @@
 }
 
 body.theme-dark {
-  --card-glass: rgba(26, 20, 34, 0.82);
+  --card-glass: rgba(26, 20, 34, 0.88);
   --card-glass-border: rgba(255, 255, 255, 0.15);
   --btn-orange: #E06F38;
   --btn-orange-shadow: #8A3714;
@@ -30,13 +30,17 @@ body.theme-dark {
   --dock-border: rgba(255, 255, 255, 0.14);
 }
 
+/* Stunning Atmospheric Cozy Game Color Palettes */
+body.biome-forest { background: linear-gradient(135deg, #284b36 0%, #172d21 100%); }
+body.biome-mountain { background: linear-gradient(135deg, #2b4560 0%, #142233 100%); }
+body.biome-sunset { background: linear-gradient(135deg, #59314b 0%, #291224 100%); }
+body.biome-sakura { background: linear-gradient(135deg, #4d263b 0%, #1f0f18 100%); }
+
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
   -webkit-tap-highlight-color: transparent;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
 }
 
 body {
@@ -47,10 +51,10 @@ body {
   justify-content: center;
   position: relative;
   overflow-y: auto;
-  background-color: #0b101b;
+  transition: background 0.8s ease;
 }
 
-#pixel-bg-canvas {
+.ambient-vignette {
   position: fixed;
   top: 0;
   left: 0;
@@ -58,6 +62,7 @@ body {
   height: 100vh;
   z-index: 0;
   pointer-events: none;
+  background: radial-gradient(circle at center, transparent 30%, rgba(0,0,0,0.35) 100%);
 }
 
 /* User Status Bar Tracker Top */
@@ -72,7 +77,7 @@ body {
 
 .status-pill {
   background: var(--card-glass);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(12px);
   border: 2px solid var(--card-glass-border);
   border-radius: 14px;
   padding: 0.4rem 0.75rem;
@@ -175,7 +180,7 @@ body.theme-dark .sanctuary-room-stage {
   -webkit-backdrop-filter: blur(20px);
   border: 2.5px solid var(--card-glass-border);
   border-radius: 36px;
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
   padding: 1.25rem;
   display: flex;
   flex-direction: column;
