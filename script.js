@@ -167,6 +167,22 @@ function initUI() {
       alert('Settings Saved Successfully! 🐾');
     });
   }
+
+  const btnSaveCloud = document.getElementById('btn-save-cloud');
+  const jsonbinKeyInput = document.getElementById('cfg-jsonbin-key');
+  const jsonbinIdInput = document.getElementById('cfg-jsonbin-id');
+  if (jsonbinKeyInput) jsonbinKeyInput.value = state.settings.jsonbinKey || '';
+  if (jsonbinIdInput) jsonbinIdInput.value = state.settings.jsonbinId || '';
+
+  if (btnSaveCloud) {
+    btnSaveCloud.addEventListener('click', async () => {
+      state.settings.jsonbinKey = jsonbinKeyInput.value.trim();
+      state.settings.jsonbinId = jsonbinIdInput.value.trim();
+      saveState();
+      await triggerAutoSync();
+      alert('Cloud connection tested & saved successfully! ☁️');
+    });
+  }
 }
 
 function initTimer() {
@@ -260,7 +276,6 @@ function completeBlock() {
 
   playFanfare();
 
-  // Reset daily progress if it's a new day
   const today = getTodayDateString();
   if (state.game.lastActiveDate !== today) {
     state.game.todayMinutes = 0;
@@ -421,6 +436,27 @@ function renderStats() {
     }
   }
 
+  const subjectList = document.getElementById('subject-breakdown-list');
+  if (subjectList) {
+    subjectList.innerHTML = '';
+    const counts = {};
+    state.game.sessionLogs.forEach(log => {
+      counts[log.subject] = (counts[log.subject] || 0) + log.minutes;
+    });
+
+    const entries = Object.entries(counts);
+    if (entries.length === 0) {
+      subjectList.innerHTML = `<div style="text-align:center; padding:0.5rem; font-size:0.7rem; opacity:0.7;">No subjects logged yet.</div>`;
+    } else {
+      entries.forEach(([subj, mins]) => {
+        const item = document.createElement('div');
+        item.className = 'log-item-pill';
+        item.innerHTML = `<div><strong>${escapeHTML(subj.substring(2, 25))}...</strong></div><div>${mins} mins</div>`;
+        subjectList.appendChild(item);
+      });
+    }
+  }
+
   const list = document.getElementById('session-log-list');
   if (list) {
     list.innerHTML = '';
@@ -436,26 +472,44 @@ function renderStats() {
               <div>${log.time} (${log.minutes}m)</div>
           </div>
           <div style="display:flex; gap:6px; align-items:center;">
-              <button class="btn-edit-log" data-idx="${index}" style="background:none;border:none;cursor:pointer;font-size:1.1rem;" title="Edit Task">✏️</button>
+              <button class="btn-edit-log" data-idx="${index}" style="background:none;border:none;cursor:pointer;font-size:1.1rem;" title="Edit Task & Subject">✏️</button>
               <button class="btn-del-log" data-idx="${index}" style="background:none;border:none;cursor:pointer;font-size:1.1rem;" title="Delete Log">🗑️</button>
           </div>
         `;
         list.appendChild(item);
       });
 
+      // Edit Subject & Task Logic
       document.querySelectorAll('.btn-edit-log').forEach(btn => {
           btn.addEventListener('click', (e) => {
               const idx = e.currentTarget.dataset.idx;
               const log = state.game.sessionLogs[idx];
+              
+              // 1. Prompt for Subject Change
+              const subjText = MEDICAL_SUBJECTS.map((s, i) => `${i + 1}. ${s}`).join('\n');
+              const subjInput = prompt(`Edit Subject (Enter the number):\n\n${subjText}`, MEDICAL_SUBJECTS.indexOf(log.subject) + 1);
+              
+              if (subjInput !== null) {
+                  const selectedIdx = parseInt(subjInput, 10) - 1;
+                  if (selectedIdx >= 0 && selectedIdx < MEDICAL_SUBJECTS.length) {
+                      log.subject = MEDICAL_SUBJECTS[selectedIdx];
+                  } else {
+                      alert("Invalid number, subject kept as: " + log.subject);
+                  }
+              }
+
+              // 2. Prompt for Task Change
               const newTask = prompt("Edit Task Name:", log.task);
               if (newTask !== null) {
                   log.task = newTask || "Focus Session";
-                  saveState();
-                  renderStats();
               }
+
+              saveState();
+              renderStats(); 
           });
       });
 
+      // Delete Log Logic
       document.querySelectorAll('.btn-del-log').forEach(btn => {
           btn.addEventListener('click', (e) => {
               if (confirm("Delete this session? This will remove the minutes from your total.")) {
