@@ -61,6 +61,18 @@ function getTodayDateString() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+// INSTANT DAILY RESET CHECK
+function checkDailyReset() {
+  const today = getTodayDateString();
+  if (state.game.lastActiveDate !== today) {
+    state.game.todayMinutes = 0;
+    state.game.todayPomodoros = 0;
+    state.game.lastActiveDate = today;
+    return true; 
+  }
+  return false;
+}
+
 function saveState() {
   state.lastUpdated = Date.now();
   localStorage.setItem('purrmodoro_pf_master_v30', JSON.stringify(state));
@@ -195,10 +207,8 @@ function initUI() {
       state.settings.jsonbinKey = jsonbinKeyInput.value.trim();
       state.settings.jsonbinId = jsonbinIdInput.value.trim();
       
-      // Attempt to pull first to prevent accidental overwrite
       const success = await pullFromCloudOnStart();
       if (!success) {
-        // If nothing was in the cloud, push ours
         triggerAutoSync();
         alert('Connected and pushed local data to cloud! ☁️');
       } else {
@@ -210,6 +220,8 @@ function initUI() {
   const btnManualLog = document.getElementById('btn-manual-log');
   if (btnManualLog) {
       btnManualLog.addEventListener('click', () => {
+          checkDailyReset(); 
+
           const mins = parseInt(document.getElementById('manual-mins').value, 10);
           const dateVal = document.getElementById('manual-date').value;
           const subj = document.getElementById('manual-subject').value;
@@ -343,13 +355,9 @@ function completeBlock() {
   document.body.classList.remove('timer-running');
 
   playFanfare();
+  checkDailyReset(); 
 
   const today = getTodayDateString();
-  if (state.game.lastActiveDate !== today) {
-    state.game.todayMinutes = 0;
-    state.game.todayPomodoros = 0;
-    state.game.lastActiveDate = today;
-  }
 
   if (state.timer.mode === 'study') {
     state.timer.mode = 'shortBreak';
@@ -372,11 +380,13 @@ function completeBlock() {
 
     const sub = document.getElementById('sel-subject').value;
     const task = document.getElementById('ipt-chapter-task').value || 'Focus Session';
+    
     state.game.sessionLogs.unshift({
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       subject: sub,
       task: task,
-      minutes: state.settings.studyMin
+      minutes: state.settings.studyMin,
+      date: today 
     });
   } else {
     state.timer.mode = 'study';
@@ -411,6 +421,9 @@ function renderTimer() {
 }
 
 function renderAll() {
+  if (checkDailyReset()) {
+      saveState();
+  }
   renderTimer();
   renderPlanner();
   
@@ -479,9 +492,9 @@ function renderWorld() {
 function renderStats() {
   const totalHoursElem = document.getElementById('stat-total-hours');
   const streakDaysElem = document.getElementById('stat-streak-days');
-  const totalMins = state.game.sessionLogs.reduce((acc, curr) => acc + curr.minutes, 0);
   
-  if (totalHoursElem) totalHoursElem.textContent = `${(totalMins / 60).toFixed(1)}h`;
+  // FIXED: Now properly calculates and shows only TODAY'S minutes 
+  if (totalHoursElem) totalHoursElem.textContent = `${(state.game.todayMinutes / 60).toFixed(1)}h`;
   if (streakDaysElem) streakDaysElem.textContent = `${state.game.streak} Day`;
 
   const row = document.getElementById('weekly-tracker-row');
@@ -580,10 +593,12 @@ function renderStats() {
                   const idx = e.currentTarget.dataset.idx;
                   const log = state.game.sessionLogs[idx];
                   
-                  state.game.todayPomodoros = Math.max(0, state.game.todayPomodoros - Math.round(log.minutes / 25));
+                  if (log.date === getTodayDateString() || !log.date) {
+                    state.game.todayPomodoros = Math.max(0, state.game.todayPomodoros - Math.round(log.minutes / 25));
+                    state.game.todayMinutes = Math.max(0, state.game.todayMinutes - log.minutes);
+                  }
+                  
                   state.game.totalPomodoros = Math.max(0, state.game.totalPomodoros - Math.round(log.minutes / 25));
-                  state.game.todayMinutes = Math.max(0, state.game.todayMinutes - log.minutes);
-
                   state.game.sessionLogs.splice(idx, 1);
                   saveState();
                   renderStats();
@@ -694,7 +709,6 @@ async function pullFromCloudOnStart() {
   if (!jsonbinKey || !jsonbinId) return false;
 
   try {
-    // Added a nocache timestamp so the iPad always asks for the absolute latest version
     const res = await fetch(`https://api.jsonbin.io/v3/b/${jsonbinId}/latest?meta=false&nocache=${Date.now()}`, {
       headers: { 'X-Master-Key': jsonbinKey }
     });
@@ -704,14 +718,12 @@ async function pullFromCloudOnStart() {
       const record = json.record || json; 
 
       if (record) {
-        // ALWAYS trust the cloud if it has an active planner and we don't
         if (record.planner && record.planner.isActive) {
           state.planner = record.planner;
         } else if (record.lastUpdated && record.lastUpdated > state.lastUpdated) {
           if (record.planner) state.planner = record.planner;
         }
 
-        // Trust the cloud if it has more work done
         if (record.game && record.game.totalPomodoros >= state.game.totalPomodoros) {
           state.game = record.game;
         }
@@ -749,7 +761,7 @@ function triggerAutoSync() {
           'Content-Type': 'application/json',
           'X-Master-Key': jsonbinKey
         },
-        body: JSON.stringify(state) // Uploads the ENTIRE state (planner, game, everything)
+        body: JSON.stringify(state) 
       });
 
       if (badge) {
