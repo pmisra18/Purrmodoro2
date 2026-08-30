@@ -103,7 +103,6 @@
             animation: wanderMelog 14s infinite linear !important; margin: 0 !important;
         }
         
-        /* Gentle walking motion when awake */
         body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: 8px 11px; }
         body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-leg-fl { animation: strideFrontLeft 1.2s infinite !important; transform-origin: 8px 8px; }
         body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-leg-fr { animation: strideFrontRight 1.2s infinite !important; transform-origin: 8px 8px; }
@@ -119,7 +118,6 @@
             100% { left: 5%; transform: scaleX(1); }
         }
         
-        /* Freeze and sleep peacefully during Break Mode */
         body.mode-break .sanctuary-room-stage .sanctuary-pet {
             animation: none !important; left: 15% !important; transform: scaleX(1) !important;
         }
@@ -138,6 +136,7 @@
 
         <main class="pomofox-glass-card">
             
+            <!-- ================= TAB 1: TIMER ================= -->
             <section id="tab-timer" class="view-panel active">
                 
                 <div class="mode-switch-bar">
@@ -177,6 +176,7 @@
                         <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
                             <div class="zzz-container">Zzz...</div>
                             
+                            <!-- AWAKE MELOG -->
                             <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-awake">
                                 <g class="px-cat-master">
                                     <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
@@ -189,6 +189,7 @@
                                 </g>
                             </svg>
 
+                            <!-- SLEEPING MELOG -->
                             <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-asleep">
                                 <g class="px-cat-master">
                                     <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
@@ -218,6 +219,7 @@
                 </div>
             </section>
 
+            <!-- ================= TAB 2: PLANNER ================= -->
             <section id="tab-planner" class="view-panel">
                 <h2 class="section-heading">🩷 Study Planner</h2>
                 
@@ -255,6 +257,7 @@
                 </div>
             </section>
 
+            <!-- ================= TAB 3: SANCTUARY & STORE ================= -->
             <section id="tab-world" class="view-panel">
                 <h2 class="section-heading">🏡 Melog's Sanctuary</h2>
                 <p style="font-size:0.72rem; text-align:center; opacity:0.8; margin-bottom:0.4rem;">Adopt room upgrades to customize Melog's study space!</p>
@@ -264,9 +267,11 @@
                     <div class="pixel-window"></div>
                     <div class="pixel-desk"></div>
 
+                    <!-- Wandering, Walking Pixel Melog -->
                     <div class="sanctuary-pet">
                         <div class="zzz-container">Zzz...</div>
                         
+                        <!-- AWAKE -->
                         <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-awake" style="width: 100%; height: 100%; image-rendering: pixelated;">
                             <g class="px-cat-master">
                                 <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
@@ -279,6 +284,7 @@
                             </g>
                         </svg>
 
+                        <!-- SLEEPING (RESTORED) -->
                         <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-asleep" style="width: 100%; height: 100%; image-rendering: pixelated;">
                             <g class="px-cat-master">
                                 <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
@@ -289,6 +295,7 @@
                                 <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
                                 <g class="px-head">
                                     <rect x="6" y="1" width="2" height="3" fill="#2C1E16" /><rect x="7" y="2" width="1" height="2" fill="#F4C28D" /><rect x="7" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="10" y="1" width="2" height="3" fill="#2C1E16" /><rect x="10" y="2" width="1" height="2" fill="#F4C28D" /><rect x="10" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="7" y="4" width="6" height="4" fill="#F4C28D" /><rect x="6" y="4" width="1" height="4" fill="#2C1E16" /><rect x="13" y="5" width="1" height="3" fill="#2C1E16" /><rect x="8" y="3" width="4" height="1" fill="#2C1E16" /><rect x="7" y="8" width="5" height="1" fill="#2C1E16" /><rect x="9" y="4" width="1" height="1" fill="#D9965B" /><rect x="10" y="5" width="1" height="1" fill="#2C1E16" /><rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
+                                    <!-- Sleeping Eye -->
                                     <rect x="11" y="7" width="2" height="1" fill="#2C1E16" />
                                 </g>
                             </g>
@@ -301,11 +308,13 @@
                 <div class="grid-2" id="furniture-catalog-grid"></div>
             </section>
 
+            <!-- ================= TAB 4: ADVANCED STATS ================= -->
             <section id="tab-stats" class="view-panel">
                 <h2 class="section-heading">📊 Detailed Analytics</h2>
                 
                 <div class="grid-2" style="width:100%;">
-                    <div class="pf-item-box"><div style="font-size: 1.4rem;">⏳</div><div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-total-hours">0.0h</div><div style="font-size: 0.65rem; opacity:0.7;">Total Focus Time</div></div>
+                    <!-- CHANGED TO "Daily Focus Time" -->
+                    <div class="pf-item-box"><div style="font-size: 1.4rem;">⏳</div><div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-total-hours">0.0h</div><div style="font-size: 0.65rem; opacity:0.7;">Daily Focus Time</div></div>
                     <div class="pf-item-box"><div style="font-size: 1.4rem;">🔥</div><div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-streak-days">1 Day</div><div style="font-size: 0.65rem; opacity:0.7;">Active Streak</div></div>
                 </div>
 
@@ -329,6 +338,7 @@
                 <div class="log-scroll-area" id="session-log-list"></div>
             </section>
 
+            <!-- ================= TAB 5: SETTINGS & SYNC ================= -->
             <section id="tab-settings" class="view-panel">
                 <h2 class="section-heading">⚙️ Preferences &amp; Sync</h2>
                 
