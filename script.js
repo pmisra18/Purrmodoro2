@@ -33,6 +33,7 @@ const CATALOG_ITEMS = [
 let state = {
   settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false, currentBiome: 'forest', jsonbinKey: '', jsonbinId: '' },
   timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
+  planner: { isActive: false, examDate: '', dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 },
   game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, cycleCount: 1, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
 };
 
@@ -60,18 +61,20 @@ function getTodayDateString() {
 }
 
 function saveState() {
-  localStorage.setItem('purrmodoro_pf_master_v29', JSON.stringify(state));
+  localStorage.setItem('purrmodoro_pf_master_v30', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     triggerAutoSync();
   }
 }
 
 function loadState() {
-  const raw = localStorage.getItem('purrmodoro_pf_master_v29');
+  const raw = localStorage.getItem('purrmodoro_pf_master_v30');
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
   
+  if (!state.planner) state.planner = { isActive: false, examDate: '', dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 };
+
   if (!state.timer.isRunning) {
     state.timer.totalDuration = (state.timer.mode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
     state.timer.timeLeft = state.timer.totalDuration;
@@ -106,6 +109,7 @@ function initTabs() {
         target.classList.add('active');
         if (btn.dataset.tab === 'tab-world') renderWorld();
         if (btn.dataset.tab === 'tab-stats') renderStats();
+        if (btn.dataset.tab === 'tab-planner') renderPlanner();
       }
     });
   });
@@ -143,12 +147,10 @@ function initUI() {
     });
   }
 
-  // Pre-fill settings form
   document.getElementById('cfg-study-min').value = state.settings.studyMin;
   document.getElementById('cfg-short-min').value = state.settings.shortMin;
   document.getElementById('cfg-long-min').value = state.settings.longMin;
 
-  // Real Timer Settings Save Fix
   const forceSaveBtn = document.getElementById('btn-force-save');
   if (forceSaveBtn) {
     forceSaveBtn.addEventListener('click', () => {
@@ -163,22 +165,6 @@ function initUI() {
         renderTimer();
       }
       alert('Settings Saved Successfully! 🐾');
-    });
-  }
-
-  const btnSaveCloud = document.getElementById('btn-save-cloud');
-  const jsonbinKeyInput = document.getElementById('cfg-jsonbin-key');
-  const jsonbinIdInput = document.getElementById('cfg-jsonbin-id');
-  if (jsonbinKeyInput) jsonbinKeyInput.value = state.settings.jsonbinKey || '';
-  if (jsonbinIdInput) jsonbinIdInput.value = state.settings.jsonbinId || '';
-
-  if (btnSaveCloud) {
-    btnSaveCloud.addEventListener('click', async () => {
-      state.settings.jsonbinKey = jsonbinKeyInput.value.trim();
-      state.settings.jsonbinId = jsonbinIdInput.value.trim();
-      saveState();
-      await triggerAutoSync();
-      alert('Cloud connection tested & saved successfully! ☁️');
     });
   }
 }
@@ -274,6 +260,14 @@ function completeBlock() {
 
   playFanfare();
 
+  // Reset daily progress if it's a new day
+  const today = getTodayDateString();
+  if (state.game.lastActiveDate !== today) {
+    state.game.todayMinutes = 0;
+    state.game.todayPomodoros = 0;
+    state.game.lastActiveDate = today;
+  }
+
   if (state.timer.mode === 'study') {
     state.timer.mode = 'shortBreak';
     state.timer.totalDuration = state.settings.shortMin * 60;
@@ -291,7 +285,6 @@ function completeBlock() {
       state.game.level = newLevel;
     }
 
-    const today = getTodayDateString();
     state.game.activeDays[today] = (state.game.activeDays[today] || 0) + 1;
 
     const sub = document.getElementById('sel-subject').value;
@@ -336,6 +329,7 @@ function renderTimer() {
 
 function renderAll() {
   renderTimer();
+  renderPlanner();
   
   const lvlElem = document.getElementById('val-level');
   const pawsElem = document.getElementById('val-paws');
@@ -427,28 +421,6 @@ function renderStats() {
     }
   }
 
-  const subjectList = document.getElementById('subject-breakdown-list');
-  if (subjectList) {
-    subjectList.innerHTML = '';
-    const counts = {};
-    state.game.sessionLogs.forEach(log => {
-      counts[log.subject] = (counts[log.subject] || 0) + log.minutes;
-    });
-
-    const entries = Object.entries(counts);
-    if (entries.length === 0) {
-      subjectList.innerHTML = `<div style="text-align:center; padding:0.5rem; font-size:0.7rem; opacity:0.7;">No subjects logged yet.</div>`;
-    } else {
-      entries.forEach(([subj, mins]) => {
-        const item = document.createElement('div');
-        item.className = 'log-item-pill';
-        item.innerHTML = `<div><strong>${escapeHTML(subj.substring(2, 25))}...</strong></div><div>${mins} mins</div>`;
-        subjectList.appendChild(item);
-      });
-    }
-  }
-
-  // UPDATED: Added Edit and Delete Buttons to Session Logs
   const list = document.getElementById('session-log-list');
   if (list) {
     list.innerHTML = '';
@@ -471,7 +443,6 @@ function renderStats() {
         list.appendChild(item);
       });
 
-      // Handle Edits
       document.querySelectorAll('.btn-edit-log').forEach(btn => {
           btn.addEventListener('click', (e) => {
               const idx = e.currentTarget.dataset.idx;
@@ -485,22 +456,20 @@ function renderStats() {
           });
       });
 
-      // Handle Deletes
       document.querySelectorAll('.btn-del-log').forEach(btn => {
           btn.addEventListener('click', (e) => {
-              if (confirm("Are you sure you want to delete this study session? This will remove the minutes from your total.")) {
+              if (confirm("Delete this session? This will remove the minutes from your total.")) {
                   const idx = e.currentTarget.dataset.idx;
                   const log = state.game.sessionLogs[idx];
                   
-                  // Subtract stats
                   state.game.todayPomodoros = Math.max(0, state.game.todayPomodoros - 1);
                   state.game.totalPomodoros = Math.max(0, state.game.totalPomodoros - 1);
                   state.game.todayMinutes = Math.max(0, state.game.todayMinutes - log.minutes);
 
-                  // Remove log
                   state.game.sessionLogs.splice(idx, 1);
                   saveState();
                   renderStats();
+                  renderPlanner();
               }
           });
       });
@@ -510,6 +479,8 @@ function renderStats() {
 
 function initPlanner() {
   const calc = document.getElementById('btn-calc-schedule');
+  const clear = document.getElementById('btn-clear-plan');
+
   if (calc) {
     calc.addEventListener('click', () => {
       const dateVal = document.getElementById('plan-date').value;
@@ -527,18 +498,60 @@ function initPlanner() {
       const dailyPages = Math.ceil(pagesLeft / studyDays);
       const dailyAnki = Math.ceil(ankiLeft / studyDays);
       
-      const pomosForPages = Math.ceil(dailyPages / pagesPace);
-      const pomosForAnki = Math.ceil(dailyAnki / ankiPace);
-      const totalDailyPomos = pomosForPages + pomosForAnki;
+      const hoursForPages = dailyPages / pagesPace;
+      const hoursForAnki = dailyAnki / ankiPace;
+      const dailyHours = hoursForPages + hoursForAnki;
 
-      document.getElementById('rx-content').innerHTML = `
-        <p>📖 <strong>Pages Goal:</strong> ${dailyPages} pages/day (${pomosForPages} pomodoros)</p>
-        <p>🧠 <strong>Anki Goal:</strong> ${dailyAnki} cards/day (${pomosForAnki} pomodoros)</p>
-        <p>🗓️ <strong>Study Span:</strong> ${studyDays} days (${buffer} buffer days)</p>
-        <p>🐱 <strong>Total Daily Focus:</strong> <strong>${totalDailyPomos} Pomodoros/day</strong></p>
-      `;
-      document.getElementById('rx-card').style.display = 'block';
+      state.planner = {
+        isActive: true,
+        examDate: dateVal,
+        dailyMinutesGoal: Math.ceil(dailyHours * 60),
+        pagesGoal: dailyPages,
+        ankiGoal: dailyAnki
+      };
+
+      saveState();
+      renderPlanner();
     });
+  }
+
+  if (clear) {
+    clear.addEventListener('click', () => {
+      state.planner.isActive = false;
+      saveState();
+      renderPlanner();
+    });
+  }
+}
+
+function renderPlanner() {
+  const setupView = document.getElementById('planner-setup');
+  const activeView = document.getElementById('planner-active');
+  if (!setupView || !activeView) return;
+
+  if (state.planner && state.planner.isActive) {
+    setupView.style.display = 'none';
+    activeView.style.display = 'block';
+
+    const diffDays = Math.ceil((new Date(state.planner.examDate) - new Date()) / (1000 * 60 * 60 * 24));
+    const daysText = diffDays > 0 ? `${diffDays} Days Left` : (diffDays === 0 ? 'Exam Today! Good Luck!' : 'Exam Passed');
+
+    document.getElementById('active-exam-countdown').textContent = daysText;
+    document.getElementById('active-daily-hours').textContent = (state.planner.dailyMinutesGoal / 60).toFixed(1);
+    document.getElementById('active-daily-pages').textContent = state.planner.pagesGoal;
+    document.getElementById('active-daily-anki').textContent = state.planner.ankiGoal;
+
+    const studiedHours = (state.game.todayMinutes / 60).toFixed(1);
+    const targetHours = (state.planner.dailyMinutesGoal / 60).toFixed(1);
+    document.getElementById('active-today-progress-text').textContent = `${studiedHours}h / ${targetHours}h`;
+
+    let progressPct = state.planner.dailyMinutesGoal > 0 ? (state.game.todayMinutes / state.planner.dailyMinutesGoal) * 100 : 0;
+    if (progressPct > 100) progressPct = 100;
+    document.getElementById('active-today-progress-fill').style.width = `${progressPct}%`;
+
+  } else {
+    setupView.style.display = 'block';
+    activeView.style.display = 'none';
   }
 }
 
@@ -600,7 +613,6 @@ function triggerAutoSync() {
   }, 1000);
 }
 
-/* ================= IMMERSIVE ORGANIC FLUID WAVE & GRADIENT ENGINE ================= */
 function initFluidWaveEngine() {
   const canvas = document.getElementById('fluid-bg-canvas');
   if (!canvas) return;
