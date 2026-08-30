@@ -71,8 +71,11 @@ function loadState() {
   if (raw) {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
-  state.timer.timeLeft = state.settings.studyMin * 60;
-  state.timer.totalDuration = state.settings.studyMin * 60;
+  
+  if (!state.timer.isRunning) {
+    state.timer.totalDuration = (state.timer.mode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
+    state.timer.timeLeft = state.timer.totalDuration;
+  }
 }
 
 function initTheme() {
@@ -140,10 +143,26 @@ function initUI() {
     });
   }
 
-  const melogSprite = document.getElementById('melog-sprite');
-  if (melogSprite) {
-    melogSprite.addEventListener('click', () => {
-      playTone(587.33, 0.3);
+  // Pre-fill settings form
+  document.getElementById('cfg-study-min').value = state.settings.studyMin;
+  document.getElementById('cfg-short-min').value = state.settings.shortMin;
+  document.getElementById('cfg-long-min').value = state.settings.longMin;
+
+  // Real Timer Settings Save Fix
+  const forceSaveBtn = document.getElementById('btn-force-save');
+  if (forceSaveBtn) {
+    forceSaveBtn.addEventListener('click', () => {
+      state.settings.studyMin = parseInt(document.getElementById('cfg-study-min').value, 10) || 25;
+      state.settings.shortMin = parseInt(document.getElementById('cfg-short-min').value, 10) || 5;
+      state.settings.longMin = parseInt(document.getElementById('cfg-long-min').value, 10) || 20;
+      saveState();
+
+      if (!state.timer.isRunning) {
+        state.timer.totalDuration = (state.timer.mode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
+        state.timer.timeLeft = state.timer.totalDuration;
+        renderTimer();
+      }
+      alert('Settings Saved Successfully! 🐾');
     });
   }
 
@@ -168,18 +187,42 @@ function initTimer() {
   const toggleBtn = document.getElementById('btn-timer-toggle');
   const resetBtn = document.getElementById('btn-timer-reset');
   const skipBtn = document.getElementById('btn-timer-skip'); 
+  const studyBtn = document.getElementById('btn-mode-study');
+  const breakBtn = document.getElementById('btn-mode-break');
 
   if (toggleBtn) toggleBtn.addEventListener('click', toggleTimer);
   if (resetBtn) resetBtn.addEventListener('click', resetTimer);
   
   if (skipBtn) {
     skipBtn.addEventListener('click', () => {
-      if (state.timer.isRunning) {
-        pauseTimer();
-      }
+      if (state.timer.isRunning) pauseTimer();
       completeBlock();
     });
   }
+
+  if (studyBtn) studyBtn.addEventListener('click', () => setMode('study'));
+  if (breakBtn) breakBtn.addEventListener('click', () => setMode('shortBreak'));
+
+  updateModeUI();
+}
+
+function setMode(newMode) {
+  if (state.timer.isRunning) pauseTimer();
+  state.timer.mode = newMode;
+  state.timer.totalDuration = (newMode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
+  state.timer.timeLeft = state.timer.totalDuration;
+  updateModeUI();
+  renderTimer();
+}
+
+function updateModeUI() {
+  const isStudy = state.timer.mode === 'study';
+  document.body.classList.toggle('mode-break', !isStudy);
+  
+  const sBtn = document.getElementById('btn-mode-study');
+  const bBtn = document.getElementById('btn-mode-break');
+  if (sBtn) sBtn.classList.toggle('active', isStudy);
+  if (bBtn) bBtn.classList.toggle('active', !isStudy);
 }
 
 function toggleTimer() {
@@ -193,11 +236,7 @@ function toggleTimer() {
 function startTimer() {
   state.timer.isRunning = true;
   document.getElementById('btn-timer-toggle').textContent = '⏸';
-  
   document.body.classList.add('timer-running');
-  
-  const sprite = document.getElementById('melog-sprite');
-  if (sprite) sprite.classList.add('timer-running');
 
   state.timer.intervalId = setInterval(() => {
     if (state.timer.timeLeft > 0) {
@@ -213,22 +252,14 @@ function pauseTimer() {
   state.timer.isRunning = false;
   clearInterval(state.timer.intervalId);
   document.getElementById('btn-timer-toggle').textContent = '▶';
-
   document.body.classList.remove('timer-running');
-
-  const sprite = document.getElementById('melog-sprite');
-  if (sprite) sprite.classList.remove('timer-running');
 }
 
 function resetTimer() {
   clearInterval(state.timer.intervalId);
   state.timer.isRunning = false;
   document.getElementById('btn-timer-toggle').textContent = '▶';
-
   document.body.classList.remove('timer-running');
-
-  const sprite = document.getElementById('melog-sprite');
-  if (sprite) sprite.classList.remove('timer-running');
 
   state.timer.totalDuration = (state.timer.mode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
   state.timer.timeLeft = state.timer.totalDuration;
@@ -239,11 +270,7 @@ function completeBlock() {
   clearInterval(state.timer.intervalId);
   state.timer.isRunning = false;
   document.getElementById('btn-timer-toggle').textContent = '▶';
-
   document.body.classList.remove('timer-running');
-
-  const sprite = document.getElementById('melog-sprite');
-  if (sprite) sprite.classList.remove('timer-running');
 
   playFanfare();
 
@@ -280,6 +307,8 @@ function completeBlock() {
     state.timer.totalDuration = state.settings.studyMin * 60;
     state.timer.timeLeft = state.timer.totalDuration;
   }
+  
+  updateModeUI();
   saveState();
   renderAll();
 }
@@ -419,17 +448,61 @@ function renderStats() {
     }
   }
 
+  // UPDATED: Added Edit and Delete Buttons to Session Logs
   const list = document.getElementById('session-log-list');
   if (list) {
     list.innerHTML = '';
     if (state.game.sessionLogs.length === 0) {
       list.innerHTML = `<div style="text-align:center; padding:0.5rem; font-size:0.7rem; opacity:0.7;">No study sessions logged today yet.</div>`;
     } else {
-      state.game.sessionLogs.slice(0, 5).forEach(log => {
+      state.game.sessionLogs.forEach((log, index) => {
         const item = document.createElement('div');
         item.className = 'log-item-pill';
-        item.innerHTML = `<div><strong>${escapeHTML(log.task)}</strong></div><div>${log.time} (${log.minutes}m)</div>`;
+        item.innerHTML = `
+          <div style="flex:1;">
+              <div><strong>${escapeHTML(log.task)}</strong> <span style="font-size:0.6rem; opacity:0.7;">(${escapeHTML(log.subject.substring(0, 15))}...)</span></div>
+              <div>${log.time} (${log.minutes}m)</div>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center;">
+              <button class="btn-edit-log" data-idx="${index}" style="background:none;border:none;cursor:pointer;font-size:1.1rem;" title="Edit Task">✏️</button>
+              <button class="btn-del-log" data-idx="${index}" style="background:none;border:none;cursor:pointer;font-size:1.1rem;" title="Delete Log">🗑️</button>
+          </div>
+        `;
         list.appendChild(item);
+      });
+
+      // Handle Edits
+      document.querySelectorAll('.btn-edit-log').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+              const idx = e.currentTarget.dataset.idx;
+              const log = state.game.sessionLogs[idx];
+              const newTask = prompt("Edit Task Name:", log.task);
+              if (newTask !== null) {
+                  log.task = newTask || "Focus Session";
+                  saveState();
+                  renderStats();
+              }
+          });
+      });
+
+      // Handle Deletes
+      document.querySelectorAll('.btn-del-log').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+              if (confirm("Are you sure you want to delete this study session? This will remove the minutes from your total.")) {
+                  const idx = e.currentTarget.dataset.idx;
+                  const log = state.game.sessionLogs[idx];
+                  
+                  // Subtract stats
+                  state.game.todayPomodoros = Math.max(0, state.game.todayPomodoros - 1);
+                  state.game.totalPomodoros = Math.max(0, state.game.totalPomodoros - 1);
+                  state.game.todayMinutes = Math.max(0, state.game.todayMinutes - log.minutes);
+
+                  // Remove log
+                  state.game.sessionLogs.splice(idx, 1);
+                  saveState();
+                  renderStats();
+              }
+          });
       });
     }
   }
