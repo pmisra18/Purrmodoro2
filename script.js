@@ -33,7 +33,7 @@ const CATALOG_ITEMS = [
 let state = {
   settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false, currentBiome: 'forest', jsonbinKey: '', jsonbinId: '' },
   timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
-  planner: { isActive: false, examDate: '', dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 },
+  planner: { isActive: false, examDate: '', bufferDays: 2, pagesLeft: 25, ankiLeft: 300, pacePages: 5, paceAnki: 100, dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 },
   game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, cycleCount: 1, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
 };
 
@@ -73,7 +73,9 @@ function loadState() {
     try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
   }
   
-  if (!state.planner) state.planner = { isActive: false, examDate: '', dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 };
+  if (!state.planner) {
+    state.planner = { isActive: false, examDate: '', bufferDays: 2, pagesLeft: 25, ankiLeft: 300, pacePages: 5, paceAnki: 100, dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 };
+  }
 
   if (!state.timer.isRunning) {
     state.timer.totalDuration = (state.timer.mode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
@@ -187,13 +189,17 @@ function initUI() {
     btnSaveCloud.addEventListener('click', async () => {
       state.settings.jsonbinKey = jsonbinKeyInput.value.trim();
       state.settings.jsonbinId = jsonbinIdInput.value.trim();
-      saveState();
-      await triggerAutoSync();
-      alert('Cloud connection tested & saved successfully! ☁️');
+      
+      localStorage.setItem('purrmodoro_pf_master_v30', JSON.stringify(state));
+      
+      const success = await pullFromCloudOnStart();
+      if (!success) {
+        await triggerAutoSync();
+      }
+      alert('Cloud connection synced & saved successfully! ☁️');
     });
   }
 
-  // Handle Manual Log Submission
   const btnManualLog = document.getElementById('btn-manual-log');
   if (btnManualLog) {
       btnManualLog.addEventListener('click', () => {
@@ -567,9 +573,6 @@ function renderStats() {
                   const idx = e.currentTarget.dataset.idx;
                   const log = state.game.sessionLogs[idx];
                   
-                  // Only subtract from "today" if the log was actually recorded today.
-                  // Since older logs might be deleted, we only decrement todayMinutes if it's safe or explicitly a today log.
-                  // For simplicity, we just decrement todayMinutes up to 0.
                   state.game.todayPomodoros = Math.max(0, state.game.todayPomodoros - Math.round(log.minutes / 25));
                   state.game.totalPomodoros = Math.max(0, state.game.totalPomodoros - Math.round(log.minutes / 25));
                   state.game.todayMinutes = Math.max(0, state.game.todayMinutes - log.minutes);
@@ -613,6 +616,11 @@ function initPlanner() {
       state.planner = {
         isActive: true,
         examDate: dateVal,
+        bufferDays: buffer,
+        pagesLeft: pagesLeft,
+        ankiLeft: ankiLeft,
+        pacePages: pagesPace,
+        paceAnki: ankiPace,
         dailyMinutesGoal: Math.ceil(dailyHours * 60),
         pagesGoal: dailyPages,
         ankiGoal: dailyAnki
@@ -636,6 +644,15 @@ function renderPlanner() {
   const setupView = document.getElementById('planner-setup');
   const activeView = document.getElementById('planner-active');
   if (!setupView || !activeView) return;
+
+  if (state.planner) {
+    if (state.planner.examDate) document.getElementById('plan-date').value = state.planner.examDate;
+    if (state.planner.bufferDays !== undefined) document.getElementById('plan-buffer').value = state.planner.bufferDays;
+    if (state.planner.pagesLeft !== undefined) document.getElementById('plan-pages-left').value = state.planner.pagesLeft;
+    if (state.planner.ankiLeft !== undefined) document.getElementById('plan-anki-left').value = state.planner.ankiLeft;
+    if (state.planner.pacePages !== undefined) document.getElementById('plan-pace-pages').value = state.planner.pacePages;
+    if (state.planner.paceAnki !== undefined) document.getElementById('plan-pace-anki').value = state.planner.paceAnki;
+  }
 
   if (state.planner && state.planner.isActive) {
     setupView.style.display = 'none';
@@ -666,7 +683,7 @@ function renderPlanner() {
 async function pullFromCloudOnStart() {
   const { jsonbinKey, jsonbinId } = state.settings;
   const badge = document.getElementById('sync-status-badge');
-  if (!jsonbinKey || !jsonbinId) return;
+  if (!jsonbinKey || !jsonbinId) return false;
 
   try {
     const res = await fetch(`https://api.jsonbin.io/v3/b/${jsonbinId}/latest`, {
@@ -676,22 +693,25 @@ async function pullFromCloudOnStart() {
     if (res.ok) {
       const json = await res.json();
       if (json && json.record) {
-        if (json.record.game && json.record.game.totalPomodoros >= state.game.totalPomodoros) {
+        if (json.record.game) {
           state.game = json.record.game;
         }
         if (json.record.planner) {
           state.planner = json.record.planner;
         }
+        localStorage.setItem('purrmodoro_pf_master_v30', JSON.stringify(state));
       }
       if (badge) {
         badge.textContent = 'Cloud Active';
         badge.style.background = '#5EAA78';
       }
       renderAll();
+      return true;
     }
   } catch (err) {
     if (badge) badge.textContent = 'Offline Mode';
   }
+  return false;
 }
 
 let syncDebounceTimer = null;
