@@ -31,6 +31,7 @@ const CATALOG_ITEMS = [
 ];
 
 let state = {
+  lastUpdated: Date.now(),
   settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false, currentBiome: 'forest', jsonbinKey: '', jsonbinId: '' },
   timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
   planner: { isActive: false, examDate: '', bufferDays: 2, pagesLeft: 25, ankiLeft: 300, pacePages: 5, paceAnki: 100, dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 },
@@ -61,6 +62,7 @@ function getTodayDateString() {
 }
 
 function saveState() {
+  state.lastUpdated = Date.now();
   localStorage.setItem('purrmodoro_pf_master_v30', JSON.stringify(state));
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
     triggerAutoSync();
@@ -187,16 +189,21 @@ function initUI() {
 
   if (btnSaveCloud) {
     btnSaveCloud.addEventListener('click', async () => {
+      const badge = document.getElementById('sync-status-badge');
+      if (badge) badge.textContent = 'Fetching...';
+      
       state.settings.jsonbinKey = jsonbinKeyInput.value.trim();
       state.settings.jsonbinId = jsonbinIdInput.value.trim();
       
-      localStorage.setItem('purrmodoro_pf_master_v30', JSON.stringify(state));
-      
+      // Attempt to pull first to prevent accidental overwrite
       const success = await pullFromCloudOnStart();
       if (!success) {
-        await triggerAutoSync();
+        // If nothing was in the cloud, push ours
+        triggerAutoSync();
+        alert('Connected and pushed local data to cloud! ☁️');
+      } else {
+        alert('Cloud data successfully pulled to this device! ☁️');
       }
-      alert('Cloud connection synced & saved successfully! ☁️');
     });
   }
 
@@ -628,6 +635,7 @@ function initPlanner() {
 
       saveState();
       renderPlanner();
+      alert("Schedule Locked In! It will now sync across devices.");
     });
   }
 
@@ -686,27 +694,37 @@ async function pullFromCloudOnStart() {
   if (!jsonbinKey || !jsonbinId) return false;
 
   try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${jsonbinId}/latest`, {
+    // Added a nocache timestamp so the iPad always asks for the absolute latest version
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${jsonbinId}/latest?meta=false&nocache=${Date.now()}`, {
       headers: { 'X-Master-Key': jsonbinKey }
     });
 
     if (res.ok) {
       const json = await res.json();
-      if (json && json.record) {
-        if (json.record.game) {
-          state.game = json.record.game;
+      const record = json.record || json; 
+
+      if (record) {
+        // ALWAYS trust the cloud if it has an active planner and we don't
+        if (record.planner && record.planner.isActive) {
+          state.planner = record.planner;
+        } else if (record.lastUpdated && record.lastUpdated > state.lastUpdated) {
+          if (record.planner) state.planner = record.planner;
         }
-        if (json.record.planner) {
-          state.planner = json.record.planner;
+
+        // Trust the cloud if it has more work done
+        if (record.game && record.game.totalPomodoros >= state.game.totalPomodoros) {
+          state.game = record.game;
         }
+
         localStorage.setItem('purrmodoro_pf_master_v30', JSON.stringify(state));
+        
+        if (badge) {
+          badge.textContent = 'Cloud Active';
+          badge.style.background = '#5EAA78';
+        }
+        renderAll();
+        return true;
       }
-      if (badge) {
-        badge.textContent = 'Cloud Active';
-        badge.style.background = '#5EAA78';
-      }
-      renderAll();
-      return true;
     }
   } catch (err) {
     if (badge) badge.textContent = 'Offline Mode';
@@ -731,7 +749,7 @@ function triggerAutoSync() {
           'Content-Type': 'application/json',
           'X-Master-Key': jsonbinKey
         },
-        body: JSON.stringify({ game: state.game, planner: state.planner })
+        body: JSON.stringify(state) // Uploads the ENTIRE state (planner, game, everything)
       });
 
       if (badge) {
