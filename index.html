@@ -42,7 +42,7 @@
             background: var(--btn-orange); color: #FFF !important; box-shadow: 0 2px 0 var(--btn-orange-shadow);
         }
 
-        /* 3. TIMER MELOG ANIMATIONS (Dependent on Focus vs Break mode) */
+        /* 3. TIMER MELOG ANIMATIONS */
         .melog-awake { display: block; }
         .melog-asleep { display: none; }
         
@@ -61,12 +61,10 @@
             100% { transform: translateY(-20px) scale(1.2) translateX(10px); opacity: 0; }
         }
 
-        /* Tail always wags when awake */
         body:not(.mode-break) .orbit-arm .px-balanced-tail {
             animation: attachedTailSway 0.54s infinite ease-in-out; transform-origin: 3px 6px;
         }
 
-        /* Legs and body bounce ONLY when timer is running AND in focus mode */
         body.timer-running:not(.mode-break) .orbit-arm .px-cat-master { animation: catHopBounding 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 8px 11px; }
         body.timer-running:not(.mode-break) .orbit-arm .px-leg-fl { animation: strideFrontLeft 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 8px 8px; }
         body.timer-running:not(.mode-break) .orbit-arm .px-leg-fr { animation: strideFrontRight 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 8px 8px; }
@@ -99,7 +97,7 @@
         #sanctuary-placed-items > :nth-child(9) { left: 70px; bottom: 25px; font-size: 2rem; } 
         #sanctuary-placed-items > :nth-child(10) { right: 130px; bottom: 25px; font-size: 2.2rem; }
 
-        /* 5. INDEPENDENT WALKING ANIMATION FOR SANCTUARY MELOG (Walks 24/7) */
+        /* 5. INDEPENDENT WALKING ANIMATION FOR SANCTUARY MELOG */
         .sanctuary-room-stage .sanctuary-pet {
             position: absolute !important; bottom: 25px !important; width: 60px !important; height: 60px !important; z-index: 5 !important;
             animation: wanderMelog 14s infinite linear !important; transform: none !important; margin: 0 !important;
@@ -215,22 +213,38 @@
 
             <section id="tab-planner" class="view-panel">
                 <h2 class="section-heading">🩷 Study Planner</h2>
-                <div class="form-col">
-                    <div class="form-item"><label for="plan-date">Exam Date</label><input type="date" id="plan-date" class="med-input" /></div>
-                    <div class="form-item"><label for="plan-buffer">Buffer Days (Review)</label><input type="number" id="plan-buffer" class="med-input" value="2" min="0" /></div>
-                    <div class="grid-2">
-                        <div class="form-item"><label for="plan-pages-left">Total Pages Left</label><input type="number" id="plan-pages-left" class="med-input" value="25" min="0" /></div>
-                        <div class="form-item"><label for="plan-anki-left">Total Anki Cards Left</label><input type="number" id="plan-anki-left" class="med-input" value="300" min="0" /></div>
+                
+                <div id="planner-setup">
+                    <div class="form-col">
+                        <div class="form-item"><label for="plan-date">Exam Date</label><input type="date" id="plan-date" class="med-input" /></div>
+                        <div class="form-item"><label for="plan-buffer">Buffer Days (Review)</label><input type="number" id="plan-buffer" class="med-input" value="2" min="0" /></div>
+                        <div class="grid-2">
+                            <div class="form-item"><label for="plan-pages-left">Total Pages Left</label><input type="number" id="plan-pages-left" class="med-input" value="25" min="0" /></div>
+                            <div class="form-item"><label for="plan-anki-left">Total Anki Cards Left</label><input type="number" id="plan-anki-left" class="med-input" value="300" min="0" /></div>
+                        </div>
+                        <div class="grid-2">
+                            <div class="form-item"><label for="plan-pace-pages">Pages Pace (per hr)</label><input type="number" id="plan-pace-pages" class="med-input" value="5" min="1" /></div>
+                            <div class="form-item"><label for="plan-pace-anki">Anki Pace (per hr)</label><input type="number" id="plan-pace-anki" class="med-input" value="100" min="1" /></div>
+                        </div>
+                        <button type="button" class="btn-action-wide" id="btn-calc-schedule" style="margin-top:0.35rem;">Lock In Schedule 🩺</button>
                     </div>
-                    <div class="grid-2">
-                        <div class="form-item"><label for="plan-pace-pages">Pages Pace (per hr)</label><input type="number" id="plan-pace-pages" class="med-input" value="5" min="1" /></div>
-                        <div class="form-item"><label for="plan-pace-anki">Anki Pace (per hr)</label><input type="number" id="plan-pace-anki" class="med-input" value="100" min="1" /></div>
-                    </div>
-                    <button type="button" class="btn-action-wide" id="btn-calc-schedule" style="margin-top:0.35rem;">Generate Schedule 🩺</button>
                 </div>
-                <div class="pf-item-box" id="rx-card" style="display: none; width:100%; text-align:left;">
-                    <div style="font-weight: 800; border-bottom: 2px dashed rgba(0,0,0,0.15); padding-bottom: 0.35rem; display: flex; justify-content: space-between;"><span>Rx Prescription</span><span id="rx-finish-date"></span></div>
-                    <div id="rx-content" style="padding: 0.65rem 0; font-family: var(--font-ui); font-size: 0.85rem;"></div>
+
+                <div id="planner-active" style="display:none; width: 100%;">
+                    <div class="pf-item-box" style="text-align: left;">
+                        <h3 style="margin-bottom: 5px;">Current Rx: <span id="active-exam-countdown" style="color: var(--btn-orange);">X Days Left</span></h3>
+                        <p style="font-size: 0.8rem; margin-bottom: 10px;">Target: <strong id="active-daily-hours">0</strong> hours/day to finish <span id="active-daily-pages">0</span> pages & <span id="active-daily-anki">0</span> cards.</p>
+                        
+                        <div style="font-size: 0.7rem; font-weight: bold; margin-bottom: 3px; display: flex; justify-content: space-between;">
+                            <span>Today's Progress</span>
+                            <span id="active-today-progress-text">0.0h / 0.0h</span>
+                        </div>
+                        <div class="mini-xp-bar" style="height: 12px; background: rgba(0,0,0,0.1); border-radius: 6px; overflow: hidden; margin-bottom: 15px;">
+                            <div id="active-today-progress-fill" style="height: 100%; background: var(--btn-orange); width: 0%; transition: width 0.4s;"></div>
+                        </div>
+                        
+                        <button type="button" class="btn-action-wide" id="btn-clear-plan" style="background: var(--btn-dark); box-shadow: 0 4px 0px var(--btn-dark-shadow); font-size: 0.75rem; padding: 0.5rem;">Clear Schedule ❌</button>
+                    </div>
                 </div>
             </section>
 
@@ -265,9 +279,18 @@
 
             <section id="tab-stats" class="view-panel">
                 <h2 class="section-heading">📊 Detailed Analytics</h2>
+                
                 <div class="grid-2" style="width:100%;">
-                    <div class="pf-item-box"><div style="font-size: 1.4rem;">⏳</div><div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-total-hours">0.0h</div><div style="font-size: 0.65rem; opacity:0.7;">Total Focus Time</div></div>
-                    <div class="pf-item-box"><div style="font-size: 1.4rem;">🔥</div><div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-streak-days">1 Day</div><div style="font-size: 0.65rem; opacity:0.7;">Active Streak</div></div>
+                    <div class="pf-item-box">
+                        <div style="font-size: 1.4rem;">⏳</div>
+                        <div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-total-hours">0.0h</div>
+                        <div style="font-size: 0.65rem; opacity:0.7;">Total Focus Time</div>
+                    </div>
+                    <div class="pf-item-box">
+                        <div style="font-size: 1.4rem;">🔥</div>
+                        <div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-streak-days">1 Day</div>
+                        <div style="font-size: 0.65rem; opacity:0.7;">Active Streak</div>
+                    </div>
                 </div>
 
                 <div class="week-row-dots" id="weekly-tracker-row"></div>
@@ -294,12 +317,12 @@
                     </div>
                 </div>
 
-                <div class="form-col">
+                <form id="settings-form" class="form-col">
                     <div class="form-item"><label for="cfg-study-min">Focus Duration (Minutes)</label><input type="number" id="cfg-study-min" class="med-input" value="25" min="1" max="90" /></div>
                     <div class="form-item"><label for="cfg-short-min">Short Break</label><input type="number" id="cfg-short-min" class="med-input" value="5" min="1" max="30" /></div>
                     <div class="form-item"><label for="cfg-long-min">Long Break</label><input type="number" id="cfg-long-min" class="med-input" value="20" min="5" max="60" /></div>
                     <button type="button" id="btn-force-save" class="btn-action-wide" style="margin-top:0.4rem;">Save Settings</button>
-                </div>
+                </form>
             </section>
 
         </main>
