@@ -18,16 +18,16 @@ const MEDICAL_SUBJECTS = [
 ];
 
 const CATALOG_ITEMS = [
-  { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false },
-  { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 40, purchased: false },
-  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 80, purchased: false },
-  { id: 'books', name: 'Medical Bookshelf', icon: '📚', cost: 150, purchased: false },
-  { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false },
-  { id: 'cattree', name: 'Cozy Cat Tree', icon: '🪵', cost: 350, purchased: false },
-  { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false },
-  { id: 'fireplace', name: 'Study Fireplace', icon: '🔥', cost: 750, purchased: false },
-  { id: 'coffee', name: 'Espresso Machine', icon: '☕', cost: 1000, purchased: false },
-  { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1500, purchased: false }
+  { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false, displayed: true },
+  { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 40, purchased: false, displayed: true },
+  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 80, purchased: false, displayed: true },
+  { id: 'books', name: 'Medical Bookshelf', icon: '📚', cost: 150, purchased: false, displayed: true },
+  { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false, displayed: true },
+  { id: 'cattree', name: 'Cozy Cat Tree', icon: '🪵', cost: 350, purchased: false, displayed: true },
+  { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false, displayed: true },
+  { id: 'fireplace', name: 'Study Fireplace', icon: '🔥', cost: 750, purchased: false, displayed: true },
+  { id: 'coffee', name: 'Espresso Machine', icon: '☕', cost: 1000, purchased: false, displayed: true },
+  { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1500, purchased: false, displayed: true }
 ];
 
 let state = {
@@ -90,7 +90,6 @@ function loadState() {
     state.planner = { isActive: false, examDate: '', bufferDays: 2, pagesLeft: 25, ankiLeft: 300, pacePages: 5, paceAnki: 100, dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 };
   }
   
-  // Failsafe for older saves that don't have a saved subject yet
   if (!state.settings.lastSubject) {
     state.settings.lastSubject = MEDICAL_SUBJECTS[0];
   }
@@ -157,13 +156,11 @@ function initUI() {
     }
   });
 
-  // Automatically select the last used subject on load
   if (state.settings.lastSubject) {
       if (subSelect) subSelect.value = state.settings.lastSubject;
       if (manSelect) manSelect.value = state.settings.lastSubject;
   }
 
-  // When timer dropdown changes, sync it everywhere and save
   if (subSelect) {
       subSelect.addEventListener('change', (e) => {
           state.settings.lastSubject = e.target.value;
@@ -172,7 +169,6 @@ function initUI() {
       });
   }
 
-  // When manual log dropdown changes, sync it everywhere and save
   if (manSelect) {
       manSelect.addEventListener('change', (e) => {
           state.settings.lastSubject = e.target.value;
@@ -476,14 +472,15 @@ function renderWorld() {
   const placedContainer = document.getElementById('sanctuary-placed-items');
   if (placedContainer) {
     placedContainer.innerHTML = '';
+    // Always render 10 spans to preserve CSS nth-child positioning
     state.game.catalog.forEach(item => {
-      if (item.purchased) {
-        const span = document.createElement('span');
-        span.className = 'placed-item-emoji';
+      const span = document.createElement('span');
+      span.className = 'placed-item-emoji';
+      if (item.purchased && item.displayed !== false) {
         span.textContent = item.icon;
         span.title = item.name;
-        placedContainer.appendChild(span);
       }
+      placedContainer.appendChild(span);
     });
   }
 
@@ -492,24 +489,37 @@ function renderWorld() {
     cat.innerHTML = '';
     state.game.catalog.forEach(item => {
       const div = document.createElement('div');
+      const isDisplayed = item.displayed !== false;
       div.className = `pf-item-box ${item.purchased ? '' : 'locked'}`;
       
       div.innerHTML = `
-        <div style="font-size: 2rem; margin-bottom: 5px;">${item.icon}</div>
+        <div style="font-size: 2rem; margin-bottom: 5px; ${!isDisplayed && item.purchased ? 'opacity: 0.3;' : ''}">${item.icon}</div>
         <div style="font-weight:700; font-size:0.75rem;">${item.name}</div>
-        <div style="font-size:0.75rem; font-weight:800; color:var(--btn-orange);">${item.purchased ? 'Placed 🎀' : `${item.cost} 🐾`}</div>
-        ${!item.purchased ? `<button type="button" class="btn-adopt">Adopt</button>` : ''}
+        <div style="font-size:0.75rem; font-weight:800; color:var(--btn-orange);">
+            ${item.purchased ? (isDisplayed ? 'Placed 🎀' : 'Stored 📦') : `${item.cost} 🐾`}
+        </div>
+        ${!item.purchased 
+            ? `<button type="button" class="btn-adopt">Adopt</button>` 
+            : `<button type="button" class="btn-toggle" style="background: ${isDisplayed ? 'var(--btn-dark)' : 'var(--btn-orange)'}; margin-top: 5px;">${isDisplayed ? 'Hide Item' : 'Place Item'}</button>`
+        }
       `;
       
       if (!item.purchased) {
-        div.querySelector('button').addEventListener('click', () => {
+        div.querySelector('.btn-adopt').addEventListener('click', () => {
           if (state.game.pawPoints >= item.cost) {
             state.game.pawPoints -= item.cost;
             item.purchased = true;
+            item.displayed = true;
             saveState();
             renderWorld();
             renderAll();
           } else alert(`Need ${item.cost - state.game.pawPoints} more 🐾 Paw Points!`);
+        });
+      } else {
+        div.querySelector('.btn-toggle').addEventListener('click', () => {
+          item.displayed = !isDisplayed;
+          saveState();
+          renderWorld();
         });
       }
       cat.appendChild(div);
@@ -755,7 +765,6 @@ async function pullFromCloudOnStart() {
           state.game = record.game;
         }
 
-        // Apply synced settings including last subject
         if (record.settings && record.settings.lastSubject) {
           state.settings.lastSubject = record.settings.lastSubject;
         }
@@ -767,7 +776,6 @@ async function pullFromCloudOnStart() {
           badge.style.background = '#5EAA78';
         }
         
-        // Re-init UI to reflect downloaded selections
         const subSelect = document.getElementById('sel-subject');
         const manSelect = document.getElementById('manual-subject');
         if (state.settings.lastSubject) {
