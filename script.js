@@ -17,17 +17,29 @@ const MEDICAL_SUBJECTS = [
   "✏️ Custom Focus Session"
 ];
 
+const MELOG_QUOTES = [
+  "Mnemonic: Some Lovers Try Positions That They Can't Handle (Carpal bones!) 🦴",
+  "Anki Tip: Hard cards usually just need better context. Try re-reading the big picture! 🧠",
+  "You're doing amazing! Take a deep breath. 🐾",
+  "Mnemonic: MUDPILES for high anion gap metabolic acidosis! 🧪",
+  "OMM Reminder: Keep your posture straight when practicing techniques! 💆‍♀️",
+  "Remember to hydrate between board prep questions! 💧",
+  "Mnemonic: CRANIAL Nerves - Oh Oh Oh To Touch And Feel Very Good Velvet, Such Heaven! 🧠",
+  "Flow state hack: If a task feels too big, just aim for 5 minutes! ⏳",
+  "Melog believes in you, future Doctor! 🩺"
+];
+
 const CATALOG_ITEMS = [
-  { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false, displayed: true },
-  { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 40, purchased: false, displayed: true },
-  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 80, purchased: false, displayed: true },
-  { id: 'books', name: 'Medical Bookshelf', icon: '📚', cost: 150, purchased: false, displayed: true },
-  { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false, displayed: true },
-  { id: 'cattree', name: 'Cozy Cat Tree', icon: '🪵', cost: 350, purchased: false, displayed: true },
-  { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false, displayed: true },
-  { id: 'fireplace', name: 'Study Fireplace', icon: '🔥', cost: 750, purchased: false, displayed: true },
-  { id: 'coffee', name: 'Espresso Machine', icon: '☕', cost: 1000, purchased: false, displayed: true },
-  { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1500, purchased: false, displayed: true }
+  { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false, displayed: true, slot: 1 },
+  { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 40, purchased: false, displayed: true, slot: 2 },
+  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 80, purchased: false, displayed: true, slot: 3 },
+  { id: 'books', name: 'Medical Bookshelf', icon: '📚', cost: 150, purchased: false, displayed: true, slot: 4 },
+  { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false, displayed: true, slot: 5 },
+  { id: 'cattree', name: 'Cozy Cat Tree', icon: '🪵', cost: 350, purchased: false, displayed: true, slot: 6 },
+  { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false, displayed: true, slot: 7 },
+  { id: 'fireplace', name: 'Study Fireplace', icon: '🔥', cost: 750, purchased: false, displayed: true, slot: 8 },
+  { id: 'coffee', name: 'Espresso Machine', icon: '☕', cost: 1000, purchased: false, displayed: true, slot: 9 },
+  { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1500, purchased: false, displayed: true, slot: 10 }
 ];
 
 let state = {
@@ -93,6 +105,11 @@ function loadState() {
   if (!state.settings.lastSubject) {
     state.settings.lastSubject = MEDICAL_SUBJECTS[0];
   }
+
+  // Fallback to ensure all items have a valid slot number
+  state.game.catalog.forEach((item, index) => {
+      if (!item.slot) item.slot = index + 1;
+  });
 
   if (!state.timer.isRunning) {
     state.timer.totalDuration = (state.timer.mode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
@@ -200,6 +217,25 @@ function initUI() {
     });
   }
 
+  // Melog Click Speech Bubble Logic
+  const melogSprite = document.getElementById('melog-sprite');
+  if (melogSprite) {
+      melogSprite.addEventListener('click', () => {
+          const bubble = document.getElementById('melog-speech-bubble');
+          if (!bubble) return;
+          
+          if (state.timer.mode !== 'study' || !state.timer.isRunning) {
+              bubble.textContent = MELOG_QUOTES[Math.floor(Math.random() * MELOG_QUOTES.length)];
+              playTone(587.33, 0.3);
+          } else {
+              bubble.textContent = "Shh, we are focusing! 🤫";
+          }
+          
+          bubble.style.display = 'block';
+          setTimeout(() => { bubble.style.display = 'none'; }, 4000);
+      });
+  }
+
   const forceSaveBtn = document.getElementById('btn-force-save');
   if (forceSaveBtn) {
     forceSaveBtn.addEventListener('click', () => {
@@ -293,6 +329,7 @@ function initTimer() {
   const toggleBtn = document.getElementById('btn-timer-toggle');
   const resetBtn = document.getElementById('btn-timer-reset');
   const skipBtn = document.getElementById('btn-timer-skip'); 
+  const extendBtn = document.getElementById('btn-timer-extend'); 
   const studyBtn = document.getElementById('btn-mode-study');
   const breakBtn = document.getElementById('btn-mode-break');
 
@@ -303,6 +340,20 @@ function initTimer() {
     skipBtn.addEventListener('click', () => {
       if (state.timer.isRunning) pauseTimer();
       completeBlock();
+    });
+  }
+
+  // Flow State Extension Logic
+  if (extendBtn) {
+    extendBtn.addEventListener('click', () => {
+      if (state.timer.mode === 'study') {
+          state.timer.timeLeft += 15 * 60;
+          state.timer.totalDuration += 15 * 60;
+          renderTimer();
+          playTone(800, 0.2); 
+      } else {
+          alert("Flow state extension (+15m) can only be used during Focus Mode!");
+      }
     });
   }
 
@@ -472,15 +523,16 @@ function renderWorld() {
   const placedContainer = document.getElementById('sanctuary-placed-items');
   if (placedContainer) {
     placedContainer.innerHTML = '';
-    // Always render 10 spans to preserve CSS nth-child positioning
+    
+    // Renders items directly mapping to their saved CSS slot classes
     state.game.catalog.forEach(item => {
-      const span = document.createElement('span');
-      span.className = 'placed-item-emoji';
       if (item.purchased && item.displayed !== false) {
+        const span = document.createElement('span');
+        span.className = `placed-item-emoji slot-${item.slot}`;
         span.textContent = item.icon;
         span.title = item.name;
+        placedContainer.appendChild(span);
       }
-      placedContainer.appendChild(span);
     });
   }
 
@@ -492,6 +544,19 @@ function renderWorld() {
       const isDisplayed = item.displayed !== false;
       div.className = `pf-item-box ${item.purchased ? '' : 'locked'}`;
       
+      const slotOptions = `
+        <option value="1" ${item.slot === 1 ? 'selected' : ''}>1: Desk Center</option>
+        <option value="2" ${item.slot === 2 ? 'selected' : ''}>2: Floor Far Left</option>
+        <option value="3" ${item.slot === 3 ? 'selected' : ''}>3: Floor Right</option>
+        <option value="4" ${item.slot === 4 ? 'selected' : ''}>4: Wall Center</option>
+        <option value="5" ${item.slot === 5 ? 'selected' : ''}>5: Wall Right</option>
+        <option value="6" ${item.slot === 6 ? 'selected' : ''}>6: Rug Left</option>
+        <option value="7" ${item.slot === 7 ? 'selected' : ''}>7: Desk Left</option>
+        <option value="8" ${item.slot === 8 ? 'selected' : ''}>8: Wall Left</option>
+        <option value="9" ${item.slot === 9 ? 'selected' : ''}>9: Floor Mid-Left</option>
+        <option value="10" ${item.slot === 10 ? 'selected' : ''}>10: Floor Far Right</option>
+      `;
+
       div.innerHTML = `
         <div style="font-size: 2rem; margin-bottom: 5px; ${!isDisplayed && item.purchased ? 'opacity: 0.3;' : ''}">${item.icon}</div>
         <div style="font-weight:700; font-size:0.75rem;">${item.name}</div>
@@ -500,7 +565,11 @@ function renderWorld() {
         </div>
         ${!item.purchased 
             ? `<button type="button" class="btn-adopt">Adopt</button>` 
-            : `<button type="button" class="btn-toggle" style="background: ${isDisplayed ? 'var(--btn-dark)' : 'var(--btn-orange)'}; margin-top: 5px;">${isDisplayed ? 'Hide Item' : 'Place Item'}</button>`
+            : `<button type="button" class="btn-toggle" style="background: ${isDisplayed ? 'var(--btn-dark)' : 'var(--btn-orange)'}; margin-top: 5px;">${isDisplayed ? 'Hide' : 'Place'}</button>
+               <select class="med-select slot-select" style="font-size:0.6rem; padding: 2px; margin-top: 5px; width: 100%; display: ${isDisplayed ? 'block' : 'none'};">
+                  ${slotOptions}
+               </select>
+              `
         }
       `;
       
@@ -521,6 +590,15 @@ function renderWorld() {
           saveState();
           renderWorld();
         });
+        
+        const slotSelect = div.querySelector('.slot-select');
+        if (slotSelect) {
+            slotSelect.addEventListener('change', (e) => {
+                item.slot = parseInt(e.target.value, 10);
+                saveState();
+                renderWorld();
+            });
+        }
       }
       cat.appendChild(div);
     });
