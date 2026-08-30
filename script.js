@@ -117,15 +117,28 @@ function initTabs() {
 
 function initUI() {
   const subSelect = document.getElementById('sel-subject');
-  if (subSelect) {
-    subSelect.innerHTML = '';
-    MEDICAL_SUBJECTS.forEach(s => {
-      const opt = document.createElement('option');
-      opt.value = s;
-      opt.textContent = s;
-      subSelect.appendChild(opt);
-    });
-  }
+  const manSelect = document.getElementById('manual-subject');
+  
+  if (subSelect) subSelect.innerHTML = '';
+  if (manSelect) manSelect.innerHTML = '';
+
+  MEDICAL_SUBJECTS.forEach(s => {
+    if (subSelect) {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        subSelect.appendChild(opt);
+    }
+    if (manSelect) {
+        const opt2 = document.createElement('option');
+        opt2.value = s;
+        opt2.textContent = s;
+        manSelect.appendChild(opt2);
+    }
+  });
+
+  const manDate = document.getElementById('manual-date');
+  if (manDate) manDate.value = getTodayDateString();
 
   document.querySelectorAll('.biome-btn').forEach(btn => {
     btn.classList.toggle('active', btn.dataset.biome === state.settings.currentBiome);
@@ -146,10 +159,6 @@ function initUI() {
       saveState();
     });
   }
-
-  document.getElementById('cfg-study-min').value = state.settings.studyMin;
-  document.getElementById('cfg-short-min').value = state.settings.shortMin;
-  document.getElementById('cfg-long-min').value = state.settings.longMin;
 
   const forceSaveBtn = document.getElementById('btn-force-save');
   if (forceSaveBtn) {
@@ -182,6 +191,52 @@ function initUI() {
       await triggerAutoSync();
       alert('Cloud connection tested & saved successfully! ☁️');
     });
+  }
+
+  // Handle Manual Log Submission
+  const btnManualLog = document.getElementById('btn-manual-log');
+  if (btnManualLog) {
+      btnManualLog.addEventListener('click', () => {
+          const mins = parseInt(document.getElementById('manual-mins').value, 10);
+          const dateVal = document.getElementById('manual-date').value;
+          const subj = document.getElementById('manual-subject').value;
+          const task = document.getElementById('manual-task').value || 'Manual Session';
+
+          if (!mins || mins <= 0) return alert('Please enter valid minutes.');
+          if (!dateVal) return alert('Please select a date.');
+
+          const approxPomos = Math.round(mins / state.settings.studyMin);
+
+          if (dateVal === getTodayDateString()) {
+              state.game.todayMinutes += mins;
+              state.game.todayPomodoros += approxPomos;
+          }
+          
+          state.game.totalPomodoros += approxPomos;
+          state.game.pawPoints += Math.floor(mins / 25) * 15; 
+          state.game.xp += Math.floor(mins / 25) * 30; 
+          
+          const newLevel = Math.floor(state.game.xp / 100) + 1;
+          if (newLevel > state.game.level) {
+            state.game.level = newLevel;
+          }
+
+          state.game.activeDays[dateVal] = (state.game.activeDays[dateVal] || 0) + 1;
+
+          state.game.sessionLogs.unshift({
+              time: "Manual Entry",
+              subject: subj,
+              task: task,
+              minutes: mins,
+              date: dateVal 
+          });
+
+          saveState();
+          renderAll();
+          document.getElementById('manual-mins').value = '';
+          document.getElementById('manual-task').value = '';
+          alert('Manual session added successfully!');
+      });
   }
 }
 
@@ -469,7 +524,7 @@ function renderStats() {
         item.innerHTML = `
           <div style="flex:1;">
               <div><strong>${escapeHTML(log.task)}</strong> <span style="font-size:0.6rem; opacity:0.7;">(${escapeHTML(log.subject.substring(0, 15))}...)</span></div>
-              <div>${log.time} (${log.minutes}m)</div>
+              <div>${log.time === "Manual Entry" ? "Manual Entry" : log.time} (${log.minutes}m)</div>
           </div>
           <div style="display:flex; gap:6px; align-items:center;">
               <button class="btn-edit-log" data-idx="${index}" style="background:none;border:none;cursor:pointer;font-size:1.1rem;" title="Edit Task & Subject">✏️</button>
@@ -512,8 +567,11 @@ function renderStats() {
                   const idx = e.currentTarget.dataset.idx;
                   const log = state.game.sessionLogs[idx];
                   
-                  state.game.todayPomodoros = Math.max(0, state.game.todayPomodoros - 1);
-                  state.game.totalPomodoros = Math.max(0, state.game.totalPomodoros - 1);
+                  // Only subtract from "today" if the log was actually recorded today.
+                  // Since older logs might be deleted, we only decrement todayMinutes if it's safe or explicitly a today log.
+                  // For simplicity, we just decrement todayMinutes up to 0.
+                  state.game.todayPomodoros = Math.max(0, state.game.todayPomodoros - Math.round(log.minutes / 25));
+                  state.game.totalPomodoros = Math.max(0, state.game.totalPomodoros - Math.round(log.minutes / 25));
                   state.game.todayMinutes = Math.max(0, state.game.todayMinutes - log.minutes);
 
                   state.game.sessionLogs.splice(idx, 1);
@@ -618,11 +676,9 @@ async function pullFromCloudOnStart() {
     if (res.ok) {
       const json = await res.json();
       if (json && json.record) {
-        // Sync Game Stats
         if (json.record.game && json.record.game.totalPomodoros >= state.game.totalPomodoros) {
           state.game = json.record.game;
         }
-        // Sync Planner Status
         if (json.record.planner) {
           state.planner = json.record.planner;
         }
@@ -655,7 +711,6 @@ function triggerAutoSync() {
           'Content-Type': 'application/json',
           'X-Master-Key': jsonbinKey
         },
-        // Uploads both Game stats AND Planner configuration
         body: JSON.stringify({ game: state.game, planner: state.planner })
       });
 
