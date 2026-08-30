@@ -29,70 +29,65 @@
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="%23F28C28"><path d="M12 13.5c-2.5 0-4.5 2-4.5 4.5s2 4.5 4.5 4.5 4.5-2 4.5-4.5-2-4.5-4.5-4.5z" /><ellipse cx="6" cy="11.5" rx="2" ry="3" transform="rotate(-30 6 11.5)"/><ellipse cx="9.5" cy="7.5" rx="2" ry="3" transform="rotate(-10 9.5 7.5)"/><ellipse cx="14.5" cy="7.5" rx="2" ry="3" transform="rotate(10 14.5 7.5)"/><ellipse cx="18" cy="11.5" rx="2" ry="3" transform="rotate(30 18 11.5)"/></svg>') !important;
         }
 
-        /* 2. Sleep System: Swapping Sprites & Zzzs */
+        /* 2. MODE SWITCHER BUTTONS */
+        .mode-switch-bar {
+            display: flex; gap: 5px; background: rgba(0,0,0,0.08); padding: 5px; border-radius: 20px; margin-bottom: 10px;
+        }
+        .mode-btn {
+            background: transparent; border: none; color: #555; font-family: var(--font-pixel); font-size: 0.8rem; padding: 6px 16px; border-radius: 15px; cursor: pointer; text-transform: uppercase; transition: all 0.2s;
+        }
+        body.theme-dark .mode-switch-bar { background: rgba(255,255,255,0.05); }
+        body.theme-dark .mode-btn { color: #BBB; }
+        .mode-btn.active {
+            background: var(--btn-orange); color: #FFF !important; box-shadow: 0 2px 0 var(--btn-orange-shadow);
+        }
+
+        /* 3. TIMER MELOG ANIMATIONS (Dependent on Focus vs Break mode) */
         .melog-awake { display: block; }
         .melog-asleep { display: none; }
         
-        body:not(.timer-running) .melog-awake { display: none; }
-        body:not(.timer-running) .melog-asleep { display: block; }
+        body.mode-break .melog-awake { display: none; }
+        body.mode-break .melog-asleep { display: block; }
 
-        body:not(.timer-running) .orbit-arm .melog-sprite-box {
-            transform: translateX(-50%) translateY(4px);
-        }
-
+        body.mode-break .orbit-arm .melog-sprite-box { transform: translateX(-50%) translateY(4px); }
+        
         .zzz-container {
-            position: absolute; top: -20px; right: -10px;
-            font-family: var(--font-pixel); font-size: 0.8rem;
-            color: #A6CFE2; opacity: 0; pointer-events: none;
+            position: absolute; top: -20px; right: -10px; font-family: var(--font-pixel); font-size: 0.8rem; color: #A6CFE2; opacity: 0; pointer-events: none;
         }
-        body:not(.timer-running) .zzz-container {
-            opacity: 1;
-            animation: floatZzz 3s infinite linear;
-        }
+        body.mode-break .zzz-container { opacity: 1; animation: floatZzz 3s infinite linear; }
         @keyframes floatZzz {
             0% { transform: translateY(0) scale(0.5); opacity: 0; }
             50% { opacity: 1; }
             100% { transform: translateY(-20px) scale(1.2) translateX(10px); opacity: 0; }
         }
 
-        /* 3. Cozy Sanctuary Room */
+        /* Tail always wags when awake */
+        body:not(.mode-break) .orbit-arm .px-balanced-tail {
+            animation: attachedTailSway 0.54s infinite ease-in-out; transform-origin: 3px 6px;
+        }
+
+        /* Legs and body bounce ONLY when timer is running AND in focus mode */
+        body.timer-running:not(.mode-break) .orbit-arm .px-cat-master { animation: catHopBounding 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 8px 11px; }
+        body.timer-running:not(.mode-break) .orbit-arm .px-leg-fl { animation: strideFrontLeft 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 8px 8px; }
+        body.timer-running:not(.mode-break) .orbit-arm .px-leg-fr { animation: strideFrontRight 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 8px 8px; }
+        body.timer-running:not(.mode-break) .orbit-arm .px-leg-bl { animation: strideBackLeft 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 4px 8px; }
+        body.timer-running:not(.mode-break) .orbit-arm .px-leg-br { animation: strideBackRight 0.54s infinite cubic-bezier(0.4, 0, 0.2, 1); transform-origin: 4px 8px; }
+
+        /* 4. SANCTUARY ROOM & SMART EMOJI PLACEMENT */
         .sanctuary-room-stage {
-            height: 220px !important;
-            background: linear-gradient(to bottom, #d6e8f5 60%, #b5ccdf 60%, #b5ccdf 63%, #a27b6c 63%, #a27b6c 100%) !important;
-            border: 4px solid rgba(0,0,0,0.15) !important;
-            position: relative;
-            display: block !important;
+            height: 220px !important; background: linear-gradient(to bottom, #d6e8f5 60%, #b5ccdf 60%, #b5ccdf 63%, #a27b6c 63%, #a27b6c 100%) !important; border: 4px solid rgba(0,0,0,0.15) !important; position: relative; display: block !important;
         }
-        
-        .pixel-poster {
-            position: absolute; top: 15px; left: 15px; width: 25px; height: 35px; background: white;
-            border: 2px solid #555; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 rgba(0,0,0,0.1);
-        }
-        .pixel-cross {
-            width: 14px; height: 14px; background: #ff6b6b;
-            clip-path: polygon(33% 0, 66% 0, 66% 33%, 100% 33%, 100% 66%, 66% 66%, 66% 100%, 33% 100%, 33% 66%, 0 66%, 0 33%, 33% 33%);
-        }
-        .pixel-window {
-            position: absolute; top: 20px; right: 25px; width: 40px; height: 50px; background: #87CEEB;
-            border: 3px solid #FFF; box-shadow: inset 0 0 10px rgba(255,255,255,0.5), 2px 2px 0 rgba(0,0,0,0.1); overflow: hidden;
-        }
+        .pixel-poster { position: absolute; top: 15px; left: 15px; width: 25px; height: 35px; background: white; border: 2px solid #555; display: flex; align-items: center; justify-content: center; box-shadow: 2px 2px 0 rgba(0,0,0,0.1); }
+        .pixel-cross { width: 14px; height: 14px; background: #ff6b6b; clip-path: polygon(33% 0, 66% 0, 66% 33%, 100% 33%, 100% 66%, 66% 66%, 66% 100%, 33% 100%, 33% 66%, 0 66%, 0 33%, 33% 33%); }
+        .pixel-window { position: absolute; top: 20px; right: 25px; width: 40px; height: 50px; background: #87CEEB; border: 3px solid #FFF; box-shadow: inset 0 0 10px rgba(255,255,255,0.5), 2px 2px 0 rgba(0,0,0,0.1); overflow: hidden; }
         .pixel-window::after { content: ''; position: absolute; top: 0; left: 50%; width: 2px; height: 100%; background: #FFF; }
         .pixel-window::before { content: ''; position: absolute; top: 50%; left: 0; width: 100%; height: 2px; background: #FFF; }
-        
-        .pixel-desk {
-            position: absolute; bottom: 30px; right: 15px; width: 110px; height: 50px; background: #D2B48C;
-            border-top: 4px solid #C19A6B; border-left: 3px solid #8B5A2B; border-right: 3px solid #8B5A2B; box-shadow: -5px 10px 0 rgba(0,0,0,0.08); z-index: 2;
-        }
+        .pixel-desk { position: absolute; bottom: 30px; right: 15px; width: 110px; height: 50px; background: #D2B48C; border-top: 4px solid #C19A6B; border-left: 3px solid #8B5A2B; border-right: 3px solid #8B5A2B; box-shadow: -5px 10px 0 rgba(0,0,0,0.08); z-index: 2; }
         .pixel-desk::before, .pixel-desk::after { content: ''; position: absolute; top: 100%; width: 8px; height: 30px; background: #5C4033; }
         .pixel-desk::before { left: 5px; } .pixel-desk::after { right: 5px; }
 
-        /* 4. Smart Emoji Placement System */
-        #sanctuary-placed-items {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none;
-        }
-        .placed-item-emoji {
-            position: absolute; pointer-events: auto; display: inline-block; line-height: 1;
-        }
+        #sanctuary-placed-items { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 4; pointer-events: none; }
+        .placed-item-emoji { position: absolute; pointer-events: auto; display: inline-block; line-height: 1; text-shadow: 2px 2px 0 rgba(0,0,0,0.15); }
         #sanctuary-placed-items > :nth-child(1) { right: 25px; bottom: 75px; font-size: 1.5rem; } 
         #sanctuary-placed-items > :nth-child(2) { left: 10px; bottom: 25px; font-size: 2.2rem; } 
         #sanctuary-placed-items > :nth-child(3) { right: 100px; bottom: 25px; font-size: 2.5rem; } 
@@ -104,350 +99,11 @@
         #sanctuary-placed-items > :nth-child(9) { left: 70px; bottom: 25px; font-size: 2rem; } 
         #sanctuary-placed-items > :nth-child(10) { right: 130px; bottom: 25px; font-size: 2.2rem; }
 
-        /* ========================================================
-           5. BULLETPROOF WALKING ANIMATION FOR SANCTUARY
-           This specifically blocks style.css from gluing him in place
-           ======================================================== */
+        /* 5. INDEPENDENT WALKING ANIMATION FOR SANCTUARY MELOG (Walks 24/7) */
         .sanctuary-room-stage .sanctuary-pet {
-            position: absolute !important; 
-            bottom: 25px !important; 
-            width: 60px !important; 
-            height: 60px !important; 
-            z-index: 5 !important;
-            animation: wanderMelog 14s infinite linear !important;
-            transform: none !important;
-            margin: 0 !important;
+            position: absolute !important; bottom: 25px !important; width: 60px !important; height: 60px !important; z-index: 5 !important;
+            animation: wanderMelog 14s infinite linear !important; transform: none !important; margin: 0 !important;
         }
-
-        /* Forces a gentle walk, totally overriding the fast timer-running speed */
-        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: 8px 11px; }
-        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-leg-fl { animation: strideFrontLeft 1.2s infinite !important; transform-origin: 8px 8px; }
-        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-leg-fr { animation: strideFrontRight 1.2s infinite !important; transform-origin: 8px 8px; }
-        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-leg-bl { animation: strideBackLeft 1.2s infinite !important; transform-origin: 4px 8px; }
-        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-leg-br { animation: strideBackRight 1.2s infinite !important; transform-origin: 4px 8px; }
-        body.timer-running .sanctuary-room-stage .sanctuary-pet .px-balanced-tail { animation: attachedTailSway 1.2s infinite ease-in-out !important; transform-origin: 3px 6px; }
-
-        @keyframes wanderMelog {
-            0% { left: 5%; transform: scaleX(1); }
-            45% { left: 60%; transform: scaleX(1); }
-            50% { left: 60%; transform: scaleX(-1); }
-            95% { left: 5%; transform: scaleX(-1); }
-            100% { left: 5%; transform: scaleX(1); }
-        }
-        
-        /* Freezes Melog completely when the timer is off (sleep mode) */
-        body:not(.timer-running) .sanctuary-room-stage .sanctuary-pet {
-            animation: none !important; 
-            left: 15% !important; 
-            transform: none !important;
-        }
-        body:not(.timer-running) .sanctuary-room-stage .sanctuary-pet * {
-            animation: none !important;
-        }
-    </style>
-</head>
-<body>
-    <canvas id="fluid-bg-canvas"></canvas>
-
-    <div class="app-shell">
-        
-        <div class="user-status-bar">
-            <div class="status-pill">
-               <span>⭐ Lvl <strong id="val-level">1</strong></span>
-            </div>
-            <div class="status-pill">
-               <span>🐾 <strong id="val-paws">0</strong> Paws</span>
-            </div>
-            <div class="status-pill" style="flex: 1;">
-               <div class="mini-xp-bar"><div id="mini-xp-fill" style="width: 0%;"></div></div>
-            </div>
-        </div>
-
-        <main class="pomofox-glass-card">
-            
-            <section id="tab-timer" class="view-panel active">
-                
-                <div class="top-controls-bar">
-                    <button type="button" class="pf-btn-icon btn-orange" id="btn-timer-toggle" title="Start / Pause">▶</button>
-                    <button type="button" class="pf-btn-icon btn-dark" id="btn-timer-skip" title="Skip Session/Break">⏭️</button>
-                    <button type="button" class="pf-btn-icon btn-dark" id="btn-timer-reset" title="Reset Timer">🔄</button>
-                    <button type="button" class="pf-btn-icon btn-orange" id="btn-sound-toggle" title="Mute / Unmute">🔊</button>
-                    <button type="button" class="pf-btn-icon btn-dark" id="btn-theme-toggle" title="Dark Mode Toggle">🌙</button>
-                </div>
-
-                <div class="biome-tag-bar">
-                    <button type="button" class="biome-btn active" data-biome="forest">🟢 Green</button>
-                    <button type="button" class="biome-btn" data-biome="mountain">🔵 Dark Blue</button>
-                    <button type="button" class="biome-btn" data-biome="sunset">🟠 Orange</button>
-                    <button type="button" class="biome-btn" data-biome="sakura">🌸 Pink</button>
-                </div>
-
-                <div class="medical-select-wrap">
-                    <select id="sel-subject" class="med-select"></select>
-                    <input type="text" id="ipt-chapter-task" class="med-input" placeholder="Chapter / Target (e.g. Robbins pp. 45-60, OMM Practical)" />
-                </div>
-
-                <div class="timer-circle-stage">
-                    <svg class="circle-svg" viewBox="0 0 300 300">
-                        <circle cx="150" cy="150" r="133" class="circle-bg-ring" />
-                        <circle cx="150" cy="150" r="133" class="circle-progress-ring" id="circle-progress-ring" />
-                    </svg>
-
-                    <div class="timer-digits-text" id="timer-readout">25:00</div>
-
-                    <div class="orbit-arm" id="orbit-arm">
-                        <div class="melog-sprite-box" id="melog-sprite" title="Pet Melog">
-                            <div class="zzz-container">Zzz...</div>
-                            
-                            <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-awake">
-                                <g class="px-cat-master">
-                                    <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
-                                    <g class="px-leg-bl"><rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    <g class="px-leg-fl"><rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    <g class="px-torso"><rect x="3" y="6" width="7" height="1" fill="#2C1E16" /><rect x="2" y="7" width="1" height="3" fill="#2C1E16" /><rect x="10" y="7" width="1" height="3" fill="#2C1E16" /><rect x="3" y="10" width="7" height="1" fill="#2C1E16" /><rect x="3" y="7" width="5" height="3" fill="#F4C28D" /><rect x="4" y="7" width="1" height="2" fill="#D9965B" /><rect x="8" y="7" width="2" height="3" fill="#FFFFFF" /></g>
-                                    <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    <g class="px-head"><rect x="6" y="1" width="2" height="3" fill="#2C1E16" /><rect x="7" y="2" width="1" height="2" fill="#F4C28D" /><rect x="7" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="10" y="1" width="2" height="3" fill="#2C1E16" /><rect x="10" y="2" width="1" height="2" fill="#F4C28D" /><rect x="10" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="7" y="4" width="6" height="4" fill="#F4C28D" /><rect x="6" y="4" width="1" height="4" fill="#2C1E16" /><rect x="13" y="5" width="1" height="3" fill="#2C1E16" /><rect x="8" y="3" width="4" height="1" fill="#2C1E16" /><rect x="7" y="8" width="5" height="1" fill="#2C1E16" /><rect x="9" y="4" width="1" height="1" fill="#D9965B" /><rect x="10" y="5" width="1" height="1" fill="#2C1E16" /><rect x="10" y="4" width="1" height="1" fill="#9CBD38" /><rect x="11" y="6" width="2" height="2" fill="#FFFFFF" /><rect x="12" y="6" width="1" height="1" fill="#E88894" /></g>
-                                </g>
-                            </svg>
-
-                            <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-asleep">
-                                <g class="px-cat-master">
-                                    <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
-                                    <g class="px-leg-bl"><rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    <g class="px-leg-fl"><rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    <g class="px-torso"><rect x="3" y="6" width="7" height="1" fill="#2C1E16" /><rect x="2" y="7" width="1" height="3" fill="#2C1E16" /><rect x="10" y="7" width="1" height="3" fill="#2C1E16" /><rect x="3" y="10" width="7" height="1" fill="#2C1E16" /><rect x="3" y="7" width="5" height="3" fill="#F4C28D" /><rect x="4" y="7" width="1" height="2" fill="#D9965B" /><rect x="8" y="7" width="2" height="3" fill="#FFFFFF" /></g>
-                                    <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                    <g class="px-head">
-                                        <rect x="6" y="1" width="2" height="3" fill="#2C1E16" /><rect x="7" y="2" width="1" height="2" fill="#F4C28D" /><rect x="7" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="10" y="1" width="2" height="3" fill="#2C1E16" /><rect x="10" y="2" width="1" height="2" fill="#F4C28D" /><rect x="10" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="7" y="4" width="6" height="4" fill="#F4C28D" /><rect x="6" y="4" width="1" height="4" fill="#2C1E16" /><rect x="13" y="5" width="1" height="3" fill="#2C1E16" /><rect x="8" y="3" width="4" height="1" fill="#2C1E16" /><rect x="7" y="8" width="5" height="1" fill="#2C1E16" /><rect x="9" y="4" width="1" height="1" fill="#D9965B" /><rect x="10" y="5" width="1" height="1" fill="#2C1E16" /><rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
-                                        <rect x="11" y="7" width="2" height="1" fill="#2C1E16" />
-                                    </g>
-                                </g>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="bottom-cycle-pill">
-                    <span>cycle: <strong id="val-cycle-count">1</strong></span>
-                    <div class="tomatoes-row">
-                        <span class="tomato-dot active" id="dot-1"></span>
-                        <span class="tomato-dot" id="dot-2"></span>
-                        <span class="tomato-dot" id="dot-3"></span>
-                        <span class="tomato-dot" id="dot-4"></span>
-                    </div>
-                </div>
-            </section>
-
-            <section id="tab-planner" class="view-panel">
-                <h2 class="section-heading">🩷 Study Planner</h2>
-                
-                <div class="form-col">
-                    <div class="form-item">
-                        <label for="plan-date">Exam Date</label>
-                        <input type="date" id="plan-date" class="med-input" />
-                    </div>
-                    <div class="form-item">
-                        <label for="plan-buffer">Buffer Days (Review)</label>
-                        <input type="number" id="plan-buffer" class="med-input" value="2" min="0" />
-                    </div>
-                    
-                    <div class="grid-2">
-                        <div class="form-item">
-                            <label for="plan-pages-left">Total Pages Left</label>
-                            <input type="number" id="plan-pages-left" class="med-input" value="25" min="0" />
-                        </div>
-                        <div class="form-item">
-                            <label for="plan-anki-left">Total Anki Cards Left</label>
-                            <input type="number" id="plan-anki-left" class="med-input" value="300" min="0" />
-                        </div>
-                    </div>
-
-                    <div class="grid-2">
-                        <div class="form-item">
-                            <label for="plan-pace-pages">Pages Pace (per hr)</label>
-                            <input type="number" id="plan-pace-pages" class="med-input" value="5" min="1" />
-                        </div>
-                        <div class="form-item">
-                            <label for="plan-pace-anki">Anki Pace (per hr)</label>
-                            <input type="number" id="plan-pace-anki" class="med-input" value="100" min="1" />
-                        </div>
-                    </div>
-
-                    <button type="button" class="btn-action-wide" id="btn-calc-schedule" style="margin-top:0.35rem;">
-                        Generate Schedule 🩺
-                    </button>
-                </div>
-
-                <div class="pf-item-box" id="rx-card" style="display: none; width:100%; text-align:left;">
-                    <div style="font-weight: 800; border-bottom: 2px dashed rgba(0,0,0,0.15); padding-bottom: 0.35rem; display: flex; justify-content: space-between;">
-                        <span>Rx Prescription</span>
-                        <span id="rx-finish-date"></span>
-                    </div>
-                    <div id="rx-content" style="padding: 0.65rem 0; font-family: var(--font-ui); font-size: 0.85rem;"></div>
-                </div>
-            </section>
-
-            <section id="tab-world" class="view-panel">
-                <h2 class="section-heading">🏡 Melog's Sanctuary</h2>
-                <p style="font-size:0.72rem; text-align:center; opacity:0.8; margin-bottom:0.4rem;">Adopt room upgrades to customize Melog's study space!</p>
-                
-                <div class="sanctuary-room-stage" id="sanctuary-stage">
-                    
-                    <div class="pixel-poster"><div class="pixel-cross"></div></div>
-                    <div class="pixel-window"></div>
-                    <div class="pixel-desk"></div>
-
-                    <div class="sanctuary-pet">
-                        <div class="zzz-container">Zzz...</div>
-                        
-                        <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-awake" style="width: 100%; height: 100%; image-rendering: pixelated;">
-                            <g class="px-cat-master">
-                                <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
-                                <g class="px-leg-bl"><rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                <g class="px-leg-fl"><rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                <g class="px-torso"><rect x="3" y="6" width="7" height="1" fill="#2C1E16" /><rect x="2" y="7" width="1" height="3" fill="#2C1E16" /><rect x="10" y="7" width="1" height="3" fill="#2C1E16" /><rect x="3" y="10" width="7" height="1" fill="#2C1E16" /><rect x="3" y="7" width="5" height="3" fill="#F4C28D" /><rect x="4" y="7" width="1" height="2" fill="#D9965B" /><rect x="8" y="7" width="2" height="3" fill="#FFFFFF" /></g>
-                                <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                <g class="px-head"><rect x="6" y="1" width="2" height="3" fill="#2C1E16" /><rect x="7" y="2" width="1" height="2" fill="#F4C28D" /><rect x="7" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="10" y="1" width="2" height="3" fill="#2C1E16" /><rect x="10" y="2" width="1" height="2" fill="#F4C28D" /><rect x="10" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="7" y="4" width="6" height="4" fill="#F4C28D" /><rect x="6" y="4" width="1" height="4" fill="#2C1E16" /><rect x="13" y="5" width="1" height="3" fill="#2C1E16" /><rect x="8" y="3" width="4" height="1" fill="#2C1E16" /><rect x="7" y="8" width="5" height="1" fill="#2C1E16" /><rect x="9" y="4" width="1" height="1" fill="#D9965B" /><rect x="10" y="5" width="1" height="1" fill="#2C1E16" /><rect x="10" y="4" width="1" height="1" fill="#9CBD38" /><rect x="11" y="6" width="2" height="2" fill="#FFFFFF" /><rect x="12" y="6" width="1" height="1" fill="#E88894" /></g>
-                            </g>
-                        </svg>
-
-                        <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-asleep" style="width: 100%; height: 100%; image-rendering: pixelated;">
-                            <g class="px-cat-master">
-                                <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
-                                <g class="px-leg-bl"><rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                <g class="px-leg-fl"><rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                <g class="px-torso"><rect x="3" y="6" width="7" height="1" fill="#2C1E16" /><rect x="2" y="7" width="1" height="3" fill="#2C1E16" /><rect x="10" y="7" width="1" height="3" fill="#2C1E16" /><rect x="3" y="10" width="7" height="1" fill="#2C1E16" /><rect x="3" y="7" width="5" height="3" fill="#F4C28D" /><rect x="4" y="7" width="1" height="2" fill="#D9965B" /><rect x="8" y="7" width="2" height="3" fill="#FFFFFF" /></g>
-                                <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
-                                <g class="px-head">
-                                    <rect x="6" y="1" width="2" height="3" fill="#2C1E16" /><rect x="7" y="2" width="1" height="2" fill="#F4C28D" /><rect x="7" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="10" y="1" width="2" height="3" fill="#2C1E16" /><rect x="10" y="2" width="1" height="2" fill="#F4C28D" /><rect x="10" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="7" y="4" width="6" height="4" fill="#F4C28D" /><rect x="6" y="4" width="1" height="4" fill="#2C1E16" /><rect x="13" y="5" width="1" height="3" fill="#2C1E16" /><rect x="8" y="3" width="4" height="1" fill="#2C1E16" /><rect x="7" y="8" width="5" height="1" fill="#2C1E16" /><rect x="9" y="4" width="1" height="1" fill="#D9965B" /><rect x="10" y="5" width="1" height="1" fill="#2C1E16" /><rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
-                                    <rect x="11" y="7" width="2" height="1" fill="#2C1E16" />
-                                </g>
-                            </g>
-                        </svg>
-                    </div>
-                    
-                    <div id="sanctuary-placed-items"></div>
-                </div>
-
-                <h3 style="margin: 0.8rem 0 0.3rem 0; font-size: 0.85rem; text-transform: uppercase;">🐾 Sanctuary Store</h3>
-                <div class="grid-2" id="furniture-catalog-grid"></div>
-            </section>
-
-            <section id="tab-stats" class="view-panel">
-                <h2 class="section-heading">📊 Detailed Analytics</h2>
-                
-                <div class="grid-2" style="width:100%;">
-                    <div class="pf-item-box">
-                        <div style="font-size: 1.4rem;">⏳</div>
-                        <div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-total-hours">0.0h</div>
-                        <div style="font-size: 0.65rem; opacity:0.7;">Total Focus Time</div>
-                    </div>
-                    <div class="pf-item-box">
-                        <div style="font-size: 1.4rem;">🔥</div>
-                        <div style="font-size: 0.95rem; font-weight:800; margin-top:0.1rem;" id="stat-streak-days">1 Day</div>
-                        <div style="font-size: 0.65rem; opacity:0.7;">Active Streak</div>
-                    </div>
-                </div>
-
-                <div class="week-row-dots" id="weekly-tracker-row"></div>
-
-                <h3 style="margin: 0.6rem 0 0.2rem 0; font-size: 0.8rem; text-transform: uppercase;">Subject Distribution</h3>
-                <div class="log-scroll-area" id="subject-breakdown-list"></div>
-
-                <h3 style="margin: 0.6rem 0 0.2rem 0; font-size: 0.8rem; text-transform: uppercase;">Recent Sessions</h3>
-                <div class="log-scroll-area" id="session-log-list"></div>
-            </section>
-
-            <section id="tab-settings" class="view-panel">
-                <h2 class="section-heading">⚙️ Preferences &amp; Sync</h2>
-                
-                <div class="pf-item-box" style="width:100%; text-align:left; margin-bottom:0.5rem;">
-                    <div style="font-weight: 800; font-size: 0.85rem; margin-bottom: 0.35rem; display:flex; justify-content:space-between; align-items:center;">
-                        <span>📦 JSONBin Cloud Sync</span>
-                        <span id="sync-status-badge" style="font-size:0.65rem; background:var(--btn-orange); color:#fff; padding:0.15rem 0.4rem; border-radius:6px;">Local Mode</span>
-                    </div>
-                    <p style="font-size: 0.72rem; color:var(--pf-muted, #666); margin-bottom:0.5rem;">Enter your JSONBin Master Key and Bin ID to sync across Windows, iPhone &amp; iPad.</p>
-                    <div class="form-col">
-                        <div class="form-item">
-                            <label for="cfg-jsonbin-key">Master Key ($2a$10$...)</label>
-                            <input type="password" id="cfg-jsonbin-key" class="med-input" placeholder="Enter Master Key" />
-                        </div>
-                        <div class="form-item">
-                            <label for="cfg-jsonbin-id">Bin ID</label>
-                            <input type="text" id="cfg-jsonbin-id" class="med-input" placeholder="Enter Bin ID" />
-                        </div>
-                        <button type="button" class="btn-action-wide" id="btn-save-cloud" style="padding:0.5rem; font-size:0.75rem; margin-top:0.25rem;">Sync with JSONBin 🔄</button>
-                    </div>
-                </div>
-
-                <form id="settings-form" class="form-col">
-                    <div class="form-item">
-                        <label for="cfg-study-min">Focus Duration (Minutes)</label>
-                        <input type="number" id="cfg-study-min" class="med-input" value="25" min="1" max="90" />
-                    </div>
-                    <div class="form-item">
-                        <label for="cfg-short-min">Short Break</label>
-                        <input type="number" id="cfg-short-min" class="med-input" value="5" min="1" max="30" />
-                    </div>
-                    <div class="form-item">
-                        <label for="cfg-long-min">Long Break</label>
-                        <input type="number" id="cfg-long-min" class="med-input" value="20" min="5" max="60" />
-                    </div>
-                    <button type="button" id="btn-force-save" class="btn-action-wide" style="margin-top:0.4rem;">Save Settings</button>
-                </form>
-            </section>
-
-        </main>
-
-        <nav class="pf-bottom-dock">
-            <button type="button" class="pf-dock-btn active" data-tab="tab-timer">
-                <span class="dock-ico">⏱️</span>
-                <span>Timer</span>
-            </button>
-            <button type="button" class="pf-dock-btn" data-tab="tab-planner">
-                <span class="dock-ico">🩷</span>
-                <span>Planner</span>
-            </button>
-            <button type="button" class="pf-dock-btn" data-tab="tab-world">
-                <span class="dock-ico">🏡</span>
-                <span>Store</span>
-            </button>
-            <button type="button" class="pf-dock-btn" data-tab="tab-stats">
-                <span class="dock-ico">📊</span>
-                <span>Stats</span>
-            </button>
-            <button type="button" class="pf-dock-btn" data-tab="tab-settings">
-                <span class="dock-ico">⚙️</span>
-                <span>Settings</span>
-            </button>
-        </nav>
-    </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const forceSaveBtn = document.getElementById('btn-force-save');
-            const focusInput = document.getElementById('cfg-study-min');
-            const timerReadout = document.getElementById('timer-readout');
-
-            if (forceSaveBtn && focusInput && timerReadout) {
-                forceSaveBtn.addEventListener('click', () => {
-                    let newMins = parseInt(focusInput.value, 10);
-                    if (isNaN(newMins) || newMins < 1) newMins = 25;
-                    let formattedMins = newMins < 10 ? '0' + newMins : newMins;
-                    
-                    if (!document.body.classList.contains('timer-running')) {
-                        timerReadout.textContent = formattedMins + ':00';
-                    }
-                    
-                    document.getElementById('settings-form').dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-                });
-            }
-        });
-    </script>
-    <script src="script.js"></script>
-</body>
-</html>
+        .sanctuary-room-stage .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: 8px 11px; }
+        .sanctuary-room-stage .sanctuary-pet .px-leg-fl { animation: strideFrontLeft 1.2s infinite !important; transform-origin: 8px 8px; }
+        .sanctuary-room-stage .sanctuary-pet .px-leg-fr { animation: strideFrontRight 1.
