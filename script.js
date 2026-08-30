@@ -32,7 +32,7 @@ const CATALOG_ITEMS = [
 
 let state = {
   lastUpdated: Date.now(),
-  settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false, currentBiome: 'forest', jsonbinKey: '', jsonbinId: '' },
+  settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false, currentBiome: 'forest', jsonbinKey: '', jsonbinId: '', lastSubject: MEDICAL_SUBJECTS[0] },
   timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
   planner: { isActive: false, examDate: '', bufferDays: 2, pagesLeft: 25, ankiLeft: 300, pacePages: 5, paceAnki: 100, dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 },
   game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, cycleCount: 1, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
@@ -61,7 +61,6 @@ function getTodayDateString() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-// INSTANT DAILY RESET CHECK
 function checkDailyReset() {
   const today = getTodayDateString();
   if (state.game.lastActiveDate !== today) {
@@ -89,6 +88,11 @@ function loadState() {
   
   if (!state.planner) {
     state.planner = { isActive: false, examDate: '', bufferDays: 2, pagesLeft: 25, ankiLeft: 300, pacePages: 5, paceAnki: 100, dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 };
+  }
+  
+  // Failsafe for older saves that don't have a saved subject yet
+  if (!state.settings.lastSubject) {
+    state.settings.lastSubject = MEDICAL_SUBJECTS[0];
   }
 
   if (!state.timer.isRunning) {
@@ -152,6 +156,30 @@ function initUI() {
         manSelect.appendChild(opt2);
     }
   });
+
+  // Automatically select the last used subject on load
+  if (state.settings.lastSubject) {
+      if (subSelect) subSelect.value = state.settings.lastSubject;
+      if (manSelect) manSelect.value = state.settings.lastSubject;
+  }
+
+  // When timer dropdown changes, sync it everywhere and save
+  if (subSelect) {
+      subSelect.addEventListener('change', (e) => {
+          state.settings.lastSubject = e.target.value;
+          if (manSelect) manSelect.value = e.target.value;
+          saveState();
+      });
+  }
+
+  // When manual log dropdown changes, sync it everywhere and save
+  if (manSelect) {
+      manSelect.addEventListener('change', (e) => {
+          state.settings.lastSubject = e.target.value;
+          if (subSelect) subSelect.value = e.target.value;
+          saveState();
+      });
+  }
 
   const manDate = document.getElementById('manual-date');
   if (manDate) manDate.value = getTodayDateString();
@@ -493,7 +521,6 @@ function renderStats() {
   const totalHoursElem = document.getElementById('stat-total-hours');
   const streakDaysElem = document.getElementById('stat-streak-days');
   
-  // FIXED: Now properly calculates and shows only TODAY'S minutes 
   if (totalHoursElem) totalHoursElem.textContent = `${(state.game.todayMinutes / 60).toFixed(1)}h`;
   if (streakDaysElem) streakDaysElem.textContent = `${state.game.streak} Day`;
 
@@ -728,12 +755,26 @@ async function pullFromCloudOnStart() {
           state.game = record.game;
         }
 
+        // Apply synced settings including last subject
+        if (record.settings && record.settings.lastSubject) {
+          state.settings.lastSubject = record.settings.lastSubject;
+        }
+
         localStorage.setItem('purrmodoro_pf_master_v30', JSON.stringify(state));
         
         if (badge) {
           badge.textContent = 'Cloud Active';
           badge.style.background = '#5EAA78';
         }
+        
+        // Re-init UI to reflect downloaded selections
+        const subSelect = document.getElementById('sel-subject');
+        const manSelect = document.getElementById('manual-subject');
+        if (state.settings.lastSubject) {
+            if (subSelect) subSelect.value = state.settings.lastSubject;
+            if (manSelect) manSelect.value = state.settings.lastSubject;
+        }
+
         renderAll();
         return true;
       }
