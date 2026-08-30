@@ -485,4 +485,312 @@ function renderStats() {
               const log = state.game.sessionLogs[idx];
               
               const subjText = MEDICAL_SUBJECTS.map((s, i) => `${i + 1}. ${s}`).join('\n');
-              const subjInput = prompt(`Edit Subject (Enter the number):\n\n${subjText}`, MEDICAL_SUBJECTS
+              const subjInput = prompt(`Edit Subject (Enter the number):\n\n${subjText}`, MEDICAL_SUBJECTS.indexOf(log.subject) + 1);
+              
+              if (subjInput !== null) {
+                  const selectedIdx = parseInt(subjInput, 10) - 1;
+                  if (selectedIdx >= 0 && selectedIdx < MEDICAL_SUBJECTS.length) {
+                      log.subject = MEDICAL_SUBJECTS[selectedIdx];
+                  } else {
+                      alert("Invalid number, subject kept as: " + log.subject);
+                  }
+              }
+
+              const newTask = prompt("Edit Task Name:", log.task);
+              if (newTask !== null) {
+                  log.task = newTask || "Focus Session";
+              }
+
+              saveState();
+              renderStats(); 
+          });
+      });
+
+      document.querySelectorAll('.btn-del-log').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+              if (confirm("Delete this session? This will remove the minutes from your total.")) {
+                  const idx = e.currentTarget.dataset.idx;
+                  const log = state.game.sessionLogs[idx];
+                  
+                  state.game.todayPomodoros = Math.max(0, state.game.todayPomodoros - 1);
+                  state.game.totalPomodoros = Math.max(0, state.game.totalPomodoros - 1);
+                  state.game.todayMinutes = Math.max(0, state.game.todayMinutes - log.minutes);
+
+                  state.game.sessionLogs.splice(idx, 1);
+                  saveState();
+                  renderStats();
+                  renderPlanner();
+              }
+          });
+      });
+    }
+  }
+}
+
+function initPlanner() {
+  const calc = document.getElementById('btn-calc-schedule');
+  const clear = document.getElementById('btn-clear-plan');
+
+  if (calc) {
+    calc.addEventListener('click', () => {
+      const dateVal = document.getElementById('plan-date').value;
+      const buffer = parseInt(document.getElementById('plan-buffer').value, 10) || 0;
+      const pagesLeft = parseFloat(document.getElementById('plan-pages-left').value) || 0;
+      const ankiLeft = parseFloat(document.getElementById('plan-anki-left').value) || 0;
+      const pagesPace = parseFloat(document.getElementById('plan-pace-pages').value) || 5;
+      const ankiPace = parseFloat(document.getElementById('plan-pace-anki').value) || 100;
+
+      if (!dateVal) return alert('Please enter an exam date.');
+
+      const diffDays = Math.ceil((new Date(dateVal) - new Date()) / (1000 * 60 * 60 * 24));
+      const studyDays = Math.max(diffDays - buffer, 1);
+      
+      const dailyPages = Math.ceil(pagesLeft / studyDays);
+      const dailyAnki = Math.ceil(ankiLeft / studyDays);
+      
+      const hoursForPages = dailyPages / pagesPace;
+      const hoursForAnki = dailyAnki / ankiPace;
+      const dailyHours = hoursForPages + hoursForAnki;
+
+      state.planner = {
+        isActive: true,
+        examDate: dateVal,
+        dailyMinutesGoal: Math.ceil(dailyHours * 60),
+        pagesGoal: dailyPages,
+        ankiGoal: dailyAnki
+      };
+
+      saveState();
+      renderPlanner();
+    });
+  }
+
+  if (clear) {
+    clear.addEventListener('click', () => {
+      state.planner.isActive = false;
+      saveState();
+      renderPlanner();
+    });
+  }
+}
+
+function renderPlanner() {
+  const setupView = document.getElementById('planner-setup');
+  const activeView = document.getElementById('planner-active');
+  if (!setupView || !activeView) return;
+
+  if (state.planner && state.planner.isActive) {
+    setupView.style.display = 'none';
+    activeView.style.display = 'block';
+
+    const diffDays = Math.ceil((new Date(state.planner.examDate) - new Date()) / (1000 * 60 * 60 * 24));
+    const daysText = diffDays > 0 ? `${diffDays} Days Left` : (diffDays === 0 ? 'Exam Today! Good Luck!' : 'Exam Passed');
+
+    document.getElementById('active-exam-countdown').textContent = daysText;
+    document.getElementById('active-daily-hours').textContent = (state.planner.dailyMinutesGoal / 60).toFixed(1);
+    document.getElementById('active-daily-pages').textContent = state.planner.pagesGoal;
+    document.getElementById('active-daily-anki').textContent = state.planner.ankiGoal;
+
+    const studiedHours = (state.game.todayMinutes / 60).toFixed(1);
+    const targetHours = (state.planner.dailyMinutesGoal / 60).toFixed(1);
+    document.getElementById('active-today-progress-text').textContent = `${studiedHours}h / ${targetHours}h`;
+
+    let progressPct = state.planner.dailyMinutesGoal > 0 ? (state.game.todayMinutes / state.planner.dailyMinutesGoal) * 100 : 0;
+    if (progressPct > 100) progressPct = 100;
+    document.getElementById('active-today-progress-fill').style.width = `${progressPct}%`;
+
+  } else {
+    setupView.style.display = 'block';
+    activeView.style.display = 'none';
+  }
+}
+
+async function pullFromCloudOnStart() {
+  const { jsonbinKey, jsonbinId } = state.settings;
+  const badge = document.getElementById('sync-status-badge');
+  if (!jsonbinKey || !jsonbinId) return;
+
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${jsonbinId}/latest`, {
+      headers: { 'X-Master-Key': jsonbinKey }
+    });
+
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.record) {
+        // Sync Game Stats
+        if (json.record.game && json.record.game.totalPomodoros >= state.game.totalPomodoros) {
+          state.game = json.record.game;
+        }
+        // Sync Planner Status
+        if (json.record.planner) {
+          state.planner = json.record.planner;
+        }
+      }
+      if (badge) {
+        badge.textContent = 'Cloud Active';
+        badge.style.background = '#5EAA78';
+      }
+      renderAll();
+    }
+  } catch (err) {
+    if (badge) badge.textContent = 'Offline Mode';
+  }
+}
+
+let syncDebounceTimer = null;
+function triggerAutoSync() {
+  const { jsonbinKey, jsonbinId } = state.settings;
+  if (!jsonbinKey || !jsonbinId) return;
+
+  const badge = document.getElementById('sync-status-badge');
+  if (badge) badge.textContent = 'Syncing...';
+
+  clearTimeout(syncDebounceTimer);
+  syncDebounceTimer = setTimeout(async () => {
+    try {
+      await fetch(`https://api.jsonbin.io/v3/b/${jsonbinId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Master-Key': jsonbinKey
+        },
+        // Uploads both Game stats AND Planner configuration
+        body: JSON.stringify({ game: state.game, planner: state.planner })
+      });
+
+      if (badge) {
+        badge.textContent = 'Cloud Active';
+        badge.style.background = '#5EAA78';
+      }
+    } catch (err) {
+      if (badge) badge.textContent = 'Sync Error';
+    }
+  }, 1000);
+}
+
+function initFluidWaveEngine() {
+  const canvas = document.getElementById('fluid-bg-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  let w, h, tick = 0;
+
+  const resize = () => {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  };
+  window.addEventListener('resize', resize);
+  resize();
+
+  function renderScene() {
+    ctx.clearRect(0, 0, w, h);
+    tick += 0.012;
+    const biome = state.settings.currentBiome;
+    const dark = state.settings.darkMode;
+
+    let bgGrad = ctx.createLinearGradient(0, 0, 0, h);
+    if (dark) {
+      bgGrad.addColorStop(0, '#060a12');
+      bgGrad.addColorStop(1, '#152238');
+    } else if (biome === 'forest') {
+      bgGrad.addColorStop(0, '#2d5a3f');
+      bgGrad.addColorStop(0.5, '#1e3d29');
+      bgGrad.addColorStop(1, '#0f2015');
+    } else if (biome === 'mountain') {
+      bgGrad.addColorStop(0, '#314e6b');
+      bgGrad.addColorStop(0.5, '#1e334a');
+      bgGrad.addColorStop(1, '#0b1622');
+    } else if (biome === 'sunset') {
+      bgGrad.addColorStop(0, '#613348');
+      bgGrad.addColorStop(0.5, '#3b1d30');
+      bgGrad.addColorStop(1, '#1c0d17');
+    } else {
+      bgGrad.addColorStop(0, '#592e42');
+      bgGrad.addColorStop(1, '#1c0915');
+    }
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, w, h);
+
+    const waveCount = 4;
+    for (let i = 0; i < waveCount; i++) {
+      ctx.beginPath();
+      ctx.moveTo(0, h);
+
+      let alpha = 0.15 + (i * 0.05);
+      if (biome === 'forest') {
+        ctx.fillStyle = i % 2 === 0 ? `rgba(80, 160, 100, ${alpha})` : `rgba(40, 100, 70, ${alpha})`;
+      } else if (biome === 'mountain') {
+        ctx.fillStyle = i % 2 === 0 ? `rgba(100, 140, 180, ${alpha})` : `rgba(50, 90, 130, ${alpha})`;
+      } else if (biome === 'sunset') {
+        ctx.fillStyle = i % 2 === 0 ? `rgba(220, 140, 100, ${alpha})` : `rgba(160, 70, 110, ${alpha})`;
+      } else {
+        ctx.fillStyle = i % 2 === 0 ? `rgba(240, 150, 180, ${alpha})` : `rgba(180, 80, 120, ${alpha})`;
+      }
+
+      let yBase = h * (0.4 + (i * 0.12));
+      for (let x = 0; x <= w; x += 30) {
+        let y = yBase + Math.sin(x * 0.003 + tick + (i * 0.8)) * 45 + Math.cos(x * 0.005 - tick * 0.5) * 25;
+        ctx.lineTo(x, y);
+      }
+
+      ctx.lineTo(w, h);
+      ctx.lineTo(0, h);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    for (let j = 0; j < 5; j++) {
+      let ox = (j * 250 + Math.sin(tick * 0.5 + j) * 100 + tick * 20) % (w + 200) - 100;
+      let oy = h * 0.3 + Math.cos(tick * 0.4 + j) * 80;
+      
+      let orb = ctx.createRadialGradient(ox, oy, 10, ox, oy, 150);
+      if (biome === 'forest') {
+        orb.addColorStop(0, 'rgba(120, 220, 140, 0.25)');
+        orb.addColorStop(1, 'rgba(50, 120, 80, 0)');
+      } else if (biome === 'mountain') {
+        orb.addColorStop(0, 'rgba(140, 200, 255, 0.25)');
+        orb.addColorStop(1, 'rgba(60, 110, 170, 0)');
+      } else if (biome === 'sunset') {
+        orb.addColorStop(0, 'rgba(255, 180, 120, 0.3)');
+        orb.addColorStop(1, 'rgba(180, 80, 120, 0)');
+      } else {
+        orb.addColorStop(0, 'rgba(255, 160, 200, 0.3)');
+        orb.addColorStop(1, 'rgba(140, 60, 110, 0)');
+      }
+
+      ctx.fillStyle = orb;
+      ctx.beginPath();
+      ctx.arc(ox, oy, 150, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    requestAnimationFrame(renderScene);
+  }
+  renderScene();
+}
+
+function playTone(freq, dur) {
+  if (!state.settings.soundEnabled) return;
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(freq, ctx.currentTime);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + dur);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(); osc.stop(ctx.currentTime + dur);
+  } catch (e) {}
+}
+
+function playFanfare() {
+  if (!state.settings.soundEnabled) return;
+  [587.33, 783.99, 1046.50].forEach((freq, i) => {
+    setTimeout(() => playTone(freq, 0.3), i * 130);
+  });
+}
+
+function escapeHTML(str) {
+  return str.replace(/[&<>'"]/g, t => ({ '&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;' }[t] || t));
+}
