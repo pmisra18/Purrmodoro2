@@ -30,16 +30,16 @@ const MELOG_QUOTES = [
 ];
 
 const CATALOG_ITEMS = [
-  { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false, displayed: true, slot: 1 },
-  { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 40, purchased: false, displayed: true, slot: 2 },
-  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 80, purchased: false, displayed: true, slot: 3 },
-  { id: 'books', name: 'Medical Bookshelf', icon: '📚', cost: 150, purchased: false, displayed: true, slot: 4 },
-  { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false, displayed: true, slot: 5 },
-  { id: 'cattree', name: 'Cozy Cat Tree', icon: '🪵', cost: 350, purchased: false, displayed: true, slot: 6 },
-  { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false, displayed: true, slot: 7 },
-  { id: 'fireplace', name: 'Study Fireplace', icon: '🔥', cost: 750, purchased: false, displayed: true, slot: 8 },
-  { id: 'coffee', name: 'Espresso Machine', icon: '☕', cost: 1000, purchased: false, displayed: true, slot: 9 },
-  { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1500, purchased: false, displayed: true, slot: 10 }
+  { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false, displayed: true, x: 80, y: 70 },
+  { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 40, purchased: false, displayed: true, x: 20, y: 80 },
+  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 80, purchased: false, displayed: true, x: 15, y: 60 },
+  { id: 'books', name: 'Medical Bookshelf', icon: '📚', cost: 150, purchased: false, displayed: true, x: 70, y: 40 },
+  { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false, displayed: true, x: 85, y: 65 },
+  { id: 'cattree', name: 'Cozy Cat Tree', icon: '🪵', cost: 350, purchased: false, displayed: true, x: 30, y: 55 },
+  { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false, displayed: true, x: 90, y: 40 },
+  { id: 'fireplace', name: 'Study Fireplace', icon: '🔥', cost: 750, purchased: false, displayed: true, x: 50, y: 45 },
+  { id: 'coffee', name: 'Espresso Machine', icon: '☕', cost: 1000, purchased: false, displayed: true, x: 75, y: 60 },
+  { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1500, purchased: false, displayed: true, x: 10, y: 40 }
 ];
 
 let state = {
@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initUI();
   initTimer();
   initPlanner();
+  initDragAndDrop();
   initFluidWaveEngine();
   
   if (state.settings.jsonbinKey && state.settings.jsonbinId) {
@@ -106,9 +107,13 @@ function loadState() {
     state.settings.lastSubject = MEDICAL_SUBJECTS[0];
   }
 
-  // Fallback to ensure all items have a valid slot number
+  // Failsafe migration for old saves to give them default X, Y drag positions
   state.game.catalog.forEach((item, index) => {
-      if (!item.slot) item.slot = index + 1;
+      if (item.x === undefined) {
+          const original = CATALOG_ITEMS.find(c => c.id === item.id);
+          item.x = original ? original.x : 50;
+          item.y = original ? original.y : 50;
+      }
   });
 
   if (!state.timer.isRunning) {
@@ -217,7 +222,6 @@ function initUI() {
     });
   }
 
-  // Melog Click Speech Bubble Logic
   const melogSprite = document.getElementById('melog-sprite');
   if (melogSprite) {
       melogSprite.addEventListener('click', () => {
@@ -325,6 +329,75 @@ function initUI() {
   }
 }
 
+// -------------------------------------------------------------
+// DRAG AND DROP LOGIC FOR SANCTUARY EMOJIS
+// -------------------------------------------------------------
+function initDragAndDrop() {
+    const container = document.getElementById('sanctuary-placed-items');
+    if (!container) return;
+    
+    let isDragging = false;
+    let dragItem = null;
+    let startX, startY, initialX, initialY;
+
+    function getClientX(e) { return e.touches ? e.touches[0].clientX : e.clientX; }
+    function getClientY(e) { return e.touches ? e.touches[0].clientY : e.clientY; }
+
+    function onDragStart(e) {
+        if (e.target.classList.contains('placed-item-emoji')) {
+            isDragging = true;
+            dragItem = e.target;
+            dragItem.style.cursor = 'grabbing';
+            startX = getClientX(e);
+            startY = getClientY(e);
+            
+            const itemData = state.game.catalog.find(i => i.id === dragItem.dataset.id);
+            initialX = itemData.x || 50;
+            initialY = itemData.y || 50;
+            
+            if(e.touches) e.preventDefault(); // Prevents iPad screen scrolling while decorating
+        }
+    }
+
+    function onDragMove(e) {
+        if (!isDragging || !dragItem) return;
+        const rect = container.getBoundingClientRect();
+        const dx = ((getClientX(e) - startX) / rect.width) * 100;
+        const dy = ((getClientY(e) - startY) / rect.height) * 100;
+
+        let newX = Math.max(5, Math.min(95, initialX + dx));
+        let newY = Math.max(5, Math.min(95, initialY + dy));
+
+        dragItem.style.left = `${newX}%`;
+        dragItem.style.top = `${newY}%`;
+        
+        if(e.touches) e.preventDefault();
+    }
+
+    function onDragEnd(e) {
+        if (isDragging && dragItem) {
+            isDragging = false;
+            dragItem.style.cursor = 'grab';
+            const itemData = state.game.catalog.find(i => i.id === dragItem.dataset.id);
+            if (itemData) {
+                itemData.x = parseFloat(dragItem.style.left);
+                itemData.y = parseFloat(dragItem.style.top);
+                saveState();
+            }
+            dragItem = null;
+        }
+    }
+
+    container.addEventListener('mousedown', onDragStart);
+    document.addEventListener('mousemove', onDragMove);
+    document.addEventListener('mouseup', onDragEnd);
+
+    // iPad / Touch support
+    container.addEventListener('touchstart', onDragStart, {passive: false});
+    document.addEventListener('touchmove', onDragMove, {passive: false});
+    document.addEventListener('touchend', onDragEnd);
+}
+
 function initTimer() {
   const toggleBtn = document.getElementById('btn-timer-toggle');
   const resetBtn = document.getElementById('btn-timer-reset');
@@ -343,7 +416,6 @@ function initTimer() {
     });
   }
 
-  // Flow State Extension Logic
   if (extendBtn) {
     extendBtn.addEventListener('click', () => {
       if (state.timer.mode === 'study') {
@@ -523,14 +595,16 @@ function renderWorld() {
   const placedContainer = document.getElementById('sanctuary-placed-items');
   if (placedContainer) {
     placedContainer.innerHTML = '';
-    
-    // Renders items directly mapping to their saved CSS slot classes
     state.game.catalog.forEach(item => {
       if (item.purchased && item.displayed !== false) {
         const span = document.createElement('span');
-        span.className = `placed-item-emoji slot-${item.slot}`;
+        span.className = 'placed-item-emoji';
         span.textContent = item.icon;
         span.title = item.name;
+        // Apply dynamic coordinates for dragging
+        span.style.left = `${item.x}%`;
+        span.style.top = `${item.y}%`;
+        span.dataset.id = item.id;
         placedContainer.appendChild(span);
       }
     });
@@ -544,32 +618,13 @@ function renderWorld() {
       const isDisplayed = item.displayed !== false;
       div.className = `pf-item-box ${item.purchased ? '' : 'locked'}`;
       
-      const slotOptions = `
-        <option value="1" ${item.slot === 1 ? 'selected' : ''}>1: Desk Center</option>
-        <option value="2" ${item.slot === 2 ? 'selected' : ''}>2: Floor Far Left</option>
-        <option value="3" ${item.slot === 3 ? 'selected' : ''}>3: Floor Right</option>
-        <option value="4" ${item.slot === 4 ? 'selected' : ''}>4: Wall Center</option>
-        <option value="5" ${item.slot === 5 ? 'selected' : ''}>5: Wall Right</option>
-        <option value="6" ${item.slot === 6 ? 'selected' : ''}>6: Rug Left</option>
-        <option value="7" ${item.slot === 7 ? 'selected' : ''}>7: Desk Left</option>
-        <option value="8" ${item.slot === 8 ? 'selected' : ''}>8: Wall Left</option>
-        <option value="9" ${item.slot === 9 ? 'selected' : ''}>9: Floor Mid-Left</option>
-        <option value="10" ${item.slot === 10 ? 'selected' : ''}>10: Floor Far Right</option>
-      `;
-
       div.innerHTML = `
         <div style="font-size: 2rem; margin-bottom: 5px; ${!isDisplayed && item.purchased ? 'opacity: 0.3;' : ''}">${item.icon}</div>
         <div style="font-weight:700; font-size:0.75rem;">${item.name}</div>
-        <div style="font-size:0.75rem; font-weight:800; color:var(--btn-orange);">
-            ${item.purchased ? (isDisplayed ? 'Placed 🎀' : 'Stored 📦') : `${item.cost} 🐾`}
-        </div>
+        <div style="font-size:0.75rem; font-weight:800; color:var(--btn-orange);">${item.purchased ? (isDisplayed ? 'Placed 🎀' : 'Stored 📦') : `${item.cost} 🐾`}</div>
         ${!item.purchased 
             ? `<button type="button" class="btn-adopt">Adopt</button>` 
-            : `<button type="button" class="btn-toggle" style="background: ${isDisplayed ? 'var(--btn-dark)' : 'var(--btn-orange)'}; margin-top: 5px;">${isDisplayed ? 'Hide' : 'Place'}</button>
-               <select class="med-select slot-select" style="font-size:0.6rem; padding: 2px; margin-top: 5px; width: 100%; display: ${isDisplayed ? 'block' : 'none'};">
-                  ${slotOptions}
-               </select>
-              `
+            : `<button type="button" class="btn-toggle-cute ${!isDisplayed ? 'hidden' : ''}">${isDisplayed ? 'Hide' : 'Place'}</button>`
         }
       `;
       
@@ -585,20 +640,11 @@ function renderWorld() {
           } else alert(`Need ${item.cost - state.game.pawPoints} more 🐾 Paw Points!`);
         });
       } else {
-        div.querySelector('.btn-toggle').addEventListener('click', () => {
+        div.querySelector('.btn-toggle-cute').addEventListener('click', () => {
           item.displayed = !isDisplayed;
           saveState();
           renderWorld();
         });
-        
-        const slotSelect = div.querySelector('.slot-select');
-        if (slotSelect) {
-            slotSelect.addEventListener('change', (e) => {
-                item.slot = parseInt(e.target.value, 10);
-                saveState();
-                renderWorld();
-            });
-        }
       }
       cat.appendChild(div);
     });
