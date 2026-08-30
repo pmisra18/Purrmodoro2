@@ -97,17 +97,19 @@
         #sanctuary-placed-items > :nth-child(9) { left: 70px; bottom: 25px; font-size: 2rem; } 
         #sanctuary-placed-items > :nth-child(10) { right: 130px; bottom: 25px; font-size: 2.2rem; }
 
-        /* 5. INDEPENDENT WALKING ANIMATION FOR SANCTUARY MELOG */
+        /* 5. PERFECT WALKING ANIMATION FOR SANCTUARY MELOG */
         .sanctuary-room-stage .sanctuary-pet {
             position: absolute !important; bottom: 25px !important; width: 60px !important; height: 60px !important; z-index: 5 !important;
-            animation: wanderMelog 14s infinite linear !important; transform: none !important; margin: 0 !important;
+            animation: wanderMelog 14s infinite linear !important; margin: 0 !important;
         }
-        .sanctuary-room-stage .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: 8px 11px; }
-        .sanctuary-room-stage .sanctuary-pet .px-leg-fl { animation: strideFrontLeft 1.2s infinite !important; transform-origin: 8px 8px; }
-        .sanctuary-room-stage .sanctuary-pet .px-leg-fr { animation: strideFrontRight 1.2s infinite !important; transform-origin: 8px 8px; }
-        .sanctuary-room-stage .sanctuary-pet .px-leg-bl { animation: strideBackLeft 1.2s infinite !important; transform-origin: 4px 8px; }
-        .sanctuary-room-stage .sanctuary-pet .px-leg-br { animation: strideBackRight 1.2s infinite !important; transform-origin: 4px 8px; }
-        .sanctuary-room-stage .sanctuary-pet .px-balanced-tail { animation: attachedTailSway 1.2s infinite ease-in-out !important; transform-origin: 3px 6px; }
+        
+        /* Gentle walking motion when awake */
+        body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: 8px 11px; }
+        body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-leg-fl { animation: strideFrontLeft 1.2s infinite !important; transform-origin: 8px 8px; }
+        body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-leg-fr { animation: strideFrontRight 1.2s infinite !important; transform-origin: 8px 8px; }
+        body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-leg-bl { animation: strideBackLeft 1.2s infinite !important; transform-origin: 4px 8px; }
+        body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-leg-br { animation: strideBackRight 1.2s infinite !important; transform-origin: 4px 8px; }
+        body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-balanced-tail { animation: attachedTailSway 1.2s infinite ease-in-out !important; transform-origin: 3px 6px; }
 
         @keyframes wanderMelog {
             0% { left: 5%; transform: scaleX(1); }
@@ -115,6 +117,11 @@
             50% { left: 60%; transform: scaleX(-1); }
             95% { left: 5%; transform: scaleX(-1); }
             100% { left: 5%; transform: scaleX(1); }
+        }
+        
+        /* Freeze and sleep peacefully during Break Mode */
+        body.mode-break .sanctuary-room-stage .sanctuary-pet {
+            animation: none !important; left: 15% !important; transform: scaleX(1) !important;
         }
     </style>
 </head>
@@ -258,6 +265,8 @@
                     <div class="pixel-desk"></div>
 
                     <div class="sanctuary-pet">
+                        <div class="zzz-container">Zzz...</div>
+                        
                         <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-awake" style="width: 100%; height: 100%; image-rendering: pixelated;">
                             <g class="px-cat-master">
                                 <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
@@ -267,6 +276,21 @@
                                 <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
                                 <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
                                 <g class="px-head"><rect x="6" y="1" width="2" height="3" fill="#2C1E16" /><rect x="7" y="2" width="1" height="2" fill="#F4C28D" /><rect x="7" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="10" y="1" width="2" height="3" fill="#2C1E16" /><rect x="10" y="2" width="1" height="2" fill="#F4C28D" /><rect x="10" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="7" y="4" width="6" height="4" fill="#F4C28D" /><rect x="6" y="4" width="1" height="4" fill="#2C1E16" /><rect x="13" y="5" width="1" height="3" fill="#2C1E16" /><rect x="8" y="3" width="4" height="1" fill="#2C1E16" /><rect x="7" y="8" width="5" height="1" fill="#2C1E16" /><rect x="9" y="4" width="1" height="1" fill="#D9965B" /><rect x="10" y="5" width="1" height="1" fill="#2C1E16" /><rect x="10" y="4" width="1" height="1" fill="#9CBD38" /><rect x="11" y="6" width="2" height="2" fill="#FFFFFF" /><rect x="12" y="6" width="1" height="1" fill="#E88894" /></g>
+                            </g>
+                        </svg>
+
+                        <svg viewBox="0 0 16 16" class="pixel-melog-svg melog-asleep" style="width: 100%; height: 100%; image-rendering: pixelated;">
+                            <g class="px-cat-master">
+                                <g class="px-balanced-tail"><rect x="2" y="6" width="2" height="2" fill="#2C1E16" /><rect x="1" y="5" width="2" height="2" fill="#F4C28D" /><rect x="0" y="3" width="2" height="2" fill="#D9965B" /><rect x="-1" y="1" width="2" height="2" fill="#FFFFFF" /></g>
+                                <g class="px-leg-bl"><rect x="3.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="3" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                <g class="px-leg-fl"><rect x="7.5" y="8" width="1.5" height="4" fill="#D9965B" /><rect x="7" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                <g class="px-torso"><rect x="3" y="6" width="7" height="1" fill="#2C1E16" /><rect x="2" y="7" width="1" height="3" fill="#2C1E16" /><rect x="10" y="7" width="1" height="3" fill="#2C1E16" /><rect x="3" y="10" width="7" height="1" fill="#2C1E16" /><rect x="3" y="7" width="5" height="3" fill="#F4C28D" /><rect x="4" y="7" width="1" height="2" fill="#D9965B" /><rect x="8" y="7" width="2" height="3" fill="#FFFFFF" /></g>
+                                <g class="px-leg-br"><rect x="4.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="4" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                <g class="px-leg-fr"><rect x="8.5" y="8" width="1.5" height="4" fill="#F4C28D" /><rect x="8" y="11" width="2.5" height="1" fill="#2C1E16" /></g>
+                                <g class="px-head">
+                                    <rect x="6" y="1" width="2" height="3" fill="#2C1E16" /><rect x="7" y="2" width="1" height="2" fill="#F4C28D" /><rect x="7" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="10" y="1" width="2" height="3" fill="#2C1E16" /><rect x="10" y="2" width="1" height="2" fill="#F4C28D" /><rect x="10" y="2" width="1" height="1" fill="#FCAEBA" /><rect x="7" y="4" width="6" height="4" fill="#F4C28D" /><rect x="6" y="4" width="1" height="4" fill="#2C1E16" /><rect x="13" y="5" width="1" height="3" fill="#2C1E16" /><rect x="8" y="3" width="4" height="1" fill="#2C1E16" /><rect x="7" y="8" width="5" height="1" fill="#2C1E16" /><rect x="9" y="4" width="1" height="1" fill="#D9965B" /><rect x="10" y="5" width="1" height="1" fill="#2C1E16" /><rect x="10" y="4" width="1" height="1" fill="#9CBD38" />
+                                    <rect x="11" y="7" width="2" height="1" fill="#2C1E16" />
+                                </g>
                             </g>
                         </svg>
                     </div>
