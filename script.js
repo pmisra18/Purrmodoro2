@@ -29,17 +29,33 @@ const MELOG_QUOTES = [
   "Melog believes in you, future Doctor! 🩺"
 ];
 
+// UPDATED: 25 Unique, Accurate Items!
 const CATALOG_ITEMS = [
-  { id: 'tea', name: 'Chamomile Tea', icon: '☕', cost: 20, purchased: false, displayed: true, x: 80, y: 70 },
-  { id: 'yarn', name: "Melog's Wool Ball", icon: '🧶', cost: 40, purchased: false, displayed: true, x: 20, y: 80 },
-  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 80, purchased: false, displayed: true, x: 15, y: 60 },
-  { id: 'books', name: 'Medical Bookshelf', icon: '📚', cost: 150, purchased: false, displayed: true, x: 70, y: 40 },
-  { id: 'steth', name: 'Blush Stethoscope', icon: '🩺', cost: 250, purchased: false, displayed: true, x: 85, y: 65 },
-  { id: 'cattree', name: 'Cozy Cat Tree', icon: '🪵', cost: 350, purchased: false, displayed: true, x: 30, y: 55 },
-  { id: 'bones', name: 'Desktop Skeleton', icon: '🦴', cost: 500, purchased: false, displayed: true, x: 90, y: 40 },
-  { id: 'fireplace', name: 'Study Fireplace', icon: '🔥', cost: 750, purchased: false, displayed: true, x: 50, y: 45 },
-  { id: 'coffee', name: 'Espresso Machine', icon: '☕', cost: 1000, purchased: false, displayed: true, x: 75, y: 60 },
-  { id: 'coat', name: "Mini White Coat", icon: '🥼', cost: 1500, purchased: false, displayed: true, x: 10, y: 40 }
+  { id: 'tea', name: 'Chamomile Tea', icon: '🍵', cost: 10, purchased: false, displayed: true, x: 20, y: 70 },
+  { id: 'yarn', name: 'Wool Ball', icon: '🧶', cost: 20, purchased: false, displayed: true, x: 30, y: 80 },
+  { id: 'plant', name: 'Monstera Plant', icon: '🪴', cost: 40, purchased: false, displayed: true, x: 15, y: 60 },
+  { id: 'books', name: 'Medical Books', icon: '📚', cost: 50, purchased: false, displayed: true, x: 70, y: 40 },
+  { id: 'lamp', name: 'Desk Lamp', icon: '💡', cost: 60, purchased: false, displayed: true, x: 80, y: 45 },
+  { id: 'mouse', name: 'Toy Mouse', icon: '🐁', cost: 75, purchased: false, displayed: true, x: 45, y: 85 },
+  { id: 'coffee', name: 'Morning Coffee', icon: '☕', cost: 90, purchased: false, displayed: true, x: 85, y: 70 },
+  { id: 'apple', name: 'Study Snack', icon: '🍎', cost: 100, purchased: false, displayed: true, x: 75, y: 70 },
+  { id: 'bone', name: 'Anatomy Bone', icon: '🦴', cost: 150, purchased: false, displayed: true, x: 90, y: 80 },
+  { id: 'fish', name: 'Fish Toy', icon: '🐟', cost: 180, purchased: false, displayed: true, x: 60, y: 85 },
+  { id: 'steth', name: 'Stethoscope', icon: '🩺', cost: 200, purchased: false, displayed: true, x: 85, y: 65 },
+  { id: 'radio', name: 'Lo-Fi Radio', icon: '📻', cost: 250, purchased: false, displayed: true, x: 25, y: 45 },
+  { id: 'flower', name: 'Sakura Blossom', icon: '🌸', cost: 300, purchased: false, displayed: true, x: 10, y: 45 },
+  { id: 'meds', name: 'Pharm Pills', icon: '💊', cost: 350, purchased: false, displayed: true, x: 65, y: 70 },
+  { id: 'bed', name: 'Soft Pillow', icon: '🛏️', cost: 400, purchased: false, displayed: true, x: 85, y: 85 },
+  { id: 'clock', name: 'Pomodoro Timer', icon: '⏲️', cost: 450, purchased: false, displayed: true, x: 75, y: 40 },
+  { id: 'chart', name: 'Patient Chart', icon: '📋', cost: 500, purchased: false, displayed: true, x: 95, y: 40 },
+  { id: 'brain', name: 'Brain Model', icon: '🧠', cost: 600, purchased: false, displayed: true, x: 35, y: 40 },
+  { id: 'heart', name: 'Heart Model', icon: '🫀', cost: 700, purchased: false, displayed: true, x: 45, y: 40 },
+  { id: 'microscope', name: 'Microscope', icon: '🔬', cost: 850, purchased: false, displayed: true, x: 60, y: 55 },
+  { id: 'dna', name: 'DNA Sculpture', icon: '🧬', cost: 1000, purchased: false, displayed: true, x: 15, y: 35 },
+  { id: 'laptop', name: 'Study Laptop', icon: '💻', cost: 1200, purchased: false, displayed: true, x: 75, y: 65 },
+  { id: 'fire', name: 'Small Campfire', icon: '🔥', cost: 1500, purchased: false, displayed: true, x: 50, y: 45 },
+  { id: 'coat', name: 'White Coat', icon: '🥼', cost: 2000, purchased: false, displayed: true, x: 10, y: 40 },
+  { id: 'trophy', name: 'Board Prep Trophy', icon: '🏆', cost: 2500, purchased: false, displayed: true, x: 50, y: 35 }
 ];
 
 let state = {
@@ -107,13 +123,15 @@ function loadState() {
     state.settings.lastSubject = MEDICAL_SUBJECTS[0];
   }
 
-  state.game.catalog.forEach((item, index) => {
-      if (item.x === undefined) {
-          const original = CATALOG_ITEMS.find(c => c.id === item.id);
-          item.x = original ? original.x : 50;
-          item.y = original ? original.y : 50;
+  // Ensures new items get added to old saves without crashing
+  const newCatalog = [...CATALOG_ITEMS];
+  state.game.catalog.forEach(savedItem => {
+      const index = newCatalog.findIndex(c => c.id === savedItem.id);
+      if (index !== -1) {
+          newCatalog[index] = { ...newCatalog[index], ...savedItem };
       }
   });
+  state.game.catalog = newCatalog;
 
   if (!state.timer.isRunning) {
     state.timer.totalDuration = (state.timer.mode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
