@@ -29,7 +29,6 @@ const MELOG_QUOTES = [
   "Melog believes in you, future Doctor! 🩺"
 ];
 
-// The definitive 25-item catalog
 const CATALOG_ITEMS = [
   { id: 'tea', name: 'Chamomile Tea', icon: '🍵', cost: 10, purchased: false, displayed: true, x: 20, y: 70 },
   { id: 'yarn', name: 'Wool Ball', icon: '🧶', cost: 20, purchased: false, displayed: true, x: 30, y: 80 },
@@ -66,6 +65,10 @@ let state = {
   game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, cycleCount: 1, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [] }
 };
 
+// NEW: Store Carousel Variables
+let currentCatalogPage = 0;
+const CATALOG_PAGE_SIZE = 4;
+
 const RING_CIRCUMFERENCE = 2 * Math.PI * 133;
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -90,7 +93,6 @@ function getTodayDateString() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
-// FIX: Resets cycleCount to 1 daily along with the minutes
 function checkDailyReset() {
   const today = getTodayDateString();
   if (state.game.lastActiveDate !== today) {
@@ -103,7 +105,6 @@ function checkDailyReset() {
   return false;
 }
 
-// FIX: Merges any saved layout data onto the full 25-item catalog
 function mergeCatalog(savedCatalog) {
   if (!savedCatalog) return [...CATALOG_ITEMS];
   return CATALOG_ITEMS.map(baseItem => {
@@ -264,6 +265,22 @@ function initUI() {
           
           bubble.style.display = 'block';
           setTimeout(() => { bubble.style.display = 'none'; }, 4000);
+      });
+  }
+
+  // Store Carousel Logic
+  const btnStorePrev = document.getElementById('btn-store-prev');
+  const btnStoreNext = document.getElementById('btn-store-next');
+  if (btnStorePrev) {
+      btnStorePrev.addEventListener('click', () => {
+          currentCatalogPage--;
+          renderWorld();
+      });
+  }
+  if (btnStoreNext) {
+      btnStoreNext.addEventListener('click', () => {
+          currentCatalogPage++;
+          renderWorld();
       });
   }
 
@@ -637,10 +654,27 @@ function renderWorld() {
     });
   }
 
-  const cat = document.getElementById('furniture-catalog-grid');
-  if (cat) {
-    cat.innerHTML = '';
-    state.game.catalog.forEach(item => {
+  // Handle the paginated store carousel
+  const catGrid = document.getElementById('furniture-catalog-grid');
+  const btnPrev = document.getElementById('btn-store-prev');
+  const btnNext = document.getElementById('btn-store-next');
+  const pageInd = document.getElementById('store-page-indicator');
+
+  if (catGrid) {
+    catGrid.innerHTML = '';
+    
+    const totalPages = Math.ceil(state.game.catalog.length / CATALOG_PAGE_SIZE);
+    if (currentCatalogPage >= totalPages) currentCatalogPage = totalPages - 1;
+    if (currentCatalogPage < 0) currentCatalogPage = 0;
+
+    if (pageInd) pageInd.textContent = `Page ${currentCatalogPage + 1} / ${totalPages}`;
+    if (btnPrev) btnPrev.disabled = currentCatalogPage === 0;
+    if (btnNext) btnNext.disabled = currentCatalogPage >= totalPages - 1;
+
+    const startIdx = currentCatalogPage * CATALOG_PAGE_SIZE;
+    const pageItems = state.game.catalog.slice(startIdx, startIdx + CATALOG_PAGE_SIZE);
+
+    pageItems.forEach(item => {
       const div = document.createElement('div');
       const isDisplayed = item.displayed !== false;
       div.className = `pf-item-box ${item.purchased ? '' : 'locked'}`;
@@ -673,7 +707,7 @@ function renderWorld() {
           renderWorld();
         });
       }
-      cat.appendChild(div);
+      catGrid.appendChild(div);
     });
   }
 }
@@ -914,7 +948,6 @@ async function pullFromCloudOnStart() {
 
         if (record.game && record.game.totalPomodoros >= state.game.totalPomodoros) {
           state.game = record.game;
-          // Apply the strict merge so cloud doesn't delete the 25 items!
           state.game.catalog = mergeCatalog(record.game.catalog);
         }
 
