@@ -42,11 +42,9 @@
             background: var(--btn-orange); color: #FFF !important; box-shadow: 0 2px 0 var(--btn-orange-shadow);
         }
 
-        /* Cute Purple Timer Button */
         .btn-purple { background-color: #DDA0DD !important; color: white !important; box-shadow: 0 4px 0px #BA55D3 !important; }
         .btn-purple:active { transform: translateY(4px) !important; box-shadow: 0 0px 0px #BA55D3 !important; }
 
-        /* Cute Store Toggle Buttons */
         .btn-toggle-cute {
             background: #FFB6C1; color: white; border: none; padding: 8px 12px; border-radius: 12px;
             font-family: var(--font-pixel); font-size: 0.75rem; text-transform: uppercase; cursor: pointer;
@@ -96,7 +94,6 @@
             height: 220px !important; background: linear-gradient(to bottom, #d6e8f5 60%, #b5ccdf 60%, #b5ccdf 63%, #a27b6c 63%, #a27b6c 100%) !important; border: 4px solid rgba(0,0,0,0.15) !important; position: relative; display: block !important; overflow: hidden;
         }
         
-        /* The Restored Cute Rug! */
         .pixel-rug {
             position: absolute; bottom: 12px; left: 50%; transform: translateX(-50%); width: 140px; height: 35px;
             background: #E8B4B8; border: 3px solid #C48B90; border-radius: 50%; opacity: 0.9; box-shadow: inset 0 -4px 0 rgba(0,0,0,0.05);
@@ -111,21 +108,20 @@
         .pixel-desk::before, .pixel-desk::after { content: ''; position: absolute; top: 100%; width: 8px; height: 30px; background: #5C4033; }
         .pixel-desk::before { left: 5px; } .pixel-desk::after { right: 5px; }
 
-        /* Draggable Items Container */
         #sanctuary-placed-items { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 6; pointer-events: none; }
         
         .placed-item-emoji { 
             position: absolute; pointer-events: auto; display: inline-block; line-height: 1; 
             text-shadow: 2px 2px 0 rgba(0,0,0,0.15); font-size: 2.2rem; cursor: grab;
-            transform: translate(-50%, -50%); /* Centers the drag point */
+            transform: translate(-50%, -50%); 
             user-select: none; touch-action: none;
         }
         .placed-item-emoji:active { cursor: grabbing; z-index: 20; }
 
-        /* 5. INDEPENDENT WALKING ANIMATION FOR SANCTUARY MELOG */
+        /* 5. FIX: ALLOW MELOG TO FLIP AND TURN */
         .sanctuary-room-stage .sanctuary-pet {
             position: absolute !important; bottom: 25px !important; width: 60px !important; height: 60px !important; z-index: 5 !important;
-            animation: wanderMelog 14s infinite linear !important; transform: none !important; margin: 0 !important;
+            animation: wanderMelog 14s infinite linear !important; margin: 0 !important;
         }
         
         body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-cat-master { animation: catHopBounding 1.2s infinite cubic-bezier(0.4, 0, 0.2, 1) !important; transform-origin: 8px 11px; }
@@ -135,6 +131,7 @@
         body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-leg-br { animation: strideBackRight 1.2s infinite !important; transform-origin: 4px 8px; }
         body:not(.mode-break) .sanctuary-room-stage .sanctuary-pet .px-balanced-tail { animation: attachedTailSway 1.2s infinite ease-in-out !important; transform-origin: 3px 6px; }
 
+        /* Because there is no longer a 'transform: none !important', he will flip perfectly! */
         @keyframes wanderMelog {
             0% { left: 5%; transform: scaleX(1); }
             45% { left: 60%; transform: scaleX(1); }
