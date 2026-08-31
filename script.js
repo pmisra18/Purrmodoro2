@@ -107,7 +107,6 @@ function loadState() {
     state.settings.lastSubject = MEDICAL_SUBJECTS[0];
   }
 
-  // Failsafe migration for old saves to give them default X, Y drag positions
   state.game.catalog.forEach((item, index) => {
       if (item.x === undefined) {
           const original = CATALOG_ITEMS.find(c => c.id === item.id);
@@ -329,9 +328,6 @@ function initUI() {
   }
 }
 
-// -------------------------------------------------------------
-// DRAG AND DROP LOGIC FOR SANCTUARY EMOJIS
-// -------------------------------------------------------------
 function initDragAndDrop() {
     const container = document.getElementById('sanctuary-placed-items');
     if (!container) return;
@@ -355,7 +351,7 @@ function initDragAndDrop() {
             initialX = itemData.x || 50;
             initialY = itemData.y || 50;
             
-            if(e.touches) e.preventDefault(); // Prevents iPad screen scrolling while decorating
+            if(e.touches) e.preventDefault(); 
         }
     }
 
@@ -392,7 +388,6 @@ function initDragAndDrop() {
     document.addEventListener('mousemove', onDragMove);
     document.addEventListener('mouseup', onDragEnd);
 
-    // iPad / Touch support
     container.addEventListener('touchstart', onDragStart, {passive: false});
     document.addEventListener('touchmove', onDragMove, {passive: false});
     document.addEventListener('touchend', onDragEnd);
@@ -573,12 +568,17 @@ function renderAll() {
   }
   renderTimer();
   renderPlanner();
+  renderStats();
   
   const lvlElem = document.getElementById('val-level');
   const pawsElem = document.getElementById('val-paws');
+  const cycleElem = document.getElementById('val-cycle-count'); 
   const xpFill = document.getElementById('mini-xp-fill');
+  
   if (lvlElem) lvlElem.textContent = state.game.level;
   if (pawsElem) pawsElem.textContent = state.game.pawPoints;
+  if (cycleElem) cycleElem.textContent = state.game.cycleCount; 
+  
   if (xpFill) {
     const currentXpInLevel = state.game.xp % 100;
     xpFill.style.width = `${currentXpInLevel}%`;
@@ -601,7 +601,6 @@ function renderWorld() {
         span.className = 'placed-item-emoji';
         span.textContent = item.icon;
         span.title = item.name;
-        // Apply dynamic coordinates for dragging
         span.style.left = `${item.x}%`;
         span.style.top = `${item.y}%`;
         span.dataset.id = item.id;
