@@ -29,7 +29,7 @@ const MELOG_QUOTES = [
   "Melog believes in you, future Doctor! 🩺"
 ];
 
-// UPDATED: 25 Unique, Accurate Items!
+// The definitive 25-item catalog
 const CATALOG_ITEMS = [
   { id: 'tea', name: 'Chamomile Tea', icon: '🍵', cost: 10, purchased: false, displayed: true, x: 20, y: 70 },
   { id: 'yarn', name: 'Wool Ball', icon: '🧶', cost: 20, purchased: false, displayed: true, x: 30, y: 80 },
@@ -63,7 +63,7 @@ let state = {
   settings: { studyMin: 25, shortMin: 5, longMin: 20, longInterval: 4, dailyTarget: 8, soundEnabled: true, darkMode: false, currentBiome: 'forest', jsonbinKey: '', jsonbinId: '', lastSubject: MEDICAL_SUBJECTS[0] },
   timer: { mode: 'study', timeLeft: 25 * 60, totalDuration: 25 * 60, isRunning: false, intervalId: null },
   planner: { isActive: false, examDate: '', bufferDays: 2, pagesLeft: 25, ankiLeft: 300, pacePages: 5, paceAnki: 100, dailyMinutesGoal: 0, pagesGoal: 0, ankiGoal: 0 },
-  game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, cycleCount: 1, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [...CATALOG_ITEMS] }
+  game: { xp: 0, level: 1, pawPoints: 0, streak: 1, todayPomodoros: 0, todayMinutes: 0, totalPomodoros: 0, cycleCount: 1, lastActiveDate: getTodayDateString(), activeDays: {}, sessionLogs: [], catalog: [] }
 };
 
 const RING_CIRCUMFERENCE = 2 * Math.PI * 133;
@@ -90,15 +90,29 @@ function getTodayDateString() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
 }
 
+// FIX: Resets cycleCount to 1 daily along with the minutes
 function checkDailyReset() {
   const today = getTodayDateString();
   if (state.game.lastActiveDate !== today) {
     state.game.todayMinutes = 0;
     state.game.todayPomodoros = 0;
+    state.game.cycleCount = 1; 
     state.game.lastActiveDate = today;
     return true; 
   }
   return false;
+}
+
+// FIX: Merges any saved layout data onto the full 25-item catalog
+function mergeCatalog(savedCatalog) {
+  if (!savedCatalog) return [...CATALOG_ITEMS];
+  return CATALOG_ITEMS.map(baseItem => {
+      const savedItem = savedCatalog.find(s => s.id === baseItem.id);
+      if (savedItem) {
+          return { ...baseItem, purchased: savedItem.purchased, displayed: savedItem.displayed, x: savedItem.x, y: savedItem.y };
+      }
+      return { ...baseItem };
+  });
 }
 
 function saveState() {
@@ -112,7 +126,13 @@ function saveState() {
 function loadState() {
   const raw = localStorage.getItem('purrmodoro_pf_master_v30');
   if (raw) {
-    try { state = { ...state, ...JSON.parse(raw) }; } catch (e) {}
+    try { 
+        const parsed = JSON.parse(raw);
+        state = { ...state, ...parsed }; 
+        state.game.catalog = mergeCatalog(parsed.game ? parsed.game.catalog : []);
+    } catch (e) {}
+  } else {
+    state.game.catalog = mergeCatalog([]);
   }
   
   if (!state.planner) {
@@ -122,16 +142,6 @@ function loadState() {
   if (!state.settings.lastSubject) {
     state.settings.lastSubject = MEDICAL_SUBJECTS[0];
   }
-
-  // Ensures new items get added to old saves without crashing
-  const newCatalog = [...CATALOG_ITEMS];
-  state.game.catalog.forEach(savedItem => {
-      const index = newCatalog.findIndex(c => c.id === savedItem.id);
-      if (index !== -1) {
-          newCatalog[index] = { ...newCatalog[index], ...savedItem };
-      }
-  });
-  state.game.catalog = newCatalog;
 
   if (!state.timer.isRunning) {
     state.timer.totalDuration = (state.timer.mode === 'study' ? state.settings.studyMin : state.settings.shortMin) * 60;
@@ -904,6 +914,8 @@ async function pullFromCloudOnStart() {
 
         if (record.game && record.game.totalPomodoros >= state.game.totalPomodoros) {
           state.game = record.game;
+          // Apply the strict merge so cloud doesn't delete the 25 items!
+          state.game.catalog = mergeCatalog(record.game.catalog);
         }
 
         if (record.settings && record.settings.lastSubject) {
